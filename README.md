@@ -90,6 +90,8 @@ Ghi chu:
 - [Huong dan phat trien](docs/DEVELOPMENT.md)
 - [Import de tu JSON](docs/IMPORT_JSON.md)
 
+Analytics/recommendation ca nhan can user login va submit bai that. Workflow tao du lieu demo nam trong [Huong dan phat trien](docs/DEVELOPMENT.md#demo-analytics-data-workflow).
+
 ## Roadmap ngan
 
 - Refresh Token

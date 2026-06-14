@@ -99,6 +99,43 @@ Ghi chu:
 - batch mode resolve path theo thu muc chua file manifest
 - tai lieu chi tiet nam o [docs/IMPORT_JSON.md](./IMPORT_JSON.md)
 
+## Demo analytics data workflow
+
+Seed/import chi tao du lieu noi dung nhu exam, question, topic, subtopic, image va explanation. Cac man analytics ca nhan can du lieu hoc tap that cua user trong `Attempt` va `AttemptAnswer`.
+
+Workflow demo khuyen nghi:
+
+1. Chuan bi de/cau hoi demo:
+
+   ```bash
+   cd backend
+   npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
+   npm run import:exam -- ./src/data/import/manifest.json --batch
+   ```
+
+2. Chi reset database demo/dev khi chap nhan mat lich su lam bai:
+
+   ```bash
+   cd backend
+   npm run seed:demo
+   ```
+
+3. Chay backend va frontend.
+4. Login bang Google tren frontend.
+5. Lam 1-2 de va submit. Neu can demo recommendation ro hon, co the co tinh sai vai cau trong cung mot topic de tao chuyen de yeu.
+6. Mo cac man:
+
+   - `/analytics`: topic stats, progress va recommendation.
+   - `/history`: lich su lam bai toan cuc.
+   - `/profile`: thong tin user, hoat dong gan day va CTA hoc tiep.
+   - `/exams`: danh sach de va card goi y luyen tap.
+
+Canh bao:
+
+- `npm run seed` va `npm run seed:demo` xoa `Attempt`/`AttemptAnswer`, nen se lam mat du lieu analytics/history da tao bang cach submit bai.
+- Import JSON chi upsert `Exam`, `Question`, `Topic`, `Subtopic`; khong tao user gia va khong tao attempt.
+- Practice theo topic la flow luyen local/dynamic, khong ghi `Attempt`, nen khong lam tang progress/history.
+
 ## Smoke test toi thieu
 
 ### Backend

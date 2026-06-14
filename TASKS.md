@@ -55,6 +55,7 @@
 * [x] Backend smoke test checklist
 * [x] Frontend build không phụ thuộc Google Fonts
 * [x] Documentation update
+* [x] Demo analytics data workflow documentation
 
 ---
 
