@@ -166,6 +166,16 @@ Ghi chu:
 - batch import that hien tai validate toan bo truoc, sau do import tuan tu
 - neu gap loi runtime khi dang import that, script se dung ngay tai file loi
 
+## Demo sample data hien co
+
+Thu muc `backend/src/data/import/` hien co:
+
+- `sample-exam.json`: 5 cau, metadata day du, co topic/subtopic, question image, option image va explanation.
+- `sample-exam-02.json`: 4 cau, dung cho batch import va demo analytics/recommendation theo nhieu topic.
+- `manifest.json`: import ca hai de mau theo batch.
+
+Hai sample hien dung question id trong dai `1001-1005` va `1101-1104` de giam nguy co trung voi mock exam chinh.
+
 ## Field bat buoc
 
 ### Cap do exam
