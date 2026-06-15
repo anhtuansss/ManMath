@@ -22,6 +22,7 @@ import { MathText } from './MathText';
 import { Logo } from './Logo';
 import { OptionImage } from './OptionImage';
 import { QuestionImage } from './QuestionImage';
+import { ResultQuestionNavigator } from './ResultQuestionNavigator';
 import type { ExamDetailDto, ExamResultSession, QuestionDto } from './types';
 import { API_BASE_URL } from '../../config/api';
 import {
@@ -377,6 +378,15 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
               </svg>
               Xem lịch sử
             </Link>
+            <Link
+              href="/"
+              className="inline-flex h-10 cursor-pointer items-center gap-2 justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 8h8M4 8l4-4M4 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Về danh sách đề
+            </Link>
           </div>
         </header>
 
@@ -506,28 +516,28 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
               </p>
             </div>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
               {topicStats.map((topicStat) => (
                 <div
                   key={topicStat.topicId ?? topicStat.topicName}
-                  className="rounded-lg border border-border bg-background p-4"
+                  className="rounded-lg border border-border bg-background p-3"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-text-primary">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-text-primary truncate" title={topicStat.topicName}>
                         {topicStat.topicName}
                       </p>
-                      <p className="mt-1 text-xs text-text-secondary">
-                        {topicStat.correct}/{topicStat.total} câu đúng
+                      <p className="mt-0.5 text-xs text-text-secondary">
+                        {topicStat.correct}/{topicStat.total} câu
                       </p>
                     </div>
 
-                    <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold text-text-secondary">
+                    <span className="shrink-0 rounded-full border border-border bg-surface px-2.5 py-0.5 text-xs font-semibold text-text-secondary">
                       {topicStat.accuracy}%
                     </span>
                   </div>
 
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-background-alt">
+                  <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-background-alt">
                     <div
                       className="h-full rounded-full bg-primary transition-all duration-500"
                       style={{ width: `${topicStat.accuracy}%` }}
@@ -572,8 +582,9 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
             </div>
           )}
 
-          <div className="space-y-4">
-            {exam?.questions.map((question, index) => {
+          <div className="mt-6 flex flex-col-reverse items-start gap-6 lg:flex-row">
+            <div className="min-w-0 flex-1 space-y-4">
+              {exam?.questions.map((question, index) => {
               const selectedOptionIndex = resultSession.answers[question.id];
               const selectedAnswer =
                 selectedOptionIndex !== undefined
@@ -592,47 +603,42 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
 
               return (
                 <article
+                  id={`question-${question.id}`}
                   key={question.id}
                   className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card ${reviewAccentClass[status]}`}
                 >
-                  <div className={`flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 ${reviewHeaderClass[status]}`}>
-                    <div className="flex items-center gap-3">
-                      {/* Question number badge */}
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
+                  <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${reviewHeaderClass[status]}`}>
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
                         {index + 1}
                       </span>
-                      <div>
-                        <p className="text-sm font-semibold text-text-primary">
-                          Câu {index + 1}
-                        </p>
-                        <p className="mt-0.5 text-xs font-medium text-text-secondary">
-                          ID câu hỏi: {question.id}
-                        </p>
-                      </div>
+                      <span className="text-xs font-medium text-text-secondary">
+                        ID: {question.id}
+                      </span>
                     </div>
                     <span
-                      className={`rounded-full border px-3 py-1 text-xs font-semibold ${reviewBadgeClass[status]}`}
+                      className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${reviewBadgeClass[status]}`}
                     >
                       {reviewLabel[status]}
                     </span>
                   </div>
 
-                  <div className="p-5">
+                  <div className="p-4 sm:p-5">
                     <MathText
                       as="p"
                       text={question.question}
-                      className="text-base leading-7 text-text-primary"
+                      className="text-sm sm:text-base leading-7 text-text-primary"
                     />
 
                     <QuestionImage
                       imageUrl={question.imageUrl}
                       alt={`Hình minh họa câu ${index + 1}`}
-                      className="mt-4"
+                      className="mt-3 sm:mt-4"
                     />
 
-                    <div className="mt-5 grid gap-4 md:grid-cols-2">
+                    <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
                       <div
-                        className={`rounded-lg border p-4 ${reviewAnswerClass[status]}`}
+                        className={`rounded-lg border p-3 sm:p-4 ${reviewAnswerClass[status]}`}
                       >
                         <p className="text-xs font-semibold text-text-secondary">
                           Đáp án của bạn
@@ -640,41 +646,41 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
                         <MathText
                           as="p"
                           text={selectedAnswer}
-                          className="mt-2 text-sm font-medium leading-6 text-text-primary"
+                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
                         />
                         <OptionImage
                           imageUrl={selectedOptionImageUrl}
                           alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
-                          className="mt-3"
+                          className="mt-2 sm:mt-3"
                         />
                       </div>
 
-                      <div className="rounded-lg border border-border bg-background p-4">
+                      <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
                         <p className="text-xs font-semibold text-text-secondary">
                           Đáp án đúng
                         </p>
                         <MathText
                           as="p"
                           text={question.correctAnswer}
-                          className="mt-2 text-sm font-medium leading-6 text-text-primary"
+                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
                         />
                         <OptionImage
                           imageUrl={correctOptionImageUrl}
                           alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
-                          className="mt-3"
+                          className="mt-2 sm:mt-3"
                         />
                       </div>
                     </div>
 
                     {question.explanation ? (
-                      <div className="mt-5 rounded-lg border border-border bg-background p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                      <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
                           Lời giải
                         </p>
                         <MathText
                           as="div"
                           text={question.explanation}
-                          className="mt-2 text-sm leading-6 text-text-primary"
+                          className="text-sm leading-6 text-text-primary"
                         />
                       </div>
                     ) : null}
@@ -682,6 +688,16 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
                 </article>
               );
             })}
+            </div>
+
+            {exam && (
+              <aside className="w-full shrink-0 lg:sticky lg:top-6 lg:w-80">
+                <ResultQuestionNavigator
+                  questions={exam.questions}
+                  answers={resultSession.answers}
+                />
+              </aside>
+            )}
           </div>
         </section>
       </div>

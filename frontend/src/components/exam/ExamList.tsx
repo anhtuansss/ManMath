@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { ExamCard } from './ExamCard';
 import { Logo } from './Logo';
@@ -11,7 +12,6 @@ import type {
 } from './types';
 import type { UserStats } from '../../lib/userStats';
 import { Footer } from './Footer';
-import { AuthButton } from '../auth/AuthButton';
 
 type ExamListProps = {
   exams: ExamListItem[];
@@ -39,16 +39,16 @@ type ExamListProps = {
 };
 
 const difficultyLabels: Record<ExamListItem['difficulty'], string> = {
-  easy: 'De',
-  medium: 'Trung binh',
-  hard: 'Kho',
+  easy: 'Dễ',
+  medium: 'Trung bình',
+  hard: 'Khó',
 };
 
 const durationFilterLabels: Record<ExamDurationFilter, string> = {
-  all: 'Tat ca thoi luong',
-  short: '<= 45 phut',
-  standard: '46-90 phut',
-  long: '> 90 phut',
+  all: 'Tất cả thời lượng',
+  short: '<= 45 phút',
+  standard: '46-90 phút',
+  long: '> 90 phút',
 };
 
 export function ExamList({
@@ -75,6 +75,7 @@ export function ExamList({
   onSourceChange,
   onClearFilters,
 }: ExamListProps) {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const recommendedExams = exams.slice(0, 3);
   const totalQuestions = exams.reduce((sum, exam) => sum + exam.totalQuestions, 0);
   const averageDuration =
@@ -101,7 +102,7 @@ export function ExamList({
     searchInput.trim().length > 0
       ? {
           key: 'search',
-          label: `Tim kiem: ${searchInput.trim()}`,
+          label: `Tìm kiếm: ${searchInput.trim()}`,
           onRemove: () => onSearchChange(''),
         }
       : null,
@@ -136,14 +137,14 @@ export function ExamList({
     selectedYear.trim().length > 0
       ? {
           key: 'year',
-          label: `Nam ${selectedYear.trim()}`,
+          label: `Năm ${selectedYear.trim()}`,
           onRemove: () => onYearChange(''),
         }
       : null,
     selectedSource.trim().length > 0
       ? {
           key: 'source',
-          label: `Nguon: ${selectedSource.trim()}`,
+          label: `Nguồn: ${selectedSource.trim()}`,
           onRemove: () => onSourceChange(''),
         }
       : null,
@@ -169,64 +170,20 @@ export function ExamList({
 
             <div className="flex flex-col gap-8 pt-2 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
-                <Link
-                  href="/"
-                  aria-label="Ve trang chu"
-                  className="group flex cursor-pointer items-center gap-3 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Logo className="h-11 w-11 transition-transform group-hover:scale-105" />
-                  <div>
-                    <p className="font-[family-name:var(--font-outfit)] text-lg font-bold tracking-tight text-text-primary transition-colors group-hover:text-primary">
-                      ManMath
-                    </p>
-                    <p className="text-xs font-medium text-primary">Nen tang thi thu</p>
-                  </div>
-                </Link>
-
-                <div className="mt-8">
+                <div>
                   <p className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-                    Tuyen tap de thi moi nhat
+                    Tuyển tập đề thi mới nhất
                   </p>
                   <h1 className="mt-4 max-w-3xl font-[family-name:var(--font-outfit)] text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:leading-[1.1]">
-                    <TypewriterText text="Nen tang luyen de Toan THPT mien phi" />
+                    <TypewriterText text="Nền tảng luyện đề Toán THPT miễn phí" />
                   </h1>
                   <p className="mt-4 max-w-xl text-base leading-7 text-text-secondary">
-                    Lam de co dong ho, cham diem tu dong, xem lai loi sai va theo doi
-                    tien bo sau moi lan luyen.
+                    Làm đề có đồng hồ, chấm điểm tự động, xem lại lỗi sai và theo dõi
+                    tiến bộ sau mỗi lần luyện.
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 lg:w-[380px] lg:items-end">
-                <AuthButton />
-
-                {stats && stats.currentStreak > 0 ? (
-                  <div className="flex w-full max-w-[380px] items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-amber-900">
-                          {stats.currentStreak} ngay lien tiep!
-                        </p>
-                        <p className="text-xs text-amber-700">Giu vung phong do nhe.</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
             </div>
           </header>
 
@@ -251,7 +208,7 @@ export function ExamList({
                         <polyline points="12 6 12 12 16 14" />
                       </svg>
                       <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-warning-dark">
-                        Ban co bai lam chua hoan thanh
+                        Bạn có bài làm chưa hoàn thành
                       </h2>
                     </div>
                     <p className="mt-1 text-sm font-medium text-warning-dark/80">
@@ -262,7 +219,7 @@ export function ExamList({
                     href={`/exam/${draftExam.id}`}
                     className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-warning px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-warning/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2"
                   >
-                    Tiep tuc lam bai
+                    Tiếp tục làm bài
                   </Link>
                 </section>
               )}
@@ -271,14 +228,14 @@ export function ExamList({
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                      De luyen thi de xuat
+                      Bắt đầu nhanh
                     </h2>
                     <p className="mt-1 text-sm text-text-secondary">
-                      Cac de dau tien tu kho hien co, phu hop de bat dau nhanh.
+                      Một vài đề nổi bật để bạn làm thử ngay.
                     </p>
                   </div>
                   <span className="shrink-0 text-sm font-medium text-primary">
-                    {recommendedExams.length} de
+                    {recommendedExams.length} đề
                   </span>
                 </div>
 
@@ -294,42 +251,65 @@ export function ExamList({
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                        Danh sach de thi
+                        Danh sách đề thi
                       </h2>
                       <p className="mt-1 text-sm text-text-secondary">
-                        Scan nhanh so cau, thoi luong va do kho truoc khi vao de.
+                        Scan nhanh số câu, thời lượng và độ khó trước khi vào đề.
                       </p>
                     </div>
                     <span className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-text-secondary">
-                      {exams.length} de kha dung
+                      {exams.length} đề khả dụng
                     </span>
                   </div>
 
                   <div className="mt-5 space-y-4">
                     <label className="flex flex-col gap-1.5">
                       <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                        Tim kiem
+                        Tìm kiếm
                       </span>
                       <input
                         type="text"
                         value={searchInput}
                         onChange={(event) => onSearchChange(event.target.value)}
-                        placeholder="Nhap ten de, chuyen de hoac nguon de..."
+                        placeholder="Nhập tên đề, chuyên đề hoặc nguồn đề..."
                         className="h-11 rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                       />
                     </label>
 
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="md:hidden">
+                      <button
+                        type="button"
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition hover:bg-background-alt"
+                      >
+                        {hasActiveFilters ? 'Bộ lọc (đang áp dụng)' : 'Bộ lọc'}
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={`ml-2 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className={`grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 ${isFilterOpen ? 'grid' : 'hidden md:grid'}`}>
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Chuyen de
+                          Chuyên đề
                         </span>
                         <select
                           value={selectedTopic}
                           onChange={(event) => onTopicChange(event.target.value)}
                           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                         >
-                          <option value="">Tat ca chuyen de</option>
+                          <option value="">Tất cả chuyên đề</option>
                           {topics.map((topic) => (
                             <option key={topic.id} value={topic.slug}>
                               {topic.name}
@@ -340,7 +320,7 @@ export function ExamList({
 
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Tieu chuyen de
+                          Tiểu chuyên đề
                         </span>
                         <select
                           value={selectedSubtopic}
@@ -350,8 +330,8 @@ export function ExamList({
                         >
                           <option value="">
                             {selectedTopicData
-                              ? 'Tat ca tieu chuyen de'
-                              : 'Chon chuyen de truoc'}
+                              ? 'Tất cả tiểu chuyên đề'
+                              : 'Chọn chuyên đề trước'}
                           </option>
                           {subtopicOptions.map((subtopic) => (
                             <option key={subtopic.id} value={subtopic.slug}>
@@ -363,7 +343,7 @@ export function ExamList({
 
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Thoi luong
+                          Thời lượng
                         </span>
                         <select
                           value={selectedDuration}
@@ -372,16 +352,16 @@ export function ExamList({
                           }
                           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                         >
-                          <option value="all">Tat ca thoi luong</option>
-                          <option value="short">&lt;= 45 phut</option>
-                          <option value="standard">46-90 phut</option>
-                          <option value="long">&gt; 90 phut</option>
+                          <option value="all">Tất cả thời lượng</option>
+                          <option value="short">&lt;= 45 phút</option>
+                          <option value="standard">46-90 phút</option>
+                          <option value="long">&gt; 90 phút</option>
                         </select>
                       </label>
 
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Do kho
+                          Độ khó
                         </span>
                         <select
                           value={selectedDifficulty}
@@ -390,16 +370,16 @@ export function ExamList({
                           }
                           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                         >
-                          <option value="">Tat ca do kho</option>
-                          <option value="easy">De</option>
-                          <option value="medium">Trung binh</option>
-                          <option value="hard">Kho</option>
+                          <option value="">Tất cả độ khó</option>
+                          <option value="easy">Dễ</option>
+                          <option value="medium">Trung bình</option>
+                          <option value="hard">Khó</option>
                         </select>
                       </label>
 
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Nam
+                          Năm
                         </span>
                         <input
                           type="number"
@@ -407,20 +387,20 @@ export function ExamList({
                           max={2100}
                           value={selectedYear}
                           onChange={(event) => onYearChange(event.target.value)}
-                          placeholder="Nhap nam..."
+                          placeholder="Nhập năm..."
                           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                         />
                       </label>
 
                       <label className="flex min-w-0 flex-col gap-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Nguon de
+                          Nguồn đề
                         </span>
                         <input
                           type="text"
                           value={selectedSource}
                           onChange={(event) => onSourceChange(event.target.value)}
-                          placeholder="Nhap nguon de..."
+                          placeholder="Nhập nguồn đề..."
                           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                         />
                       </label>
@@ -432,7 +412,7 @@ export function ExamList({
                       <div className="flex flex-col gap-3 rounded-lg border border-border bg-background px-3 py-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="min-w-0">
                           <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                            Dang loc
+                            Đang lọc
                           </p>
                           <div className="mt-2 flex flex-wrap gap-2">
                             {activeFilterChips.map((chip) => (
@@ -444,7 +424,7 @@ export function ExamList({
                                 <button
                                   type="button"
                                   onClick={chip.onRemove}
-                                  aria-label={`Xoa bo loc ${chip.label}`}
+                                  aria-label={`Xóa bộ lọc ${chip.label}`}
                                   className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-primary transition hover:bg-primary/10"
                                 >
                                   x
@@ -459,13 +439,13 @@ export function ExamList({
                           onClick={onClearFilters}
                           className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-border bg-surface px-4 text-xs font-semibold text-text-primary transition hover:border-primary hover:text-primary"
                         >
-                          Xoa bo loc
+                          Xóa bộ lọc
                         </button>
                       </div>
                     ) : null}
 
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-text-secondary">
-                      {isFiltering ? <span>Dang cap nhat danh sach de...</span> : null}
+                      {isFiltering ? <span>Đang cập nhật danh sách đề...</span> : null}
                       {listError ? <span className="text-warning-dark">{listError}</span> : null}
                       {topicsError ? <span className="text-warning-dark">{topicsError}</span> : null}
                     </div>
@@ -476,10 +456,10 @@ export function ExamList({
                   <div className="px-5 py-10">
                     <div className="rounded-xl border border-dashed border-border bg-background px-6 py-8 text-center">
                       <h3 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                        Khong tim thay de phu hop voi bo loc hien tai
+                        Không tìm thấy đề phù hợp với bộ lọc hiện tại
                       </h3>
                       <p className="mt-2 text-sm leading-6 text-text-secondary">
-                        Thu thay doi tu khoa, chuyen de hoac xoa bo loc de xem nhieu de hon.
+                        Thử thay đổi từ khóa, chuyên đề hoặc xóa bộ lọc để xem nhiều đề hơn.
                       </p>
                       <div className="mt-5">
                         <button
@@ -487,7 +467,7 @@ export function ExamList({
                           onClick={onClearFilters}
                           className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover"
                         >
-                          Xoa bo loc
+                          Xóa bộ lọc
                         </button>
                       </div>
                     </div>
@@ -503,6 +483,35 @@ export function ExamList({
             </div>
 
             <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+              {stats && stats.currentStreak > 0 ? (
+                <div className="flex w-full items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-amber-900">
+                        {stats.currentStreak} ngày liên tiếp!
+                      </p>
+                      <p className="text-xs text-amber-700">Giữ vững phong độ nhé.</p>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              <RecommendationCard />
+
               <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
                 <div className="flex items-center gap-2">
                   <svg
@@ -541,82 +550,30 @@ export function ExamList({
                     />
                   </svg>
                   <h2 className="font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary">
-                    Tong quan kho de
+                    Tổng quan kho đề
                   </h2>
                 </div>
                 <div className="mt-4 divide-y divide-border text-sm">
                   <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">Tong so cau</span>
+                    <span className="text-text-secondary">Tổng số câu</span>
                     <span className="font-semibold text-text-primary">
-                      {totalQuestions} cau
+                      {totalQuestions} câu
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">Thoi luong trung binh</span>
+                    <span className="text-text-secondary">Thời lượng trung bình</span>
                     <span className="font-semibold text-text-primary">
-                      {averageDuration} phut
+                      {averageDuration} phút
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">De kho</span>
+                    <span className="text-text-secondary">Đề khó</span>
                     <span className="font-semibold text-text-primary">
-                      {hardExamCount} de
+                      {hardExamCount} đề
                     </span>
                   </div>
                 </div>
               </section>
-
-              {stats && stats.examsCompleted > 0 && (
-                <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-                  <div className="flex items-center gap-2">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-primary"
-                    >
-                      <path d="M12 20v-6M6 20V10M18 20V4" />
-                    </svg>
-                    <h2 className="font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary">
-                      Thong ke ca nhan
-                    </h2>
-                  </div>
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="rounded-lg bg-background p-3">
-                      <p className="text-xs text-text-secondary">Da hoan thanh</p>
-                      <p className="mt-1 text-lg font-bold text-text-primary">
-                        {stats.examsCompleted}{' '}
-                        <span className="text-sm font-medium text-text-secondary">de</span>
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-background p-3">
-                      <p className="text-xs text-text-secondary">Diem trung binh</p>
-                      <p className="mt-1 text-lg font-bold text-primary">
-                        {stats.averageScore.toFixed(1)}
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-background p-3">
-                      <p className="text-xs text-text-secondary">Diem cao nhat</p>
-                      <p className="mt-1 text-lg font-bold text-emerald-600">
-                        {stats.bestScore.toFixed(1)}
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-background p-3">
-                      <p className="text-xs text-text-secondary">So cau da tra loi</p>
-                      <p className="mt-1 text-lg font-bold text-text-primary">
-                        {stats.totalQuestionsAnswered}
-                      </p>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              <RecommendationCard />
             </aside>
           </div>
         </div>

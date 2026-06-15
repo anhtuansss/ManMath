@@ -2,22 +2,22 @@
 
 ## Giới thiệu
 
-ManMath là web luyện đề Toán THPT, tập trung vào trải nghiệm làm bài rõ ràng, ít gây mỏi mắt và gần với một môi trường thi thật.
+ManMath là web luyện đề Toán THPT theo hướng MVP gọn, dễ học và để demo. Người dùng có thể chọn đề, làm bài, nộp bài, xem kết quả, review đáp án, xem lịch sử, theo dõi analytics và nhận gợi ý luyện tập.
 
-Project hiện hỗ trợ chọn đề, làm bài trắc nghiệm, nộp bài, xem kết quả, xem lịch sử làm bài và theo dõi phân tích theo chuyên đề. Hệ thống dùng PostgreSQL + Prisma ở backend và Next.js ở frontend.
+Hệ thống hiện dùng Next.js ở frontend, Express ở backend, PostgreSQL + Prisma cho dữ liệu, và Google Login + JWT cho tài khoản.
 
 ## Tính năng chính
 
-- [x] Luyện đề Toán THPT
-- [x] Làm bài trắc nghiệm theo đề
-- [x] Chấm điểm, result page, review đáp án
-- [x] Lịch sử làm bài và chi tiết attempt
-- [x] Google Login + JWT
-- [x] Topic analytics
-- [x] Recommendation MVP và analytics dashboard nhỏ
-- [x] Theo dõi tiến độ và hoạt động gần đây của người dùng
+- [x] Danh sách đề thi và route `/exams`
+- [x] Làm bài, autosave, submit, result page, review đáp án
+- [x] Search/filter đề theo keyword, topic, subtopic, thời lượng, độ khó, năm, nguồn
+- [x] App navigation, mobile filter collapse và active filter chips
+- [x] Global history `/history`, attempt detail và profile `/profile`
+- [x] Google Login + JWT + protect history/analytics theo user
+- [x] Topic analytics, recommendation MVP, analytics dashboard `/analytics`
+- [x] Practice by weak topic MVP với focus mode
 - [x] KaTeX math rendering
-- [x] Hỗ trợ ảnh câu hỏi và ảnh đáp án bằng static public path
+- [x] Question image, option image và explanation MVP
 - [x] Import đề từ JSON qua backend script
 
 ## Tech Stack
@@ -47,57 +47,17 @@ PostgreSQL
 
 ## Chạy local
 
-### 1. Cài backend
-
 ```bash
 cd backend
 npm install
-```
-
-### 2. Cài frontend
-
-```bash
-cd frontend
-npm install
-```
-
-### 3. Tạo env
-
-`backend/.env`
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/manmath_db"
-GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
-JWT_SECRET="your-dev-secret-at-least-32-characters"
-JWT_EXPIRES_IN="7d"
-```
-
-`frontend/.env.local`
-
-```env
-NEXT_PUBLIC_API_BASE_URL="http://localhost:5000"
-NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
-```
-
-### 4. Migrate và seed
-
-```bash
-cd backend
 npx prisma migrate dev
-npm run seed
-```
-
-### 5. Chạy backend
-
-```bash
-cd backend
+npm run seed:demo
 npm run dev
 ```
 
-### 6. Chạy frontend
-
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 
@@ -119,7 +79,7 @@ Ghi chú:
 
 - Không commit `.env` hoặc `.env.local`
 - `JWT_SECRET` chỉ dùng ở backend
-- Các biến `NEXT_PUBLIC_*` là public env cho browser
+- Biến `NEXT_PUBLIC_*` là public env cho browser
 
 ## Docs chi tiết
 
@@ -130,12 +90,14 @@ Ghi chú:
 - [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
 - [Import đề từ JSON](docs/IMPORT_JSON.md)
 
+Analytics/recommendation cá nhân cần user login và submit bài thật. Workflow tạo dữ liệu demo nằm trong [Hướng dẫn phát triển](docs/DEVELOPMENT.md#demo-analytics-data-workflow).
+
 ## Roadmap ngắn
 
 - Refresh Token
 - Email/password login
 - Cập nhật thông tin cá nhân
 - Upload và quản lý ảnh câu hỏi/đáp án
-- Dashboard analytics sâu hơn và theo dõi tiến bộ dài hạn
+- Analytics sâu hơn và theo dõi tiến bộ dài hạn
 - Mở rộng import đề ngoài JSON
-- AI feedback
+- AI feedback / explanation runtime

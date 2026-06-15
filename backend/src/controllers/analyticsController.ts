@@ -3,6 +3,7 @@ import {
   getUserAttemptHistory,
   getUserProgress,
   getUserRecommendations,
+  getUserSubtopicStats,
   getUserTopicStats,
 } from '../services/analyticsService';
 
@@ -23,6 +24,27 @@ export const getMyTopicStats = async (
     });
   } catch (error) {
     console.error('Failed to load user topic stats:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const getMySubtopicStats = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const subtopicStats = await getUserSubtopicStats(req.user.userId);
+
+    res.json({
+      subtopicStats,
+    });
+  } catch (error) {
+    console.error('Failed to load user subtopic stats:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

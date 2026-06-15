@@ -1,17 +1,17 @@
-# Database va Prisma
+# Database và Prisma
 
-## Cong nghe
+## Công nghệ
 
 - PostgreSQL
 - Prisma ORM
 
-## Cac model chinh
+## Các model chính
 
 ### User
 
-Luu tai khoan nguoi dung.
+Lưu tài khoản người dùng.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `email`
@@ -23,9 +23,9 @@ Field chinh:
 
 ### Exam
 
-Luu thong tin de thi.
+Lưu thông tin đề thi.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `title`
@@ -37,17 +37,18 @@ Field chinh:
 - `year`
 - `statusLabel`
 
-Ghi chu:
+Ghi chú:
 
-- `difficulty` hien dung enum `easy | medium | hard`
-- `source` la metadata string optional cho nguon de
-- `year` la metadata number optional cho nam thi
+- `difficulty` hiện dùng enum `easy | medium | hard`
+- `source` là metadata string optional cho nguồn đề
+- `year` là metadata number optional cho năm thi
+- metadata này được expose ra exam list, exam detail và exam filter
 
 ### Topic
 
-Luu nhom kien thuc lon.
+Lưu nhóm kiến thức lớn.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `name`
@@ -55,7 +56,7 @@ Field chinh:
 - `description`
 - `order`
 
-Topic hien la nen cho:
+Topic hiện là nền cho:
 
 - topic stats
 - recommendation MVP
@@ -63,27 +64,27 @@ Topic hien la nen cho:
 
 ### Subtopic
 
-Luu nhom kien thuc nho hon, nam trong mot `Topic`.
+Lưu nhóm kiến thức nhỏ hơn, nằm trong một `Topic`.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `name`
 - `slug`
 - `topicId`
 
-Ghi chu:
+Ghi chú:
 
-- `Subtopic` thuoc dung mot `Topic`
-- `Question.subtopicId` la optional
-- MVP hien chi dung `Subtopic` de tang do chi tiet cho taxonomy va DTO
-- Analytics hien chua co API rieng theo subtopic
+- `Subtopic` thuộc đúng một `Topic`
+- `Question.subtopicId` là optional
+- MVP dùng `Subtopic` để tăng độ chi tiết cho taxonomy, DTO và analytics
+- Analytics hiện có API riêng theo subtopic: `GET /api/me/subtopic-stats`
 
 ### Question
 
-Luu tung cau hoi trong de.
+Lưu từng câu hỏi trong đề.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `examId`
@@ -97,21 +98,22 @@ Field chinh:
 - `optionImageUrls`
 - `correctAnswer`
 
-Ghi chu:
+Ghi chú:
 
-- `imageUrl` la field optional cho Question Image Support
-- `explanation` la field optional cho Explanation MVP, luu loi giai tinh co the chua KaTeX
-- `optionImageUrls` la mang string map theo index voi `options`
-- `subtopicId` la field optional cho Subtopic Mapping MVP
-- Anh hien tai duoc luu dang static public path, vi du `/images/questions/sample-parabola.svg`
-- MVP van giu `options: string[]`, chua doi sang object option model
-- Explanation hien chi duoc render o result review va attempt detail, khong hien thi trong luc dang lam bai
+- `imageUrl` là field optional cho Question Image Support
+- `explanation` là field optional cho Explanation MVP, lưu lời giải tĩnh có thể chứa KaTeX
+- `optionImageUrls` là mảng string map theo index với `options`
+- `subtopicId` là field optional cho Subtopic Mapping MVP
+- Ảnh hiện tại được lưu dạng static public path, ví dụ `/images/questions/sample-parabola.svg`
+- MVP vẫn giữ `options: string[]`, chưa đổi sang object option model
+- Explanation hiện chỉ được render ở result review và attempt detail, không hiển thị trong lúc đang làm bài
+- Question DTO / practice payload / attempt detail hiện đều có thể expose `imageUrl`, `optionImageUrls`, `explanation` và `subtopic`
 
 ### Attempt
 
-Luu mot lan lam bai.
+Lưu một lần làm bài.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `examId`
@@ -126,9 +128,9 @@ Field chinh:
 
 ### AttemptAnswer
 
-Luu tung cau tra loi cua mot lan lam bai.
+Lưu từng câu trả lời của một lần làm bài.
 
-Field chinh:
+Field chính:
 
 - `id`
 - `attemptId`
@@ -137,7 +139,7 @@ Field chinh:
 - `correctOptionIndex`
 - `isCorrect`
 
-## So do quan he
+## Sơ đồ quan hệ
 
 ```text
 User 1 --- n Attempt
@@ -149,35 +151,36 @@ Subtopic 1 --- n Question
 Attempt 1 --- n AttemptAnswer
 ```
 
-## Ghi chu thiet ke
+## Ghi chú thiết kế
 
-- `Attempt.userId` la nullable de van ho tro anonymous submit
-- `AttemptAnswer.questionId` hien la scalar field, chua khai bao relation truc tiep toi `Question`
-- Topic va Subtopic duoc giu doc lap voi attempt data; analytics tinh tu `AttemptAnswer` ket hop `Question`
+- `Attempt.userId` là nullable để vẫn hỗ trợ anonymous submit
+- `AttemptAnswer.questionId` hiện là scalar field, chưa khai báo relation trực tiếp tới `Question`
+- Topic và Subtopic được giữ độc lập với attempt data; analytics tính từ `AttemptAnswer` kết hợp `Question`
 
-## Vi sao can Topic va Subtopic
+## Vì sao cần Topic và Subtopic
 
 ### Topic
 
-Dung cho:
+Dùng cho:
 
-- thong ke theo nhom lon
+- thống kê theo nhóm lớn
 - recommendation MVP
-- dashboard tong quan
+- dashboard tổng quan
 
 ### Subtopic
 
-Dung cho:
+Dùng cho:
 
-- phan loai cau hoi chi tiet hon
-- cai thien quality cua seed/import
-- mo duong cho recommendation va analytics sau nay
+- phân loại câu hỏi chi tiết hơn
+- cải thiện quality của seed/import
+- mở đường cho recommendation và analytics sau này
 
-MVP hien tai chua chuyen he thong sang subtopic-first. Topic van la lop phan tich chinh.
+MVP hiện tại chưa chuyển hệ thống sang subtopic-first. Topic vẫn là lớp phân tích chính.
+Subtopic analytics là lớp bổ sung để chỉ ra nhóm kiến thức nhỏ cần ôn lại, không thay thế topic stats.
 
-## Topic taxonomy hien tai
+## Topic taxonomy hiện tại
 
-Slug topic chinh dang dung gom:
+Slug topic chính đang dùng gồm:
 
 - `ham-so`
 - `nguyen-ham-tich-phan`
@@ -188,7 +191,7 @@ Slug topic chinh dang dung gom:
 - `ma-tran`
 - `hinh-hoc-khong-gian`
 
-Vi du subtopic hien tai:
+Ví dụ subtopic hiện tại:
 
 - `dao-ham`
 - `cuc-tri`
@@ -199,7 +202,7 @@ Vi du subtopic hien tai:
 - `dinh-thuc-ma-tran`
 - `goc-va-khoang-cach`
 
-Slug topic/subtopic can duoc giu nhat quan giua:
+Slug topic/subtopic cần được giữ nhất quán giữa:
 
 - `mockExams`
 - seed

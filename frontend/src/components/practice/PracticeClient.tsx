@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { API_BASE_URL } from '../../config/api';
-import { ExamHeader } from '../exam/ExamHeader';
 import { ExamSidebar } from '../exam/ExamSidebar';
 import { Logo } from '../exam/Logo';
 import { OptionImage } from '../exam/OptionImage';
 import { QuestionImage } from '../exam/QuestionImage';
 import { QuestionList } from '../exam/QuestionList';
 import { MathText } from '../exam/MathText';
+import { TimerDisplay } from '../exam/TimerDisplay';
 import type {
   Answers,
   PracticeTopicDto,
@@ -24,6 +24,7 @@ type PracticeResult = {
   correctCount: number;
   totalQuestions: number;
   answeredCount: number;
+  unansweredCount: number;
   score: number;
 };
 
@@ -58,13 +59,16 @@ const calculatePracticeResult = (
     correctCount,
     totalQuestions,
     answeredCount,
+    unansweredCount: totalQuestions - answeredCount,
     score,
   };
 };
 
+const formatPercent = (value: number): string => `${Math.round(value * 100)}%`;
+
 const formatTopicTitle = (practice: PracticeTopicDto | null): string => {
   if (!practice) {
-    return 'Luyen theo chuyen de';
+    return 'Luyện theo chuyên đề';
   }
 
   return practice.title;
@@ -82,6 +86,12 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
 
   const isSubmitted = result !== null;
   const isTimeUp = remainingSeconds === 0;
+  const answeredCount = practice
+    ? practice.questions.filter((question) => answers[question.id] !== undefined).length
+    : 0;
+  const totalQuestions = practice?.questions.length ?? 0;
+  const progressPercentage =
+    totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
 
   useEffect(() => {
     const fetchPractice = async () => {
@@ -99,10 +109,10 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
 
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error('Khong tim thay chuyen de de luyen tap');
+            throw new Error('Không tìm thấy chuyên đề để luyện tập');
           }
 
-          throw new Error('Khong tai duoc bo luyen tap theo chuyen de');
+          throw new Error('Không tải được bộ luyện tập theo chuyên đề');
         }
 
         const data: PracticeTopicDto = await response.json();
@@ -113,7 +123,7 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
         setError(
           fetchError instanceof Error
             ? fetchError.message
-            : 'Loi khong xac dinh khi tai bo luyen tap',
+            : 'Lỗi không xác định khi tải bộ luyện tập',
         );
       } finally {
         setLoading(false);
@@ -309,6 +319,45 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
     );
   }
 
+  if (practice && practice.questions.length === 0) {
+    return (
+      <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-10 text-text-primary">
+        <section className="w-full max-w-xl rounded-xl border border-border bg-surface p-8 text-center shadow-card">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50 text-primary">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14.5A1.5 1.5 0 0 1 17.5 20H7.25A2.25 2.25 0 0 1 5 17.75V6.5Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path d="M8 8h7M8 11h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          <h1 className="mt-5 font-[family-name:var(--font-outfit)] text-2xl font-bold text-text-primary">
+            Chưa có câu hỏi cho chuyên đề này
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-text-secondary">
+            Chuyên đề đã tồn tại nhưng chưa có câu hỏi luyện tập phù hợp. Hãy quay lại analytics hoặc chọn một đề khác.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/analytics"
+              className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover"
+            >
+              Quay về analytics
+            </Link>
+            <Link
+              href="/exams"
+              className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
+            >
+              Xem danh sách đề
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (error || !practice) {
     return (
       <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-10 text-text-primary">
@@ -326,23 +375,23 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
             </svg>
           </div>
           <h1 className="mt-5 font-[family-name:var(--font-outfit)] text-2xl font-bold text-text-primary">
-            Khong mo duoc bo luyen tap
+            Không mở được bộ luyện tập
           </h1>
           <p className="mt-3 text-sm leading-6 text-text-secondary">
-            {error ?? 'Khong tim thay bo luyen tap theo chuyen de nay.'}
+            {error ?? 'Không tìm thấy bộ luyện tập theo chuyên đề này.'}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               href="/analytics"
               className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover"
             >
-              Quay ve analytics
+              Quay về analytics
             </Link>
             <Link
-              href="/"
+              href="/exams"
               className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
             >
-              Ve danh sach de
+              Xem danh sách đề
             </Link>
           </div>
         </section>
@@ -351,6 +400,9 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
   }
 
   if (isSubmitted && result) {
+    const accuracy =
+      result.totalQuestions > 0 ? result.correctCount / result.totalQuestions : 0;
+
     return (
       <main className="min-h-[100dvh] bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -367,13 +419,13 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                 </span>
               </Link>
               <p className="mt-6 text-sm font-semibold text-primary">
-                Luyen theo chuyen de
+                Luyện theo chuyên đề
               </p>
               <h1 className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
                 {formatTopicTitle(practice)}
               </h1>
               <p className="mt-2 text-sm leading-6 text-text-secondary">
-                Bai luyen nay duoc cham diem local tren frontend va khong luu vao lich su lam bai.
+                Bài luyện này được chấm điểm local trên frontend và không lưu vào lịch sử làm bài.
               </p>
             </div>
 
@@ -383,39 +435,66 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                 onClick={handleRestart}
                 className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover"
               >
-                Luyen lai chuyen de
+                Luyện lại chuyên đề
               </button>
               <Link
                 href="/analytics"
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
               >
-                Quay ve analytics
+                Quay về analytics
+              </Link>
+              <Link
+                href="/exams"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
+              >
+                Xem danh sách đề
               </Link>
             </div>
           </header>
 
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-              <p className="text-xs font-semibold text-text-secondary">Diem</p>
+              <p className="text-xs font-semibold text-text-secondary">Điểm</p>
               <p className="mt-2 text-3xl font-bold text-primary">{result.score}</p>
             </div>
             <div className="rounded-xl border border-border border-t-[3px] border-t-success bg-surface p-5 shadow-card">
-              <p className="text-xs font-semibold text-text-secondary">So cau dung</p>
+              <p className="text-xs font-semibold text-text-secondary">Số câu đúng</p>
               <p className="mt-2 text-3xl font-bold text-success">
                 {result.correctCount}/{result.totalQuestions}
               </p>
             </div>
             <div className="rounded-xl border border-border border-t-[3px] border-t-accent bg-surface p-5 shadow-card">
-              <p className="text-xs font-semibold text-text-secondary">Da tra loi</p>
+              <p className="text-xs font-semibold text-text-secondary">Độ chính xác</p>
               <p className="mt-2 text-3xl font-bold text-accent">
-                {result.answeredCount}/{result.totalQuestions}
+                {formatPercent(accuracy)}
               </p>
             </div>
             <div className="rounded-xl border border-border border-t-[3px] border-t-warning bg-surface p-5 shadow-card">
-              <p className="text-xs font-semibold text-text-secondary">Chuyen de</p>
-              <p className="mt-2 text-lg font-bold text-warning">
-                {practice.topic.name}
+              <p className="text-xs font-semibold text-text-secondary">Chưa làm</p>
+              <p className="mt-2 text-3xl font-bold text-warning">
+                {result.unansweredCount}
               </p>
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-text-primary">
+                  Review nhanh
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-text-secondary">
+                  Xem lại câu sai, câu chưa làm và lời giải để ôn đúng trọng tâm.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs font-semibold">
+                <span className="rounded-full border border-success-border bg-success-light px-3 py-1 text-success">
+                  Đúng {result.correctCount}
+                </span>
+                <span className="rounded-full border border-error-border bg-error-light px-3 py-1 text-error">
+                  Cần xem lại {result.totalQuestions - result.correctCount}
+                </span>
+              </div>
             </div>
           </section>
 
@@ -432,7 +511,7 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
-                        Cau {item.index + 1}
+                        Câu {item.index + 1}
                       </p>
                       <p className="mt-0.5 text-xs font-medium text-text-secondary">
                         {item.question.subtopic?.name ?? practice.topic.name}
@@ -447,7 +526,7 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                         : 'border border-error-border bg-error-light text-error'
                     }`}
                   >
-                    {item.isCorrect ? 'Dung' : 'Can xem lai'}
+                    {item.isCorrect ? 'Đúng' : 'Cần xem lại'}
                   </span>
                 </div>
 
@@ -460,7 +539,7 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
 
                   <QuestionImage
                     imageUrl={item.question.imageUrl}
-                    alt={`Hinh minh hoa cau ${item.index + 1}`}
+                    alt={`Hình minh họa câu ${item.index + 1}`}
                     className="mt-5"
                   />
 
@@ -505,19 +584,19 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                               <MathText text={choice} className="pt-1 text-base leading-7" />
                               <OptionImage
                                 imageUrl={optionImageUrl}
-                                alt={`Hinh minh hoa dap an ${optionLabel}`}
+                                alt={`Hình minh họa đáp án ${optionLabel}`}
                                 className="mt-2"
                               />
 
                               <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
                                 {isSelected ? (
                                   <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-primary">
-                                    Ban da chon
+                                    Bạn đã chọn
                                   </span>
                                 ) : null}
                                 {isCorrectOption ? (
                                   <span className="rounded-full border border-success-border bg-success-light px-2.5 py-1 text-success">
-                                    Dap an dung
+                                    Đáp án đúng
                                   </span>
                                 ) : null}
                               </div>
@@ -527,6 +606,17 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                       );
                     })}
                   </div>
+
+                  {item.question.explanation ? (
+                    <div className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                      <p className="text-sm font-semibold text-primary">Lời giải</p>
+                      <MathText
+                        as="p"
+                        text={item.question.explanation}
+                        className="mt-2 text-sm leading-7 text-text-primary"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </article>
             ))}
@@ -542,14 +632,14 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-card">
             <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-text-primary">
-              Xac nhan nop bai luyen
+              Xác nhận nộp bài luyện
             </h2>
             <p className="mt-4 text-sm leading-6 text-text-secondary">
-              Ban da hoan thanh{' '}
+              Bạn đã hoàn thành{' '}
               <span className="font-semibold text-text-primary">
                 {Object.keys(answers).length}/{practice.questions.length}
               </span>{' '}
-              cau. Nop bai ngay bay gio de xem ket qua local?
+              câu. Nộp bài ngay bây giờ để xem kết quả local?
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
               <button
@@ -557,47 +647,124 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
                 onClick={handleSubmit}
                 className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover"
               >
-                Nop bai
+                Nộp bài
               </button>
               <button
                 type="button"
                 onClick={() => setShowSubmitConfirm(false)}
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
               >
-                Tiep tuc lam
+                Tiếp tục làm
               </button>
             </div>
           </div>
         </div>
       ) : null}
 
-      <ExamHeader
-        examTitle={formatTopicTitle(practice)}
-        questionCount={practice.questions.length}
-        remainingSeconds={remainingSeconds}
-        isTimeUp={isTimeUp}
-        onSubmit={() => setShowSubmitConfirm(true)}
-      />
+      <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur-sm shadow-header">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link
+              href="/"
+              aria-label="Về trang chủ"
+              className="group flex shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              <Logo className="h-8 w-8 transition-transform group-hover:scale-105" />
+            </Link>
+
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-text-secondary">
+                {practice.questions.length} câu hỏi
+              </p>
+              <h1 className="mt-0.5 truncate font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary sm:text-lg">
+                Luyện chuyên đề: {practice.topic.name}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+            <TimerDisplay remainingSeconds={remainingSeconds} />
+            <button
+              type="button"
+              onClick={() => setShowSubmitConfirm(true)}
+              disabled={isTimeUp}
+              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:bg-primary-hover disabled:cursor-not-allowed disabled:bg-background-alt disabled:text-text-muted"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                className="shrink-0"
+              >
+                <path
+                  d="M13.354 2.646a.5.5 0 0 1 .058.638l-.058.07L6.707 10l-3-3a.5.5 0 0 1 .638-.765l.07.058L7 8.586l6.293-6.293a.5.5 0 0 1 .708 0l-.647.353Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M14.5 8a.5.5 0 0 1 .492.41L15 8.5V12a3 3 0 0 1-2.824 2.995L12 15H4a3 3 0 0 1-2.995-2.824L1 12V4a3 3 0 0 1 2.824-2.995L4 1h5.5a.5.5 0 0 1 .09.992L9.5 2H4a2 2 0 0 0-1.995 1.85L2 4v8a2 2 0 0 0 1.85 1.995L4 14h8a2 2 0 0 0 1.995-1.85L14 12V8.5a.5.5 0 0 1 .5-.5Z"
+                  fill="currentColor"
+                />
+              </svg>
+              Nộp bài
+            </button>
+          </div>
+        </div>
+      </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 rounded-xl border border-border bg-surface px-5 py-4 shadow-card">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 rounded-xl border border-border bg-surface px-5 py-5 shadow-card">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-sm font-semibold text-primary">Luyen theo chuyen de</p>
-              <h2 className="mt-1 font-[family-name:var(--font-outfit)] text-xl font-bold text-text-primary">
+              <p className="text-sm font-semibold text-primary">Luyện theo chuyên đề</p>
+              <h2 className="mt-1 font-[family-name:var(--font-outfit)] text-2xl font-bold text-text-primary">
                 {practice.topic.name}
               </h2>
-              <p className="mt-1 text-sm leading-6 text-text-secondary">
-                Bai luyen nay duoc cham diem local va khong luu vao lich su lam bai.
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+                Làm nhanh các câu cùng chuyên đề để tự kiểm tra lỗ hổng kiến thức. Kết quả được chấm local và không lưu vào lịch sử làm bài.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 text-xs font-semibold">
+              <span className="rounded-full border border-border bg-background px-3 py-1 text-text-secondary">
+                {practice.questions.length} câu
+              </span>
+              <span className="rounded-full border border-border bg-background px-3 py-1 text-text-secondary">
+                {practice.durationMinutes} phút
+              </span>
+              <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-primary">
+                {practice.topic.slug}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-lg border border-border bg-background p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+              <span className="font-semibold text-text-primary">Tiến độ luyện tập</span>
+              <span className="font-semibold text-text-primary">
+                {answeredCount}/{totalQuestions} câu đã trả lời
+              </span>
+            </div>
+            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-background-alt">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-200"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/analytics"
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-background px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
               >
-                Quay ve analytics
+                Quay về analytics
+              </Link>
+              <Link
+                href="/exams"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-background px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt"
+              >
+                Xem danh sách đề
               </Link>
             </div>
           </div>

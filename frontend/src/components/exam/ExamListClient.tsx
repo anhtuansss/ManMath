@@ -153,11 +153,11 @@ function ExamListError({ message, onRetry }: ExamListErrorProps) {
         </div>
 
         <h1 className="mt-5 text-center font-[family-name:var(--font-outfit)] text-2xl font-bold tracking-tight text-text-primary">
-          Kiem tra backend roi thu lai
+          Kiểm tra backend rồi thử lại
         </h1>
         <p className="mt-3 text-center text-sm leading-6 text-text-secondary">
-          {message}. Hay dam bao backend dang chay va cau hinh API base URL cua
-          frontend dang tro dung moi truong hien tai.
+          {message}. Hãy đảm bảo backend đang chạy và cấu hình API base URL của
+          frontend đang trỏ đúng môi trường hiện tại.
         </p>
 
         <div className="mt-6 flex justify-center">
@@ -175,7 +175,7 @@ function ExamListError({ message, onRetry }: ExamListErrorProps) {
                 strokeLinejoin="round"
               />
             </svg>
-            Thu lai
+            Thử lại
           </button>
         </div>
       </section>
@@ -196,11 +196,11 @@ function ExamListEmpty({ onRetry }: ExamListEmptyProps) {
         </div>
 
         <h1 className="mt-5 text-center font-[family-name:var(--font-outfit)] text-2xl font-bold tracking-tight text-text-primary">
-          Chua co de luyen nao
+          Chưa có đề luyện nào
         </h1>
         <p className="mt-3 text-center text-sm leading-6 text-text-secondary">
-          API da tra ve danh sach rong. Khi backend co du lieu de, man nay se hien
-          thi khu de de xuat, danh sach de va tong quan kho de.
+          API đã trả về danh sách rỗng. Khi backend có dữ liệu đề, màn này sẽ hiển
+          thị khu đề đề xuất, danh sách đề và tổng quan kho đề.
         </p>
 
         <div className="mx-auto mt-6 flex h-20 w-20 items-center justify-center rounded-full bg-background-alt">
@@ -234,7 +234,7 @@ function ExamListEmpty({ onRetry }: ExamListEmptyProps) {
                 strokeLinejoin="round"
               />
             </svg>
-            Tai lai danh sach
+            Tải lại danh sách
           </button>
         </div>
       </section>
@@ -274,7 +274,7 @@ export function ExamListClient() {
       const response = await fetch(`${API_BASE_URL}/api/topics`);
 
       if (!response.ok) {
-        throw new Error('Khong tai duoc danh sach chuyen de');
+        throw new Error('Không tải được danh sách chuyên đề');
       }
 
       const data: TopicsResponseDto = await response.json();
@@ -284,7 +284,7 @@ export function ExamListClient() {
       setTopicsError(
         fetchError instanceof Error
           ? fetchError.message
-          : 'Khong tai duoc danh sach chuyen de',
+          : 'Không tải được danh sách chuyên đề',
       );
     }
   };
@@ -352,7 +352,7 @@ export function ExamListClient() {
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error('Khong tai duoc danh sach de thi');
+        throw new Error('Không tải được danh sách đề thi');
       }
 
       const data: ExamListApiItem[] = await response.json();
@@ -362,7 +362,7 @@ export function ExamListClient() {
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : 'Loi khong xac dinh khi tai danh sach de thi',
+          : 'Lỗi không xác định khi tải danh sách đề thi',
       );
     } finally {
       setLoading(false);

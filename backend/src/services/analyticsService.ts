@@ -18,8 +18,28 @@ type RankedWeakTopic = WeakTopicRecommendationDto & {
   weaknessScore: number;
 };
 
+type SubtopicStatAccumulator = {
+  subtopicSlug: string;
+  subtopicName: string;
+  topicSlug: string;
+  topicName: string;
+  totalAnswers: number;
+  correctAnswers: number;
+};
+
 export type WeakTopicRecommendationDto = TopicStatDto & {
   reason: string;
+};
+
+export type SubtopicStatDto = {
+  subtopicSlug: string;
+  subtopicName: string;
+  topicSlug: string;
+  topicName: string;
+  totalAnswers: number;
+  correctAnswers: number;
+  accuracy: number;
+  weak: boolean;
 };
 
 export type RecommendedExamDto = {
@@ -101,6 +121,7 @@ const MAX_RECENT_ATTEMPTS = 5;
 const MAX_PROGRESS_ATTEMPTS = 10;
 const MAX_RECENT_RECOMMENDATION_ATTEMPTS = 3;
 const WEAK_TOPIC_ACCURACY_THRESHOLD = 85;
+const WEAK_SUBTOPIC_ACCURACY_THRESHOLD = 70;
 const DEFAULT_ATTEMPT_HISTORY_LIMIT = 20;
 
 const buildWeakTopicReason = (topicStat: TopicStatDto): string => {
@@ -277,6 +298,125 @@ export const getUserTopicStats = async (
       }
 
       return a.topicName.localeCompare(b.topicName, 'vi');
+    });
+};
+
+export const getUserSubtopicStats = async (
+  userId: string,
+): Promise<SubtopicStatDto[]> => {
+  const attempts = await prisma.attempt.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      answers: {
+        select: {
+          questionId: true,
+          isCorrect: true,
+        },
+      },
+    },
+  });
+
+  const answerRecords: AnswerTopicRecord[] = attempts.flatMap(
+    (attempt) => attempt.answers,
+  );
+
+  if (answerRecords.length === 0) {
+    return [];
+  }
+
+  const questionIds = Array.from(
+    new Set(answerRecords.map((answer) => answer.questionId)),
+  );
+
+  const questions = await prisma.question.findMany({
+    where: {
+      id: {
+        in: questionIds,
+      },
+    },
+    select: {
+      id: true,
+      subtopic: {
+        select: {
+          name: true,
+          slug: true,
+          topic: {
+            select: {
+              name: true,
+              slug: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const subtopicByQuestionId = new Map(
+    questions.map((question) => [question.id, question.subtopic]),
+  );
+
+  const subtopicStatMap = new Map<string, SubtopicStatAccumulator>();
+
+  for (const answer of answerRecords) {
+    const subtopic = subtopicByQuestionId.get(answer.questionId);
+
+    if (!subtopic) {
+      continue;
+    }
+
+    const existingStat = subtopicStatMap.get(subtopic.slug);
+
+    if (existingStat) {
+      existingStat.totalAnswers += 1;
+
+      if (answer.isCorrect) {
+        existingStat.correctAnswers += 1;
+      }
+
+      continue;
+    }
+
+    subtopicStatMap.set(subtopic.slug, {
+      subtopicSlug: subtopic.slug,
+      subtopicName: subtopic.name,
+      topicSlug: subtopic.topic.slug,
+      topicName: subtopic.topic.name,
+      totalAnswers: 1,
+      correctAnswers: answer.isCorrect ? 1 : 0,
+    });
+  }
+
+  return Array.from(subtopicStatMap.values())
+    .map((subtopicStat) => {
+      const accuracy =
+        subtopicStat.totalAnswers > 0
+          ? Math.round(
+              (subtopicStat.correctAnswers / subtopicStat.totalAnswers) * 100,
+            )
+          : 0;
+
+      return {
+        ...subtopicStat,
+        accuracy,
+        weak: accuracy < WEAK_SUBTOPIC_ACCURACY_THRESHOLD,
+      };
+    })
+    .sort((a, b) => {
+      if (a.weak !== b.weak) {
+        return a.weak ? -1 : 1;
+      }
+
+      if (a.accuracy !== b.accuracy) {
+        return a.accuracy - b.accuracy;
+      }
+
+      if (a.totalAnswers !== b.totalAnswers) {
+        return b.totalAnswers - a.totalAnswers;
+      }
+
+      return a.subtopicName.localeCompare(b.subtopicName, 'vi');
     });
 };
 

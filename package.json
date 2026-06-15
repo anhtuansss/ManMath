@@ -1,0 +1,7 @@
+{
+  "name": "manmath",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ManMath monorepo root. Use backend/ and frontend/ package scripts for development.",
+  "scripts": {}
+}

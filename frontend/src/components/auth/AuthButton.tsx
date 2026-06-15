@@ -84,99 +84,66 @@ export function AuthButton() {
 
   if (user) {
     return (
-      <div className="flex flex-col items-start gap-2 sm:items-end">
-        <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 shadow-card">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="hidden sm:block min-w-0 text-right">
+          <Link href="/profile" className="block truncate text-sm font-semibold text-text-primary hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded max-w-[120px]">
+            {user.fullName ?? user.email.split('@')[0]}
+          </Link>
+        </div>
+        <Link href="/profile" className="shrink-0 transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full">
           {user.avatarUrl ? (
             <img
               src={user.avatarUrl}
               alt=""
-              className="h-7 w-7 rounded-full border border-border"
+              className="h-8 w-8 rounded-full border border-border object-cover"
               referrerPolicy="no-referrer"
             />
           ) : (
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-light text-xs font-bold text-primary">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-xs font-bold text-primary">
               {(user.fullName ?? user.email).charAt(0).toUpperCase()}
             </span>
           )}
+        </Link>
 
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-text-primary">
-              {user.fullName ?? user.email}
-            </p>
-            <p className="truncate text-xs text-text-secondary">{user.email}</p>
-          </div>
-
-          <Link
-            href="/profile"
-            className="ml-1 shrink-0 cursor-pointer rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            Hồ sơ
-          </Link>
-
-          <Link
-            href="/analytics"
-            className="shrink-0 cursor-pointer rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            Analytics
-          </Link>
-
-          <Link
-            href="/history"
-            className="shrink-0 cursor-pointer rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            Lich su
-          </Link>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="shrink-0 cursor-pointer rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            Đăng xuất
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          title="Đăng xuất"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-error-light hover:text-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-offset-2"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-start gap-2 sm:items-end">
+    <div className="flex items-center gap-3">
+      {errorMessage && (
+        <p className="hidden sm:block max-w-[150px] truncate text-xs font-medium text-error" title={errorMessage}>
+          {errorMessage}
+        </p>
+      )}
+
       {IS_GOOGLE_AUTH_CONFIGURED ? (
         isLoading ? (
-          <button
-            type="button"
-            disabled
-            className="inline-flex h-10 cursor-wait items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-secondary"
-          >
-            Đang đăng nhập...
-          </button>
+          <div className="h-8 w-[120px] animate-pulse rounded bg-background-alt" />
         ) : (
-          <div style={{ colorScheme: 'light' }}>
+          <div style={{ colorScheme: 'light' }} className="flex justify-center [&>div]:!h-[36px]">
             <GoogleLogin
               onSuccess={handleLoginSuccess}
-              onError={() => setErrorMessage('Đăng nhập thất bại. Vui lòng thử lại.')}
+              onError={() => setErrorMessage('Đăng nhập thất bại')}
               shape="rectangular"
               size="medium"
-              text="signin_with"
-              width="220"
+              type="standard"
+              text="signin"
             />
           </div>
         )
       ) : (
-        <button
-          type="button"
-          disabled
-          className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-muted"
-          title="Thiếu NEXT_PUBLIC_GOOGLE_CLIENT_ID"
-        >
-          Chưa cấu hình Google Login
-        </button>
-      )}
-
-      {errorMessage && (
-        <p className="max-w-[220px] text-xs font-medium text-error">
-          {errorMessage}
-        </p>
+        <span className="text-xs text-text-muted">Chưa cấu hình Google Auth</span>
       )}
     </div>
   );

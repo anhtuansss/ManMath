@@ -129,7 +129,7 @@ export function RecommendationCard() {
           />
         </svg>
         <h2 className="font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary">
-          Goi y luyen tap
+          Gợi ý luyện tập
         </h2>
       </div>
 
@@ -184,7 +184,7 @@ export function RecommendationCard() {
           {visibleWeakTopics.length > 0 && (
             <div>
               <h3 className="text-sm font-semibold text-text-primary">
-                Chuyen de can on
+                Chuyên đề cần ôn
               </h3>
               <div className="mt-3 space-y-3">
                 {visibleWeakTopics.map((topic) => {
@@ -230,7 +230,7 @@ export function RecommendationCard() {
           {visibleRecommendedExams.length > 0 && (
             <div>
               <h3 className="text-sm font-semibold text-text-primary">
-                De nen lam tiep
+                Đề nên làm tiếp
               </h3>
               <div className="mt-3 space-y-3">
                 {visibleRecommendedExams.map((exam) => (
@@ -271,13 +271,13 @@ export function RecommendationCard() {
               href="/analytics"
               className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-xs font-semibold text-text-primary transition hover:border-primary hover:text-primary"
             >
-              Xem phan tich day du
+              Xem phân tích đầy đủ
             </Link>
             <Link
               href="/profile"
               className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-xs font-semibold text-text-primary transition hover:border-primary hover:text-primary"
             >
-              Xem ho so
+              Xem hồ sơ
             </Link>
           </div>
         </div>

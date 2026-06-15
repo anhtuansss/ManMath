@@ -1,6 +1,7 @@
 import 'katex/dist/katex.min.css';
 import './globals.css';
 import { AuthProvider } from '../components/auth/AuthProvider';
+import { AppNav } from '../components/layout/AppNav';
 
 export const metadata = {
   title: 'ManMath - Luyen de Toan THPT Quoc gia',
@@ -22,7 +23,10 @@ export default function RootLayout({
         className="bg-background text-text-primary antialiased"
         style={{ fontFamily: APP_FONT_STACK }}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <AppNav />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

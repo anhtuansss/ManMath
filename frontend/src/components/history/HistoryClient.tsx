@@ -54,7 +54,7 @@ const formatSubmittedAt = (submittedAt: string): string => {
 
 const formatDuration = (durationSeconds: number | null): string => {
   if (durationSeconds === null) {
-    return 'Khong luu thoi gian';
+    return 'Không lưu thời gian';
   }
 
   const minutes = Math.floor(durationSeconds / 60);
@@ -126,7 +126,7 @@ export function HistoryClient() {
           return;
         }
 
-        setErrorMessage('Khong tai duoc lich su lam bai. Hay thu lai sau.');
+        setErrorMessage('Không tải được lịch sử làm bài. Hãy thử lại sau.');
         setStatus('error');
       }
     };
@@ -158,7 +158,7 @@ export function HistoryClient() {
           <div>
             <Link
               href="/"
-              aria-label="Ve trang chu"
+              aria-label="Về trang chủ"
               className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <Logo className="h-9 w-9 transition-transform group-hover:scale-105" />
@@ -167,11 +167,11 @@ export function HistoryClient() {
 
             <p className="mt-6 text-sm font-semibold text-primary">History</p>
             <h1 className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
-              Lich su lam bai
+              Lịch sử làm bài
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
-              Xem lai toan bo cac lan luyen de cua ban, tu diem so cho den tung
-              lan nop bai gan day.
+              Xem lại toàn bộ các lần luyện đề của bạn, từ điểm số cho đến từng
+              lần nộp bài gần đây.
             </p>
           </div>
 
@@ -180,7 +180,19 @@ export function HistoryClient() {
               href="/"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
-              Quay ve danh sach de
+              Quay về danh sách đề
+            </Link>
+            <Link
+              href="/profile"
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Hồ sơ
+            </Link>
+            <Link
+              href="/analytics"
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Phân tích học tập
             </Link>
 
             {status === 'ready' && user ? (
@@ -189,7 +201,7 @@ export function HistoryClient() {
                 onClick={handleLogout}
                 className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                Dang xuat
+                Đăng xuất
               </button>
             ) : null}
           </div>
@@ -243,17 +255,17 @@ export function HistoryClient() {
               </svg>
             </div>
             <h2 className="mt-5 font-[family-name:var(--font-outfit)] text-xl font-bold text-text-primary">
-              Ban can dang nhap de xem lich su lam bai.
+              Bạn cần đăng nhập để xem lịch sử làm bài.
             </h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-text-secondary">
-              Hay dang nhap bang Google o trang danh sach de de xem toan bo cac
-              lan luyen de da luu.
+              Hãy đăng nhập bằng Google ở trang danh sách đề để xem toàn bộ các
+              lần luyện đề đã lưu.
             </p>
             <Link
               href="/"
               className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
-              Quay ve danh sach de
+              Quay về danh sách đề
             </Link>
           </section>
         )}
@@ -261,7 +273,7 @@ export function HistoryClient() {
         {status === 'error' && (
           <section className="rounded-xl border border-error-border bg-surface p-6 shadow-card">
             <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-error">
-              Khong tai duoc lich su
+              Không tải được lịch sử
             </h2>
             <p className="mt-2 text-sm leading-6 text-text-secondary">{errorMessage}</p>
           </section>
@@ -271,19 +283,19 @@ export function HistoryClient() {
           <>
             <section className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Tong so lan lam</p>
+                <p className="text-xs font-semibold text-text-secondary">Tổng số lần làm</p>
                 <p className="mt-2 text-3xl font-bold text-primary">
                   {summary.totalAttempts}
                 </p>
               </div>
               <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Diem trung binh</p>
+                <p className="text-xs font-semibold text-text-secondary">Điểm trung bình</p>
                 <p className="mt-2 text-3xl font-bold text-primary">
                   {summary.averageScore.toFixed(1)}
                 </p>
               </div>
               <div className="rounded-xl border border-border border-t-[3px] border-t-success bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Diem tot nhat</p>
+                <p className="text-xs font-semibold text-text-secondary">Điểm tốt nhất</p>
                 <p className="mt-2 text-3xl font-bold text-success">
                   {summary.bestScore.toFixed(1)}
                 </p>
@@ -293,17 +305,17 @@ export function HistoryClient() {
             {attempts.length === 0 ? (
               <section className="rounded-xl border border-border bg-surface p-8 text-center shadow-card">
                 <h2 className="font-[family-name:var(--font-outfit)] text-xl font-bold text-text-primary">
-                  Ban chua co lich su luyen de.
+                  Bạn chưa có lịch sử luyện đề.
                 </h2>
                 <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
-                  Hay lam mot de de bat dau luu lich su, xem lai attempt detail va
-                  theo doi tien do hoc tap.
+                  Hãy làm một đề để bắt đầu lưu lịch sử, xem lại attempt detail và
+                  theo dõi tiến độ học tập.
                 </p>
                 <Link
                   href="/"
                   className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
-                  Di den danh sach de
+                  Đi đến danh sách đề
                 </Link>
               </section>
             ) : (
@@ -311,10 +323,10 @@ export function HistoryClient() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                      Cac lan lam gan day
+                      Các lần làm gần đây
                     </h2>
                     <p className="mt-1 text-sm text-text-secondary">
-                      Mo chi tiet attempt hoac lam lai de tu lich su hoc tap cua ban.
+                      Mở chi tiết attempt hoặc làm lại đề từ lịch sử học tập của bạn.
                     </p>
                   </div>
                   <span className="shrink-0 rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
@@ -338,29 +350,29 @@ export function HistoryClient() {
                           </p>
                           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-text-secondary">
                             <span>
-                              {attempt.correctCount}/{attempt.totalQuestions} cau dung
+                              {attempt.correctCount}/{attempt.totalQuestions} câu đúng
                             </span>
-                            <span>{attempt.unansweredCount} cau bo trong</span>
+                            <span>{attempt.unansweredCount} câu bỏ trống</span>
                             <span>{formatDuration(attempt.durationSeconds)}</span>
                           </div>
                         </div>
 
                         <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
                           <span className="rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-text-secondary">
-                            {attempt.score.toFixed(1)} diem
+                            {attempt.score.toFixed(1)} điểm
                           </span>
                           <div className="flex flex-wrap gap-2">
                             <Link
                               href={`/attempts/${attempt.attemptId}`}
                               className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-surface px-3 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                             >
-                              Xem chi tiet
+                              Xem chi tiết
                             </Link>
                             <Link
                               href={`/exam/${attempt.examId}`}
                               className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-3 text-xs font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                             >
-                              Lam lai de
+                              Làm lại đề
                             </Link>
                           </div>
                         </div>
