@@ -1,36 +1,36 @@
 # API ManMath
 
-## Ghi chu chung
+## Ghi chú chung
 
 - Base URL backend local: `http://localhost:5000`
-- Cac route exam duoc mount duoi `/api`
-- Route protected dung JWT Bearer token
+- Các route exam được mount dưới `/api`
+- Route protected dùng JWT Bearer token
 
 ## Exam APIs
 
-| Method | Endpoint | Auth | Muc dich |
+| Method | Endpoint | Auth | Mục đích |
 | --- | --- | --- | --- |
-| `GET` | `/api/health` | Public | Kiem tra backend con hoat dong |
-| `GET` | `/api/exams` | Public | Lay danh sach de, ho tro tim kiem va loc theo topic/subtopic/thoi luong/do kho/nam/nguon |
-| `GET` | `/api/exams/:id` | Public | Lay chi tiet mot de |
-| `GET` | `/api/topics` | Public | Lay danh sach topic va subtopic de filter exam list |
-| `GET` | `/api/practice/topic/:topicSlug` | Public | Tao bo luyen tap dong theo topic, khong luu attempt vao DB |
-| `POST` | `/api/exam/submit` | Optional JWT | Nop bai, cham diem, luu attempt va tra ket qua |
+| `GET` | `/api/health` | Public | Kiểm tra backend còn hoạt động |
+| `GET` | `/api/exams` | Public | Lấy danh sách đề, hỗ trợ tìm kiếm và lọc theo topic/subtopic/thời lượng/độ khó/năm/nguồn |
+| `GET` | `/api/exams/:id` | Public | Lấy chi tiết một đề |
+| `GET` | `/api/topics` | Public | Lấy danh sách topic và subtopic để filter exam list |
+| `GET` | `/api/practice/topic/:topicSlug` | Public | Tạo bộ luyện tập động theo topic, không lưu attempt vào DB |
+| `POST` | `/api/exam/submit` | Optional JWT | Nộp bài, chấm điểm, lưu attempt và trả kết quả |
 
 ### Exam list query params
 
-`GET /api/exams` ho tro cac query param additive sau:
+`GET /api/exams` hỗ trợ các query param additive sau:
 
-- `search`: tim theo `title` va `description`
-- `topic`: loc theo `Topic.slug`
-- `subtopic`: loc theo `Subtopic.slug`
-- `durationMin`: loc de co `durationMinutes >= durationMin`
-- `durationMax`: loc de co `durationMinutes <= durationMax`
-- `difficulty`: loc theo `easy | medium | hard`
-- `year`: loc theo nam thi chinh xac
-- `source`: loc theo nguon de, tim kiem khong phan biet hoa thuong
+- `search`: tìm theo `title` và `description`
+- `topic`: lọc theo `Topic.slug`
+- `subtopic`: lọc theo `Subtopic.slug`
+- `durationMin`: lọc đề có `durationMinutes >= durationMin`
+- `durationMax`: lọc đề có `durationMinutes <= durationMax`
+- `difficulty`: lọc theo `easy | medium | hard`
+- `year`: lọc theo năm thi chính xác
+- `source`: lọc theo nguồn đề, tìm kiếm không phân biệt hoa thường
 
-Vi du:
+Ví dụ:
 
 ```txt
 /api/exams?search=ham
@@ -43,9 +43,9 @@ Vi du:
 /api/exams?search=ham&topic=ham-so&difficulty=easy&year=2026
 ```
 
-Neu khong truyen query param, response giu shape cu.
+Nếu không truyền query param, response giữ shape cũ.
 
-Neu `durationMin`, `durationMax`, `difficulty` hoac `year` khong hop le, API tra `400`.
+Nếu `durationMin`, `durationMax`, `difficulty` hoặc `year` không hợp lệ, API trả `400`.
 
 ### Exam detail response shape
 
@@ -151,22 +151,22 @@ Array<{
 
 ### Topic practice query params
 
-- `limit`: optional, mac dinh `10`
+- `limit`: optional, mặc định `10`
 
-### Ghi chu practice
+### Ghi chú practice
 
-- practice payload duoc tao dong theo `topicSlug`
-- KaTeX, `imageUrl` va `optionImageUrls` van di qua contract nay
-- `explanation` va `subtopic` van duoc giu trong practice payload de frontend co the reuse review UI
-- MVP hien chi cham diem local o frontend
-- practice flow khong tao `Attempt` va khong di vao history
+- practice payload được tạo động theo `topicSlug`
+- KaTeX, `imageUrl` và `optionImageUrls` vẫn đi qua contract này
+- `explanation` và `subtopic` vẫn được giữ trong practice payload để frontend có thể reuse review UI
+- MVP hiện chỉ chấm điểm local ở frontend
+- practice flow không tạo `Attempt` và không đi vào history
 
 ## Attempt / History APIs
 
-| Method | Endpoint | Auth | Muc dich |
+| Method | Endpoint | Auth | Mục đích |
 | --- | --- | --- | --- |
-| `GET` | `/api/exams/:id/attempts` | Protected | Lay lich su lam bai cua user hien tai theo de |
-| `GET` | `/api/attempts/:attemptId` | Protected | Lay chi tiet mot lan lam bai neu user la owner |
+| `GET` | `/api/exams/:id/attempts` | Protected | Lấy lịch sử làm bài của user hiện tại theo đề |
+| `GET` | `/api/attempts/:attemptId` | Protected | Lấy chi tiết một lần làm bài nếu user là owner |
 
 ### Attempt detail response shape
 
@@ -203,20 +203,20 @@ Array<{
 }
 ```
 
-### Ghi chu
+### Ghi chú
 
-- `imageUrl` dung cho anh cau hoi
-- `explanation` la loi giai tinh cua cau hoi, co the chua KaTeX
-- `optionImageUrls` map theo index voi `options`
-- `subtopic` la metadata bo sung cho taxonomy MVP
-- `POST /api/exam/submit` giu response cu va bo sung `topicStats` theo huong additive
+- `imageUrl` dùng cho ảnh câu hỏi
+- `explanation` là lời giải tĩnh của câu hỏi, có thể chứa KaTeX
+- `optionImageUrls` map theo index với `options`
+- `subtopic` là metadata bổ sung cho taxonomy MVP
+- `POST /api/exam/submit` giữ response cũ và bổ sung `topicStats` theo hướng additive
 
 ## Auth APIs
 
-| Method | Endpoint | Auth | Muc dich |
+| Method | Endpoint | Auth | Mục đích |
 | --- | --- | --- | --- |
-| `POST` | `/api/auth/google` | Public | Dang nhap bang Google credential |
-| `GET` | `/api/auth/me` | Protected | Lay user hien tai tu JWT |
+| `POST` | `/api/auth/google` | Public | Đăng nhập bằng Google credential |
+| `GET` | `/api/auth/me` | Protected | Lấy user hiện tại từ JWT |
 
 ### Auth response shape
 
@@ -234,12 +234,13 @@ Array<{
 
 ## Me / Analytics APIs
 
-| Method | Endpoint | Auth | Muc dich |
+| Method | Endpoint | Auth | Mục đích |
 | --- | --- | --- | --- |
-| `GET` | `/api/me/topic-stats` | Protected | Lay thong ke do chinh xac theo topic cua user hien tai |
-| `GET` | `/api/me/recommendations` | Protected | Lay weak topics va de nen lam tiep |
-| `GET` | `/api/me/progress` | Protected | Lay summary tien do, recent attempts va progress theo thoi gian |
-| `GET` | `/api/me/attempts` | Protected | Lay lich su lam bai toan cuc cua user hien tai |
+| `GET` | `/api/me/topic-stats` | Protected | Lấy thống kê độ chính xác theo topic của user hiện tại |
+| `GET` | `/api/me/subtopic-stats` | Protected | Lấy thống kê độ chính xác theo subtopic của user hiện tại |
+| `GET` | `/api/me/recommendations` | Protected | Lấy weak topics và đề nên làm tiếp |
+| `GET` | `/api/me/progress` | Protected | Lấy summary tiến độ, recent attempts và progress theo thời gian |
+| `GET` | `/api/me/attempts` | Protected | Lấy lịch sử làm bài toàn cục của user hiện tại |
 
 ### Topic stats response shape
 
@@ -252,6 +253,23 @@ Array<{
     correct: number;
     total: number;
     accuracy: number;
+  }>;
+}
+```
+
+### Subtopic stats response shape
+
+```ts
+{
+  subtopicStats: Array<{
+    subtopicSlug: string;
+    subtopicName: string;
+    topicSlug: string;
+    topicName: string;
+    totalAnswers: number;
+    correctAnswers: number;
+    accuracy: number;
+    weak: boolean;
   }>;
 }
 ```
@@ -334,25 +352,25 @@ Array<{
 
 ### Query params cho `/api/me/attempts`
 
-- `limit`: mac dinh `20`
-- `examId`: loc lich su theo mot de cu the
-- `sort`: hien MVP chi ho tro `latest`
+- `limit`: mặc định `20`
+- `examId`: lọc lịch sử theo một đề cụ thể
+- `sort`: hiện MVP chỉ hỗ trợ `latest`
 
-### Ghi chu analytics
+### Ghi chú analytics
 
-- Recommendation hien van la rule-based MVP
-- `reason` co the nhac them subtopic neu de goi y co nhieu cau thuoc mot nhom con cu the
-- Analytics hien van giu trong tam o level `Topic`; `Subtopic` moi la metadata bo sung
-- `/api/me/progress` la nen du lieu cho dashboard `/analytics` va recent activity trong `/profile`
-- `/api/me/attempts` la nen du lieu cho global history page `/history`
+- Recommendation hiện vẫn là rule-based MVP
+- `reason` có thể nhắc thêm subtopic nếu đề gợi ý có nhiều câu thuộc một nhóm con cụ thể
+- Analytics hiện có topic-level và subtopic-level MVP; topic vẫn là lớp phân tích chính, subtopic dùng để chỉ ra mảng kiến thức nhỏ cần ôn lại
+- `/api/me/progress` là nền dữ liệu cho dashboard `/analytics` và recent activity trong `/profile`
+- `/api/me/attempts` là nền dữ liệu cho global history page `/history`
 
-## Import script noi bo
+## Import script nội bộ
 
-Import de tu JSON hien chua phai HTTP API. MVP dang dung backend script:
+Import đề từ JSON hiện chưa phải HTTP API. MVP đang dùng backend script:
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/sample-exam.json
 ```
 
-Xem format va rule chi tiet tai [docs/IMPORT_JSON.md](./IMPORT_JSON.md).
+Xem format và rule chi tiết tại [docs/IMPORT_JSON.md](./IMPORT_JSON.md).

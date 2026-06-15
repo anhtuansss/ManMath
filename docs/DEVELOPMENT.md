@@ -1,8 +1,8 @@
-# Huong dan phat trien
+# Hướng dẫn phát triển
 
-## Chay local chi tiet
+## Chạy local chi tiết
 
-Repo co `backend/` va `frontend/` package rieng. Root `package.json` chi la manifest nho, khong chua script dev/build chinh.
+Repo có `backend/` và `frontend/` package riêng. Root `package.json` chỉ là manifest nhỏ, không chứa script dev/build chính.
 
 ### Backend
 
@@ -32,7 +32,7 @@ npm run seed
 npm run seed:demo
 ```
 
-## Typecheck va build
+## Typecheck và build
 
 ### Backend
 
@@ -49,63 +49,63 @@ npx tsc --noEmit
 npm run build
 ```
 
-## Import de tu JSON
+## Import đề từ JSON
 
-Script import MVP dung de them hoac cap nhat de thi tu file JSON vao PostgreSQL.
+Script import MVP dùng để thêm hoặc cập nhật đề thi từ file JSON vào PostgreSQL.
 
-Workflow chuan:
+Workflow chuẩn:
 
-- `npm run seed`: reset ve dataset mock chuan
-- `npm run seed:demo`: reset dataset mock chuan va import them sample JSON exam
-- `npm run import:exam -- ./src/data/import/sample-exam.json`: import hoac cap nhat rieng mot de JSON
-- `npm run import:exam -- ./src/data/import/sample-exam.json --dry-run`: validate va in summary, khong ghi DB
-- `npm run import:exam -- ./src/data/import/manifest.json --batch`: import nhieu de qua manifest
-- `npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run`: validate ca batch ma khong ghi DB
+- `npm run seed`: reset về dataset mock chuẩn
+- `npm run seed:demo`: reset dataset mock chuẩn và import thêm sample JSON exam
+- `npm run import:exam -- ./src/data/import/sample-exam.json`: import hoặc cập nhật riêng một đề JSON
+- `npm run import:exam -- ./src/data/import/sample-exam.json --dry-run`: validate và in summary, không ghi DB
+- `npm run import:exam -- ./src/data/import/manifest.json --batch`: import nhiều đề qua manifest
+- `npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run`: validate cả batch mà không ghi DB
 
-Lenh mau:
+Lệnh mẫu:
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/sample-exam.json
 ```
 
-Dry-run mau:
+Dry-run mẫu:
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/sample-exam.json --dry-run
 ```
 
-Batch import mau:
+Batch import mẫu:
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/manifest.json --batch
 ```
 
-Batch dry-run mau:
+Batch dry-run mẫu:
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
 ```
 
-Ghi chu:
+Ghi chú:
 
-- `npm run seed` va `npm run seed:demo` se reset du lieu exam/question/topic va xoa attempt local; chi chay khi dang dung DB dev/demo
-- import lai cung `exam.id` se update thay vi tao duplicate
-- `question.id` phai on dinh va khong duoc trung voi exam khac
-- dry-run se bao danh sach loi ro theo field, vi du `questions[3].correctAnswer must be one of options`
-- batch mode resolve path theo thu muc chua file manifest
-- tai lieu chi tiet nam o [docs/IMPORT_JSON.md](./IMPORT_JSON.md)
+- `npm run seed` và `npm run seed:demo` sẽ reset dữ liệu exam/question/topic và xóa attempt local; chỉ chạy khi đang dùng DB dev/demo
+- import lại cùng `exam.id` sẽ update thay vì tạo duplicate
+- `question.id` phải ổn định và không được trùng với exam khác
+- dry-run sẽ báo danh sách lỗi rõ theo field, ví dụ `questions[3].correctAnswer must be one of options`
+- batch mode resolve path theo thư mục chứa file manifest
+- tài liệu chi tiết nằm ở [docs/IMPORT_JSON.md](./IMPORT_JSON.md)
 
 ## Demo analytics data workflow
 
-Seed/import chi tao du lieu noi dung nhu exam, question, topic, subtopic, image va explanation. Cac man analytics ca nhan can du lieu hoc tap that cua user trong `Attempt` va `AttemptAnswer`.
+Seed/import chỉ tạo dữ liệu nội dung như exam, question, topic, subtopic, image và explanation. Các màn analytics cá nhân cần dữ liệu học tập thật của user trong `Attempt` và `AttemptAnswer`.
 
-Workflow demo khuyen nghi:
+Workflow demo khuyến nghị:
 
-1. Chuan bi de/cau hoi demo:
+1. Chuẩn bị đề/câu hỏi demo:
 
    ```bash
    cd backend
@@ -113,30 +113,30 @@ Workflow demo khuyen nghi:
    npm run import:exam -- ./src/data/import/manifest.json --batch
    ```
 
-2. Chi reset database demo/dev khi chap nhan mat lich su lam bai:
+2. Chỉ reset database demo/dev khi chấp nhận mất lịch sử làm bài:
 
    ```bash
    cd backend
    npm run seed:demo
    ```
 
-3. Chay backend va frontend.
-4. Login bang Google tren frontend.
-5. Lam 1-2 de va submit. Neu can demo recommendation ro hon, co the co tinh sai vai cau trong cung mot topic de tao chuyen de yeu.
-6. Mo cac man:
+3. Chạy backend và frontend.
+4. Login bằng Google trên frontend.
+5. Làm 1-2 đề và submit. Nếu cần demo recommendation rõ hơn, có thể cố tình sai vài câu trong cùng một topic để tạo chuyên đề yếu.
+6. Mở các màn:
 
-   - `/analytics`: topic stats, progress va recommendation.
-   - `/history`: lich su lam bai toan cuc.
-   - `/profile`: thong tin user, hoat dong gan day va CTA hoc tiep.
-   - `/exams`: danh sach de va card goi y luyen tap.
+   - `/analytics`: topic stats, progress và recommendation.
+   - `/history`: lịch sử làm bài toàn cục.
+   - `/profile`: thông tin user, hoạt động gần đây và CTA học tiếp.
+   - `/exams`: danh sách đề và card gợi ý luyện tập.
 
-Canh bao:
+Cảnh báo:
 
-- `npm run seed` va `npm run seed:demo` xoa `Attempt`/`AttemptAnswer`, nen se lam mat du lieu analytics/history da tao bang cach submit bai.
-- Import JSON chi upsert `Exam`, `Question`, `Topic`, `Subtopic`; khong tao user gia va khong tao attempt.
-- Practice theo topic la flow luyen local/dynamic, khong ghi `Attempt`, nen khong lam tang progress/history.
+- `npm run seed` và `npm run seed:demo` xóa `Attempt`/`AttemptAnswer`, nên sẽ làm mất dữ liệu analytics/history đã tạo bằng cách submit bài.
+- Import JSON chỉ upsert `Exam`, `Question`, `Topic`, `Subtopic`; không tạo user giả và không tạo attempt.
+- Practice theo topic là flow luyện local/dynamic, không ghi `Attempt`, nên không làm tăng progress/history.
 
-## Smoke test toi thieu
+## Smoke test tối thiểu
 
 ### Backend
 
@@ -157,80 +157,80 @@ cd frontend
 npm run build
 ```
 
-Manual QA nen kiem tra them:
+Manual QA nên kiểm tra thêm:
 
-- `/exams`: search/filter, active chips, filter collapse tren mobile, sidebar recommendation
+- `/exams`: search/filter, active chips, filter collapse trên mobile, sidebar recommendation
 - `/exam/[id]`: timer, autosave, question image, option image
 - `/exam/[id]/result`: result question navigator, review, explanation
-- `/exam/[id]/attempts` va `/attempts/[attemptId]`: protected state va review navigation
+- `/exam/[id]/attempts` và `/attempts/[attemptId]`: protected state và review navigation
 - `/history`, `/profile`, `/analytics`
-- `/practice/topic/[topicSlug]`
-- Google login/logout voi credential that neu co
+- `/practice/topic/[topicSlug]`: focus mode, không hiện global AppNav, timer/submit local vẫn hoạt động
+- Google login/logout với credential thật nếu có
 
-## Git workflow goi y
+## Git workflow gợi ý
 
-- Tao branch rieng cho tung task
-- Commit theo step nho
-- Voi thay doi lon, chia thanh nhieu commit ro muc tieu
-- Tranh `git add .` khi dang co nhieu thay doi lan nhau
-- Kiem tra `git status` truoc khi commit
-- Khong commit `.env`, `.env.local`, `.next`, `node_modules`, file build/cache local
+- Tạo branch riêng cho từng task
+- Commit theo step nhỏ
+- Với thay đổi lớn, chia thành nhiều commit rõ mục tiêu
+- Tránh `git add .` khi đang có nhiều thay đổi lẫn nhau
+- Kiểm tra `git status` trước khi commit
+- Không commit `.env`, `.env.local`, `.next`, `node_modules`, file build/cache local
 
 ## Troubleshooting
 
-### Thieu `node_modules`
+### Thiếu `node_modules`
 
-Trieu chung:
+Triệu chứng:
 
-- `npm run dev` hoac `npm run build` bao thieu package
+- `npm run dev` hoặc `npm run build` báo thiếu package
 
-Cach xu ly:
+Cách xử lý:
 
 ```bash
 npm install
 ```
 
-### Thieu `.env`
+### Thiếu `.env`
 
-Trieu chung:
+Triệu chứng:
 
-- backend fail fast vi thieu `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET`
-- frontend khong goi dung API hoac khong hien Google Login
+- backend fail fast vì thiếu `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET`
+- frontend không gọi đúng API hoặc không hiện Google Login
 
-Cach xu ly:
+Cách xử lý:
 
-- kiem tra `backend/.env`
-- kiem tra `frontend/.env.local`
+- kiểm tra `backend/.env`
+- kiểm tra `frontend/.env.local`
 
-### Prisma drift o local
+### Prisma drift ở local
 
-Trieu chung:
+Triệu chứng:
 
-- `prisma migrate dev` bao drift hoac migration history lech
+- `prisma migrate dev` báo drift hoặc migration history lệch
 
-Cach xu ly:
+Cách xử lý:
 
-- xac nhan day la local dev database
-- neu chap nhan mat du lieu local, dung `npx prisma migrate reset`
-- seed lai du lieu sau khi reset
+- xác nhận đây là local dev database
+- nếu chấp nhận mất dữ liệu local, dùng `npx prisma migrate reset`
+- seed lại dữ liệu sau khi reset
 
-### Frontend build va font
+### Frontend build và font
 
-Trang thai hien tai:
+Trạng thái hiện tại:
 
-- frontend da bo phu thuoc build-time vao `next/font/google`
-- build khong can tai Google Fonts tu internet
+- frontend đã bỏ phụ thuộc build-time vào `next/font/google`
+- build không cần tải Google Fonts từ internet
 
-Neu ai do them lai `next/font/google`, can kiem tra `src/app/layout.tsx`.
+Nếu ai đó thêm lại `next/font/google`, cần kiểm tra `src/app/layout.tsx`.
 
-### Cache Next.js hoac Tailwind
+### Cache Next.js hoặc Tailwind
 
-Trieu chung:
+Triệu chứng:
 
-- giao dien khong phan anh thay doi moi
+- giao diện không phản ánh thay đổi mới
 
-Cach xu ly:
+Cách xử lý:
 
-- dung dev server
-- chay lai `npm run dev`
-- neu can, xoa cache build local truoc khi chay lai
+- dùng dev server
+- chạy lại `npm run dev`
+- nếu cần, xóa cache build local trước khi chạy lại

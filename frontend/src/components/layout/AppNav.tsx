@@ -8,11 +8,11 @@ import { AuthButton } from '../auth/AuthButton';
 export function AppNav() {
   const pathname = usePathname();
 
-  // Hide on exam taking, result, and attempt detail pages.
-  // They have their own dedicated headers.
+  // Hide on focus-mode pages that have their own dedicated headers.
   if (
     pathname.startsWith('/exam/') ||
-    pathname.startsWith('/attempts/')
+    pathname.startsWith('/attempts/') ||
+    pathname.startsWith('/practice/topic/')
   ) {
     return null;
   }

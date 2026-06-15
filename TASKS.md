@@ -24,6 +24,8 @@
 * [x] Collapse filter trên mobile
 * [x] Sidebar Exam List gọn hơn, ưu tiên auth + recommendation
 * [x] App shell/top navigation nhẹ
+* [x] Practice Topic focus mode, ẩn global AppNav khi luyện chuyên đề
+* [x] Practice Topic local result/review polish
 * [x] Cross navigation giữa exam list, profile, history, analytics và practice
 * [x] Result question navigator
 * [x] Attempt review navigation
@@ -202,6 +204,7 @@
 * [x] Attempt Detail có `topicStats`
 * [x] Result Page sau submit hiển thị `topicStats`
 * [x] Topic taxonomy cleanup MVP
+* [x] Subtopic analytics MVP
 * [ ] Mapping Question -> Subtopic analytics nâng cao
 
 ### User Analytics
@@ -209,6 +212,7 @@
 * [x] Tính độ chính xác theo chuyên đề
 * [x] API `/api/me/topic-stats` tổng hợp topic analytics theo user
 * [x] Analytics dashboard nhỏ tại `/analytics`
+* [x] Analytics dashboard hiển thị subtopic yếu
 * [x] Tính độ chính xác theo thời gian
 * [x] Theo dõi tiến bộ
 * [ ] Dashboard học tập

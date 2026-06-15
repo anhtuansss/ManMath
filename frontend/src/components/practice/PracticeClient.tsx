@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { API_BASE_URL } from '../../config/api';
-import { ExamHeader } from '../exam/ExamHeader';
 import { ExamSidebar } from '../exam/ExamSidebar';
 import { Logo } from '../exam/Logo';
 import { OptionImage } from '../exam/OptionImage';
 import { QuestionImage } from '../exam/QuestionImage';
 import { QuestionList } from '../exam/QuestionList';
 import { MathText } from '../exam/MathText';
+import { TimerDisplay } from '../exam/TimerDisplay';
 import type {
   Answers,
   PracticeTopicDto,
@@ -661,13 +661,58 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
         </div>
       ) : null}
 
-      <ExamHeader
-        examTitle={formatTopicTitle(practice)}
-        questionCount={practice.questions.length}
-        remainingSeconds={remainingSeconds}
-        isTimeUp={isTimeUp}
-        onSubmit={() => setShowSubmitConfirm(true)}
-      />
+      <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur-sm shadow-header">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link
+              href="/"
+              aria-label="Về trang chủ"
+              className="group flex shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              <Logo className="h-8 w-8 transition-transform group-hover:scale-105" />
+            </Link>
+
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-text-secondary">
+                {practice.questions.length} câu hỏi
+              </p>
+              <h1 className="mt-0.5 truncate font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary sm:text-lg">
+                Luyện chuyên đề: {practice.topic.name}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+            <TimerDisplay remainingSeconds={remainingSeconds} />
+            <button
+              type="button"
+              onClick={() => setShowSubmitConfirm(true)}
+              disabled={isTimeUp}
+              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:bg-primary-hover disabled:cursor-not-allowed disabled:bg-background-alt disabled:text-text-muted"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                className="shrink-0"
+              >
+                <path
+                  d="M13.354 2.646a.5.5 0 0 1 .058.638l-.058.07L6.707 10l-3-3a.5.5 0 0 1 .638-.765l.07.058L7 8.586l6.293-6.293a.5.5 0 0 1 .708 0l-.647.353Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M14.5 8a.5.5 0 0 1 .492.41L15 8.5V12a3 3 0 0 1-2.824 2.995L12 15H4a3 3 0 0 1-2.995-2.824L1 12V4a3 3 0 0 1 2.824-2.995L4 1h5.5a.5.5 0 0 1 .09.992L9.5 2H4a2 2 0 0 0-1.995 1.85L2 4v8a2 2 0 0 0 1.85 1.995L4 14h8a2 2 0 0 0 1.995-1.85L14 12V8.5a.5.5 0 0 1 .5-.5Z"
+                  fill="currentColor"
+                />
+              </svg>
+              Nộp bài
+            </button>
+          </div>
+        </div>
+      </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 rounded-xl border border-border bg-surface px-5 py-5 shadow-card">

@@ -1,28 +1,28 @@
 # ManMath
 
-## Gioi thieu
+## Giới thiệu
 
-ManMath la web luyen de Toan THPT theo huong MVP gon, de hoc va de demo. Nguoi dung co the chon de, lam bai, nop bai, xem ket qua, review dap an, xem lich su, theo doi analytics va nhan goi y luyen tap.
+ManMath là web luyện đề Toán THPT theo hướng MVP gọn, dễ học và để demo. Người dùng có thể chọn đề, làm bài, nộp bài, xem kết quả, review đáp án, xem lịch sử, theo dõi analytics và nhận gợi ý luyện tập.
 
-He thong hien dung Next.js o frontend, Express o backend, PostgreSQL + Prisma cho du lieu, va Google Login + JWT cho tai khoan.
+Hệ thống hiện dùng Next.js ở frontend, Express ở backend, PostgreSQL + Prisma cho dữ liệu, và Google Login + JWT cho tài khoản.
 
-## Tinh nang chinh
+## Tính năng chính
 
-- [x] Danh sach de thi va route `/exams`
-- [x] Lam bai, autosave, submit, result page, review dap an
-- [x] Search/filter de theo keyword, topic, subtopic, thoi luong, do kho, nam, nguon
-- [x] App navigation, mobile filter collapse va active filter chips
-- [x] Global history `/history`, attempt detail va profile `/profile`
+- [x] Danh sách đề thi và route `/exams`
+- [x] Làm bài, autosave, submit, result page, review đáp án
+- [x] Search/filter đề theo keyword, topic, subtopic, thời lượng, độ khó, năm, nguồn
+- [x] App navigation, mobile filter collapse và active filter chips
+- [x] Global history `/history`, attempt detail và profile `/profile`
 - [x] Google Login + JWT + protect history/analytics theo user
 - [x] Topic analytics, recommendation MVP, analytics dashboard `/analytics`
-- [x] Practice by weak topic MVP
+- [x] Practice by weak topic MVP với focus mode
 - [x] KaTeX math rendering
-- [x] Question image, option image va explanation MVP
-- [x] Import de tu JSON qua backend script
+- [x] Question image, option image và explanation MVP
+- [x] Import đề từ JSON qua backend script
 
 ## Tech Stack
 
-| Thanh phan | Cong nghe |
+| Thành phần | Công nghệ |
 | --- | --- |
 | Frontend | Next.js App Router, React, TypeScript, Tailwind CSS |
 | Backend | Express, TypeScript |
@@ -31,7 +31,7 @@ He thong hien dung Next.js o frontend, Express o backend, PostgreSQL + Prisma ch
 | Auth | Google Login, JWT |
 | Math rendering | KaTeX |
 
-## Kien truc tong quan
+## Kiến trúc tổng quan
 
 ```text
 Browser
@@ -45,7 +45,7 @@ Prisma ORM
 PostgreSQL
 ```
 
-## Chay local
+## Chạy local
 
 ```bash
 cd backend
@@ -61,7 +61,7 @@ npm install
 npm run dev
 ```
 
-## Env chinh
+## Env chính
 
 ### Backend
 
@@ -75,29 +75,29 @@ npm run dev
 - `NEXT_PUBLIC_API_BASE_URL`
 - `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
 
-Ghi chu:
+Ghi chú:
 
-- Khong commit `.env` hoac `.env.local`
-- `JWT_SECRET` chi dung o backend
-- Bien `NEXT_PUBLIC_*` la public env cho browser
+- Không commit `.env` hoặc `.env.local`
+- `JWT_SECRET` chỉ dùng ở backend
+- Biến `NEXT_PUBLIC_*` là public env cho browser
 
-## Docs chi tiet
+## Docs chi tiết
 
-- [Kien truc he thong](docs/ARCHITECTURE.md)
-- [API hien co](docs/API.md)
+- [Kiến trúc hệ thống](docs/ARCHITECTURE.md)
+- [API hiện có](docs/API.md)
 - [Auth flow](docs/AUTH.md)
-- [Database va Prisma](docs/DATABASE.md)
-- [Huong dan phat trien](docs/DEVELOPMENT.md)
-- [Import de tu JSON](docs/IMPORT_JSON.md)
+- [Database và Prisma](docs/DATABASE.md)
+- [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
+- [Import đề từ JSON](docs/IMPORT_JSON.md)
 
-Analytics/recommendation ca nhan can user login va submit bai that. Workflow tao du lieu demo nam trong [Huong dan phat trien](docs/DEVELOPMENT.md#demo-analytics-data-workflow).
+Analytics/recommendation cá nhân cần user login và submit bài thật. Workflow tạo dữ liệu demo nằm trong [Hướng dẫn phát triển](docs/DEVELOPMENT.md#demo-analytics-data-workflow).
 
-## Roadmap ngan
+## Roadmap ngắn
 
 - Refresh Token
 - Email/password login
-- Cap nhat thong tin ca nhan
-- Upload va quan ly anh cau hoi/dap an
-- Analytics sau hon va theo doi tien bo dai han
-- Mo rong import de ngoai JSON
+- Cập nhật thông tin cá nhân
+- Upload và quản lý ảnh câu hỏi/đáp án
+- Analytics sâu hơn và theo dõi tiến bộ dài hạn
+- Mở rộng import đề ngoài JSON
 - AI feedback / explanation runtime
