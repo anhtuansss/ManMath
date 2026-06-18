@@ -440,65 +440,26 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
 
           {/* Stats Card */}
           <div className="rounded-xl border border-border bg-surface p-6 shadow-card">
-            <div className="flex flex-col gap-1 border-b border-border pb-4">
-              <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-text-primary">
-                Thống kê bài làm
-              </h2>
-              <p className="text-sm text-text-secondary">
-                Tổng quan nhanh để biết phần nào cần xem lại trước.
-              </p>
-            </div>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              {/* Correct */}
-              <div className="rounded-lg border border-border border-t-[3px] border-t-success bg-background p-4">
-                <p className="text-xs font-semibold text-text-secondary">Số câu đúng</p>
-                <p className="mt-2 text-2xl font-bold text-success">
-                  {submitResult.correctCount}
-                </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-sm font-medium text-text-secondary">Tổng số câu</span>
+                <span className="text-lg font-bold text-text-primary">{submitResult.totalQuestions}</span>
               </div>
-              {/* Incorrect */}
-              <div className="rounded-lg border border-border border-t-[3px] border-t-error bg-background p-4">
-                <p className="text-xs font-semibold text-text-secondary">Số câu sai</p>
-                <p className="mt-2 text-2xl font-bold text-error">
-                  {incorrectCount}
-                </p>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-sm font-medium text-text-secondary">Số câu đúng</span>
+                <span className="text-lg font-bold text-success">{submitResult.correctCount}</span>
               </div>
-              {/* Unanswered */}
-              <div className="rounded-lg border border-border border-t-[3px] border-t-warning bg-background p-4">
-                <p className="text-xs font-semibold text-text-secondary">Chưa làm</p>
-                <p className="mt-2 text-2xl font-bold text-warning">
-                  {unansweredCount}
-                </p>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-sm font-medium text-text-secondary">Số câu sai</span>
+                <span className="text-lg font-bold text-error">{incorrectCount}</span>
               </div>
-              {/* Accuracy */}
-              <div className="rounded-lg border border-border border-t-[3px] border-t-primary bg-background p-4">
-                <p className="text-xs font-semibold text-text-secondary">Tỷ lệ đúng</p>
-                <p className="mt-2 text-2xl font-bold text-primary">
-                  {accuracy}%
-                </p>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-sm font-medium text-text-secondary">Câu chưa làm</span>
+                <span className="text-lg font-bold text-warning">{unansweredCount}</span>
               </div>
-            </div>
-
-            {/* Completion progress bar */}
-            <div className="mt-6">
-              <div className="mb-2 flex items-center justify-between text-xs">
-                <span className="font-medium text-text-secondary">Hoàn thành</span>
-                <span className="font-semibold text-text-primary">
-                  {answeredCount}/{submitResult.totalQuestions} câu
-                </span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-background-alt">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{
-                    width: `${
-                      submitResult.totalQuestions > 0
-                        ? (answeredCount / submitResult.totalQuestions) * 100
-                        : 0
-                    }%`,
-                  }}
-                />
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-sm font-medium text-text-secondary">Tỉ lệ đúng</span>
+                <span className="text-lg font-bold text-success">{accuracy}%</span>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ExamCard } from './ExamCard';
 import { Logo } from './Logo';
 import { TypewriterText } from './TypewriterText';
-import { RecommendationCard } from './RecommendationCard';
+
 import type {
   ExamDifficulty,
   ExamDurationFilter,
@@ -77,14 +77,7 @@ export function ExamList({
 }: ExamListProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const recommendedExams = exams.slice(0, 3);
-  const totalQuestions = exams.reduce((sum, exam) => sum + exam.totalQuestions, 0);
-  const averageDuration =
-    exams.length > 0
-      ? Math.round(
-          exams.reduce((sum, exam) => sum + exam.durationMinutes, 0) / exams.length,
-        )
-      : 0;
-  const hardExamCount = exams.filter((exam) => exam.difficulty === 'hard').length;
+
   const draftExam = draftExamId ? exams.find((e) => e.id === draftExamId) : null;
   const selectedTopicData = topics.find((topic) => topic.slug === selectedTopic) ?? null;
   const subtopicOptions = selectedTopicData?.subtopics ?? [];
@@ -171,15 +164,14 @@ export function ExamList({
             <div className="flex flex-col gap-8 pt-2 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
                 <div>
-                  <p className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-                    Tuyển tập đề thi mới nhất
+                  <p className="text-sm font-medium text-text-secondary">
+                    Xin chào,
                   </p>
-                  <h1 className="mt-4 max-w-3xl font-[family-name:var(--font-outfit)] text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:leading-[1.1]">
-                    <TypewriterText text="Nền tảng luyện đề Toán THPT miễn phí" />
+                  <h1 className="mt-1 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+                    Chọn đề để chinh phục hôm nay
                   </h1>
-                  <p className="mt-4 max-w-xl text-base leading-7 text-text-secondary">
-                    Làm đề có đồng hồ, chấm điểm tự động, xem lại lỗi sai và theo dõi
-                    tiến bộ sau mỗi lần luyện.
+                  <p className="mt-2 text-base text-text-secondary">
+                    Luyện tập mỗi ngày để tiến bộ vượt bậc
                   </p>
                 </div>
               </div>
@@ -187,7 +179,7 @@ export function ExamList({
             </div>
           </header>
 
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div>
             <div className="space-y-8">
               {draftExam && (
                 <section className="animate-fade-in flex flex-col justify-between gap-4 rounded-xl border border-warning-border bg-warning-light p-5 shadow-card sm:flex-row sm:items-center">
@@ -228,11 +220,8 @@ export function ExamList({
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                      Bắt đầu nhanh
+                      Đề luyện thi đề xuất
                     </h2>
-                    <p className="mt-1 text-sm text-text-secondary">
-                      Một vài đề nổi bật để bạn làm thử ngay.
-                    </p>
                   </div>
                   <span className="shrink-0 text-sm font-medium text-primary">
                     {recommendedExams.length} đề
@@ -253,9 +242,6 @@ export function ExamList({
                       <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
                         Danh sách đề thi
                       </h2>
-                      <p className="mt-1 text-sm text-text-secondary">
-                        Scan nhanh số câu, thời lượng và độ khó trước khi vào đề.
-                      </p>
                     </div>
                     <span className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-text-secondary">
                       {exams.length} đề khả dụng
@@ -473,108 +459,32 @@ export function ExamList({
                     </div>
                   </div>
                 ) : (
-                  <div className="divide-y divide-border">
-                    {exams.map((exam) => (
-                      <ExamCard key={exam.id} exam={exam} variant="compact" />
-                    ))}
+                  <div className="p-5 pt-0">
+                    <div className="hidden md:flex items-center justify-between border-b border-border pb-3 pt-4 px-3 -mx-3">
+                      <div className="flex-1 min-w-0 pr-4">
+                        <span className="text-xs font-semibold text-text-secondary">Đề thi</span>
+                      </div>
+                      <div className="flex shrink-0 items-center justify-between gap-6 md:justify-end">
+                        <div className="w-20 text-right">
+                          <span className="text-xs font-semibold text-text-secondary">Lượt làm</span>
+                        </div>
+                        <div className="w-28 shrink-0 flex justify-center">
+                          <span className="text-xs font-semibold text-text-secondary">Độ khó</span>
+                        </div>
+                        <div className="w-[72px]"></div>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-border pt-1">
+                      {exams.map((exam) => (
+                        <ExamCard key={exam.id} exam={exam} variant="compact" />
+                      ))}
+                    </div>
                   </div>
                 )}
               </section>
             </div>
 
-            <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-              {stats && stats.currentStreak > 0 ? (
-                <div className="flex w-full items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-amber-900">
-                        {stats.currentStreak} ngày liên tiếp!
-                      </p>
-                      <p className="text-xs text-amber-700">Giữ vững phong độ nhé.</p>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
 
-              <RecommendationCard />
-
-              <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-                <div className="flex items-center gap-2">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    className="text-primary"
-                  >
-                    <rect
-                      x="2"
-                      y="8"
-                      width="3"
-                      height="6"
-                      rx="0.5"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                    />
-                    <rect
-                      x="6.5"
-                      y="4"
-                      width="3"
-                      height="10"
-                      rx="0.5"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                    />
-                    <rect
-                      x="11"
-                      y="6"
-                      width="3"
-                      height="8"
-                      rx="0.5"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                    />
-                  </svg>
-                  <h2 className="font-[family-name:var(--font-outfit)] text-base font-semibold text-text-primary">
-                    Tổng quan kho đề
-                  </h2>
-                </div>
-                <div className="mt-4 divide-y divide-border text-sm">
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">Tổng số câu</span>
-                    <span className="font-semibold text-text-primary">
-                      {totalQuestions} câu
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">Thời lượng trung bình</span>
-                    <span className="font-semibold text-text-primary">
-                      {averageDuration} phút
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-text-secondary">Đề khó</span>
-                    <span className="font-semibold text-text-primary">
-                      {hardExamCount} đề
-                    </span>
-                  </div>
-                </div>
-              </section>
-            </aside>
           </div>
         </div>
       </main>

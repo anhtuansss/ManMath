@@ -1,7 +1,8 @@
 import 'katex/dist/katex.min.css';
 import './globals.css';
 import { AuthProvider } from '../components/auth/AuthProvider';
-import { AppNav } from '../components/layout/AppNav';
+import { AppSidebar } from '../components/layout/AppSidebar';
+import { AppHeader } from '../components/layout/AppHeader';
 
 export const metadata = {
   title: 'ManMath - Luyen de Toan THPT Quoc gia',
@@ -24,8 +25,13 @@ export default function RootLayout({
         style={{ fontFamily: APP_FONT_STACK }}
       >
         <AuthProvider>
-          <AppNav />
-          {children}
+          <div className="flex min-h-[100dvh] bg-background">
+            <AppSidebar />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <AppHeader />
+              {children}
+            </div>
+          </div>
         </AuthProvider>
       </body>
     </html>

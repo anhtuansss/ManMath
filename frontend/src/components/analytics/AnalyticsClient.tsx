@@ -363,25 +363,9 @@ export function AnalyticsClient() {
       <div className="mx-auto flex w-full max-w-6xl animate-fade-in flex-col gap-6">
         <header className="flex flex-col gap-5 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Link
-              href="/"
-              aria-label="Về trang chủ"
-              className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              <Logo className="h-9 w-9 transition-transform group-hover:scale-105" />
-              <span className="transition-colors group-hover:text-primary">
-                ManMath
-              </span>
-            </Link>
-
-            <p className="mt-6 text-sm font-semibold text-primary">Analytics</p>
-            <h1 className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
+            <h1 className="font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
               Phân tích học tập
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
-              Theo dõi các chuyên đề bạn đang mạnh, đang yếu và xem lại tiến độ
-              gần đây để biết mình có đang tiến bộ hay không.
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -499,40 +483,24 @@ export function AnalyticsClient() {
 
         {status === 'ready' && (
           <>
-            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">
-                  Tổng số lần làm
-                </p>
-                <p className="mt-2 text-3xl font-bold text-primary">
-                  {progressSummary.attemptCount}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">
-                  Điểm trung bình
-                </p>
-                <p className="mt-2 text-3xl font-bold text-primary">
-                  {progressSummary.averageScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border border-t-[3px] border-t-success bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">
-                  Điểm tốt nhất
-                </p>
-                <p className="mt-2 text-3xl font-bold text-success">
-                  {progressSummary.bestScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border border-t-[3px] border-t-accent bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">
-                  Điểm gần nhất
-                </p>
-                <p className="mt-2 text-3xl font-bold text-accent">
-                  {progressSummary.latestScore !== null
-                    ? progressSummary.latestScore.toFixed(1)
-                    : '--'}
-                </p>
+            <section className="rounded-xl border border-border bg-surface p-6 shadow-card">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm font-medium text-text-secondary">Tổng số lần làm</span>
+                  <span className="text-lg font-bold text-text-primary">{progressSummary.attemptCount}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm font-medium text-text-secondary">Điểm trung bình</span>
+                  <span className="text-lg font-bold text-primary">{progressSummary.averageScore.toFixed(1)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm font-medium text-text-secondary">Điểm tốt nhất</span>
+                  <span className="text-lg font-bold text-success">{progressSummary.bestScore.toFixed(1)}</span>
+                </div>
+                <div className="flex items-center justify-between pb-1">
+                  <span className="text-sm font-medium text-text-secondary">Điểm gần nhất</span>
+                  <span className="text-lg font-bold text-accent">{progressSummary.latestScore !== null ? progressSummary.latestScore.toFixed(1) : '--'}</span>
+                </div>
               </div>
             </section>
 

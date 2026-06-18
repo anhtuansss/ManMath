@@ -203,24 +203,9 @@ export function ProfileClient() {
       <div className="mx-auto flex w-full max-w-3xl animate-fade-in flex-col gap-6">
         <header className="flex flex-col gap-5 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Link
-              href="/"
-              aria-label="Về trang chủ"
-              className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              <Logo className="h-9 w-9 transition-transform group-hover:scale-105" />
-              <span className="transition-colors group-hover:text-primary">
-                ManMath
-              </span>
-            </Link>
-
-            <p className="mt-6 text-sm font-semibold text-primary">Tài khoản</p>
-            <h1 className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
+            <h1 className="font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
               Hồ sơ người dùng
             </h1>
-            <p className="mt-2 text-sm leading-6 text-text-secondary">
-              Xem thông tin đăng nhập hiện tại của bạn trên ManMath.
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-3">

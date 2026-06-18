@@ -156,23 +156,9 @@ export function HistoryClient() {
       <div className="mx-auto flex w-full max-w-6xl animate-fade-in flex-col gap-6">
         <header className="flex flex-col gap-5 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Link
-              href="/"
-              aria-label="Về trang chủ"
-              className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              <Logo className="h-9 w-9 transition-transform group-hover:scale-105" />
-              <span className="transition-colors group-hover:text-primary">ManMath</span>
-            </Link>
-
-            <p className="mt-6 text-sm font-semibold text-primary">History</p>
-            <h1 className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
+            <h1 className="font-[family-name:var(--font-outfit)] text-3xl font-bold tracking-tight text-text-primary">
               Lịch sử làm bài
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
-              Xem lại toàn bộ các lần luyện đề của bạn, từ điểm số cho đến từng
-              lần nộp bài gần đây.
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -281,24 +267,20 @@ export function HistoryClient() {
 
         {status === 'ready' && (
           <>
-            <section className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Tổng số lần làm</p>
-                <p className="mt-2 text-3xl font-bold text-primary">
-                  {summary.totalAttempts}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border border-t-[3px] border-t-primary bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Điểm trung bình</p>
-                <p className="mt-2 text-3xl font-bold text-primary">
-                  {summary.averageScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border border-t-[3px] border-t-success bg-surface p-5 shadow-card">
-                <p className="text-xs font-semibold text-text-secondary">Điểm tốt nhất</p>
-                <p className="mt-2 text-3xl font-bold text-success">
-                  {summary.bestScore.toFixed(1)}
-                </p>
+            <section className="rounded-xl border border-border bg-surface p-6 shadow-card">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm font-medium text-text-secondary">Tổng số lần làm</span>
+                  <span className="text-lg font-bold text-text-primary">{summary.totalAttempts}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm font-medium text-text-secondary">Điểm trung bình</span>
+                  <span className="text-lg font-bold text-primary">{summary.averageScore.toFixed(1)}</span>
+                </div>
+                <div className="flex items-center justify-between pb-1">
+                  <span className="text-sm font-medium text-text-secondary">Điểm tốt nhất</span>
+                  <span className="text-lg font-bold text-success">{summary.bestScore.toFixed(1)}</span>
+                </div>
               </div>
             </section>
 

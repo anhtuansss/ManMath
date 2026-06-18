@@ -8,8 +8,8 @@
 
 @theme {
   /* ── Brand Colors ── */
-  --color-primary: #2563EB;
-  --color-primary-hover: #1D4ED8;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
   --color-primary-light: #DBEAFE;
   --color-primary-50: #EFF6FF;
 
@@ -33,15 +33,15 @@
   --color-text-muted: #94A3B8;
 
   /* ── Semantic ── */
-  --color-success: #059669;
+  --color-success: #10B981;
   --color-success-light: #D1FAE5;
   --color-success-border: #A7F3D0;
 
-  --color-error: #DC2626;
+  --color-error: #EF4444;
   --color-error-light: #FEE2E2;
   --color-error-border: #FECACA;
 
-  --color-warning: #D97706;
+  --color-warning: #F59E0B;
   --color-warning-light: #FEF3C7;
   --color-warning-border: #FDE68A;
 
