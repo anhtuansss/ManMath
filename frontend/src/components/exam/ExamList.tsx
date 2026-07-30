@@ -94,52 +94,52 @@ export function ExamList({
   const activeFilterChips = [
     searchInput.trim().length > 0
       ? {
-          key: 'search',
-          label: `Tìm kiếm: ${searchInput.trim()}`,
-          onRemove: () => onSearchChange(''),
-        }
+        key: 'search',
+        label: `Tìm kiếm: ${searchInput.trim()}`,
+        onRemove: () => onSearchChange(''),
+      }
       : null,
     selectedTopicData
       ? {
-          key: 'topic',
-          label: selectedTopicData.name,
-          onRemove: () => onTopicChange(''),
-        }
+        key: 'topic',
+        label: selectedTopicData.name,
+        onRemove: () => onTopicChange(''),
+      }
       : null,
     selectedSubtopicData
       ? {
-          key: 'subtopic',
-          label: selectedSubtopicData.name,
-          onRemove: () => onSubtopicChange(''),
-        }
+        key: 'subtopic',
+        label: selectedSubtopicData.name,
+        onRemove: () => onSubtopicChange(''),
+      }
       : null,
     selectedDuration !== 'all'
       ? {
-          key: 'duration',
-          label: durationFilterLabels[selectedDuration],
-          onRemove: () => onDurationChange('all'),
-        }
+        key: 'duration',
+        label: durationFilterLabels[selectedDuration],
+        onRemove: () => onDurationChange('all'),
+      }
       : null,
     selectedDifficulty
       ? {
-          key: 'difficulty',
-          label: difficultyLabels[selectedDifficulty],
-          onRemove: () => onDifficultyChange(''),
-        }
+        key: 'difficulty',
+        label: difficultyLabels[selectedDifficulty],
+        onRemove: () => onDifficultyChange(''),
+      }
       : null,
     selectedYear.trim().length > 0
       ? {
-          key: 'year',
-          label: `Năm ${selectedYear.trim()}`,
-          onRemove: () => onYearChange(''),
-        }
+        key: 'year',
+        label: `Năm ${selectedYear.trim()}`,
+        onRemove: () => onYearChange(''),
+      }
       : null,
     selectedSource.trim().length > 0
       ? {
-          key: 'source',
-          label: `Nguồn: ${selectedSource.trim()}`,
-          onRemove: () => onSourceChange(''),
-        }
+        key: 'source',
+        label: `Nguồn: ${selectedSource.trim()}`,
+        onRemove: () => onSourceChange(''),
+      }
       : null,
   ].filter(
     (
@@ -248,184 +248,132 @@ export function ExamList({
                     </span>
                   </div>
 
-                  <div className="mt-5 space-y-4">
-                    <label className="flex flex-col gap-1.5">
-                      <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                        Tìm kiếm
-                      </span>
-                      <input
-                        type="text"
-                        value={searchInput}
-                        onChange={(event) => onSearchChange(event.target.value)}
-                        placeholder="Nhập tên đề, chuyên đề hoặc nguồn đề..."
-                        className="h-11 rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                      />
-                    </label>
-
-                    <div className="md:hidden">
+                  <div className="mt-5 space-y-3">
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <div className="relative flex-1">
+                        <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <input
+                          type="text"
+                          value={searchInput}
+                          onChange={(event) => onSearchChange(event.target.value)}
+                          placeholder="Tìm kiếm tên đề, chuyên đề hoặc nguồn đề..."
+                          className="h-10 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition hover:bg-background-alt"
+                        className={`inline-flex h-10 shrink-0 items-center justify-center rounded-lg border px-4 text-sm font-medium transition-colors ${hasActiveFilters || isFilterOpen
+                            ? 'border-primary/30 bg-primary/5 text-primary hover:bg-primary/10'
+                            : 'border-border bg-surface text-text-secondary hover:bg-background-alt hover:text-text-primary'
+                          }`}
                       >
-                        {hasActiveFilters ? 'Bộ lọc (đang áp dụng)' : 'Bộ lọc'}
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className={`ml-2 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
-                        >
-                          <polyline points="6 9 12 15 18 9" />
+                        <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
                         </svg>
+                        Bộ lọc {activeFilterChips.length > 0 && `(${activeFilterChips.length})`}
                       </button>
                     </div>
 
-                    <div className={`grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 ${isFilterOpen ? 'grid' : 'hidden md:grid'}`}>
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Chuyên đề
-                        </span>
-                        <select
-                          value={selectedTopic}
-                          onChange={(event) => onTopicChange(event.target.value)}
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        >
-                          <option value="">Tất cả chuyên đề</option>
-                          {topics.map((topic) => (
-                            <option key={topic.id} value={topic.slug}>
-                              {topic.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Tiểu chuyên đề
-                        </span>
-                        <select
-                          value={selectedSubtopic}
-                          onChange={(event) => onSubtopicChange(event.target.value)}
-                          disabled={!selectedTopicData}
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition disabled:cursor-not-allowed disabled:opacity-60 focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        >
-                          <option value="">
-                            {selectedTopicData
-                              ? 'Tất cả tiểu chuyên đề'
-                              : 'Chọn chuyên đề trước'}
+                    <div className={`grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 ${isFilterOpen ? 'grid' : 'hidden lg:grid'}`}>
+                      <select
+                        value={selectedTopic}
+                        onChange={(event) => onTopicChange(event.target.value)}
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition focus:border-primary"
+                      >
+                        <option value="">Chuyên đề</option>
+                        {topics.map((topic) => (
+                          <option key={topic.id} value={topic.slug}>
+                            {topic.name}
                           </option>
-                          {subtopicOptions.map((subtopic) => (
-                            <option key={subtopic.id} value={subtopic.slug}>
-                              {subtopic.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        ))}
+                      </select>
 
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Thời lượng
-                        </span>
-                        <select
-                          value={selectedDuration}
-                          onChange={(event) =>
-                            onDurationChange(event.target.value as ExamDurationFilter)
-                          }
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        >
-                          <option value="all">Tất cả thời lượng</option>
-                          <option value="short">&lt;= 45 phút</option>
-                          <option value="standard">46-90 phút</option>
-                          <option value="long">&gt; 90 phút</option>
-                        </select>
-                      </label>
+                      <select
+                        value={selectedSubtopic}
+                        onChange={(event) => onSubtopicChange(event.target.value)}
+                        disabled={!selectedTopicData}
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition disabled:cursor-not-allowed disabled:opacity-50 focus:border-primary"
+                      >
+                        <option value="">
+                          {selectedTopicData ? 'Tiểu chuyên đề' : 'Chọn chuyên đề'}
+                        </option>
+                        {subtopicOptions.map((subtopic) => (
+                          <option key={subtopic.id} value={subtopic.slug}>
+                            {subtopic.name}
+                          </option>
+                        ))}
+                      </select>
 
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Độ khó
-                        </span>
-                        <select
-                          value={selectedDifficulty}
-                          onChange={(event) =>
-                            onDifficultyChange(event.target.value as '' | ExamDifficulty)
-                          }
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        >
-                          <option value="">Tất cả độ khó</option>
-                          <option value="easy">Dễ</option>
-                          <option value="medium">Trung bình</option>
-                          <option value="hard">Khó</option>
-                        </select>
-                      </label>
+                      <select
+                        value={selectedDuration}
+                        onChange={(event) => onDurationChange(event.target.value as ExamDurationFilter)}
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition focus:border-primary"
+                      >
+                        <option value="all">Thời gian</option>
+                        <option value="short">&lt;= 45 phút</option>
+                        <option value="standard">46-90 phút</option>
+                        <option value="long">&gt; 90 phút</option>
+                      </select>
 
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Năm
-                        </span>
-                        <input
-                          type="number"
-                          min={1900}
-                          max={2100}
-                          value={selectedYear}
-                          onChange={(event) => onYearChange(event.target.value)}
-                          placeholder="Nhập năm..."
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        />
-                      </label>
+                      <select
+                        value={selectedDifficulty}
+                        onChange={(event) => onDifficultyChange(event.target.value as '' | ExamDifficulty)}
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition focus:border-primary"
+                      >
+                        <option value="">Độ khó</option>
+                        <option value="easy">Dễ</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="hard">Khó</option>
+                      </select>
 
-                      <label className="flex min-w-0 flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                          Nguồn đề
-                        </span>
-                        <input
-                          type="text"
-                          value={selectedSource}
-                          onChange={(event) => onSourceChange(event.target.value)}
-                          placeholder="Nhập nguồn đề..."
-                          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
-                        />
-                      </label>
+                      <input
+                        type="number"
+                        min={1900}
+                        max={2100}
+                        value={selectedYear}
+                        onChange={(event) => onYearChange(event.target.value)}
+                        placeholder="Năm"
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition focus:border-primary"
+                      />
+
+                      <input
+                        type="text"
+                        value={selectedSource}
+                        onChange={(event) => onSourceChange(event.target.value)}
+                        placeholder="Nguồn"
+                        className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-sm text-text-primary outline-none transition focus:border-primary"
+                      />
                     </div>
                   </div>
 
-                  <div className="mt-4 space-y-3">
-                    {hasActiveFilters ? (
-                      <div className="flex flex-col gap-3 rounded-lg border border-border bg-background px-3 py-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                            Đang lọc
-                          </p>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {activeFilterChips.map((chip) => (
-                              <span
-                                key={chip.key}
-                                className="inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary"
-                              >
-                                <span className="min-w-0 truncate">{chip.label}</span>
-                                <button
-                                  type="button"
-                                  onClick={chip.onRemove}
-                                  aria-label={`Xóa bộ lọc ${chip.label}`}
-                                  className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-primary transition hover:bg-primary/10"
-                                >
-                                  x
-                                </button>
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
+                  <div className="mt-3 space-y-2">
+                    {activeFilterChips.length > 0 ? (
+                      <div className="flex flex-wrap items-center gap-2">
+                        {activeFilterChips.map((chip) => (
+                          <span
+                            key={chip.key}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background-alt px-2 py-1 text-xs font-medium text-text-secondary"
+                          >
+                            {chip.label}
+                            <button
+                              type="button"
+                              onClick={chip.onRemove}
+                              aria-label={`Xóa ${chip.label}`}
+                              className="text-text-muted hover:text-text-primary"
+                            >
+                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </span>
+                        ))}
                         <button
                           type="button"
                           onClick={onClearFilters}
-                          className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-border bg-surface px-4 text-xs font-semibold text-text-primary transition hover:border-primary hover:text-primary"
+                          className="ml-1 text-xs font-medium text-text-muted hover:text-text-primary"
                         >
-                          Xóa bộ lọc
+                          Xóa tất cả
                         </button>
                       </div>
                     ) : null}

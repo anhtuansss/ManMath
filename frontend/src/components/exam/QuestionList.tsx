@@ -17,28 +17,9 @@ export function QuestionList({
   onSelectAnswer,
 }: QuestionListProps) {
   const totalQuestions = questions?.length ?? 0;
-  const answeredCount =
-    questions?.filter((question) => answers[question.id] !== undefined).length ?? 0;
-  const progressPercentage =
-    totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
 
   return (
     <div className="space-y-8">
-      <div className="rounded-xl border border-border bg-surface px-4 py-3 shadow-card">
-        <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-          <span className="font-medium text-text-secondary">Tiến độ làm bài</span>
-          <span className="font-semibold text-text-primary">
-            {answeredCount}/{totalQuestions} câu
-          </span>
-        </div>
-        <div className="h-2.5 overflow-hidden rounded-full bg-background-alt">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-200"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </div>
-
       {questions?.map((question, index) => (
         <article
           id={`question-${question.id}`}

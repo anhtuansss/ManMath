@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 const APP_FONT_STACK =
-  'Inter, Outfit, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+  'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 export default function RootLayout({
   children,
@@ -27,7 +27,7 @@ export default function RootLayout({
         <AuthProvider>
           <div className="flex min-h-[100dvh] bg-background">
             <AppSidebar />
-            <div className="flex min-w-0 flex-1 flex-col">
+            <div className="flex min-w-0 flex-1 flex-col pb-16 lg:pb-0">
               <AppHeader />
               {children}
             </div>

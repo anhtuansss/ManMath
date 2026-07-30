@@ -517,107 +517,68 @@ export function AnalyticsClient() {
               </section>
             )}
 
-            {progressSummary.attemptCount > 0 && (
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-                <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                        Tiến độ gần đây
-                      </h2>
-                      <p className="mt-1 text-sm text-text-secondary">
-                        Theo dõi 10 lần làm gần nhất để xem mức độ ổn định.
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
-                      {progressByAttempt.length} lần
-                    </span>
-                  </div>
-
-                  <div className="mt-4 space-y-3">
-                    {progressByAttempt.map((attempt, index) => (
-                      <div
-                        key={attempt.attemptId}
-                        className="rounded-lg border border-border bg-background p-3"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-text-primary">
-                              Lần {index + 1} · {attempt.examTitle}
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                              {formatSubmittedAt(attempt.submittedAt)}
-                            </p>
-                          </div>
-
-                          <div className="shrink-0 text-right">
-                            <p className="text-sm font-semibold text-text-primary">
-                              {attempt.score.toFixed(1)} điểm
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                              {attempt.accuracy}% đúng
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-background-alt">
-                          <div
-                            className="h-full rounded-full bg-primary"
-                            style={{ width: `${clampAccuracy(attempt.accuracy)}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                        Các lần làm gần nhất
-                      </h2>
-                      <p className="mt-1 text-sm text-text-secondary">
-                        Mở nhanh từng bài đã làm để xem lại kết quả chi tiết.
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
-                      {recentAttempts.length} lần
-                    </span>
-                  </div>
-
-                  <div className="mt-4 space-y-3">
-                    {recentAttempts.map((attempt) => (
-                      <Link
-                        key={attempt.attemptId}
-                        href={`/attempts/${attempt.attemptId}`}
-                        className="block rounded-lg border border-border bg-background p-3 transition-colors duration-200 hover:border-primary/30 hover:bg-primary-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-text-primary">
-                              {attempt.examTitle}
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                              {formatSubmittedAt(attempt.submittedAt)}
-                            </p>
-                          </div>
-
-                          <span className="shrink-0 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-text-secondary">
-                            {attempt.score.toFixed(1)} điểm
-                          </span>
-                        </div>
-
-                        <p className="mt-3 text-xs leading-5 text-text-secondary">
-                          {attempt.correctCount}/{attempt.totalQuestions} câu đúng
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
+            <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
+                    Đề nên làm tiếp
+                  </h2>
+                  <p className="mt-1 text-sm text-text-secondary">
+                    Chọn nhanh một đề phù hợp với các chuyên đề bạn cần cải thiện.
+                  </p>
+                </div>
+                <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
+                  {recommendedExams.length} đề
+                </span>
               </div>
-            )}
 
+              {recommendedExams.length === 0 ? (
+                <p className="mt-4 text-sm leading-6 text-text-secondary">
+                  Chưa có đề gợi ý riêng cho bạn. Hãy tiếp tục làm bài để hệ thống có
+                  thêm dữ liệu.
+                </p>
+              ) : (
+                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {recommendedExams.map((exam) => (
+                    <Link
+                      key={exam.examId}
+                      href={`/exam/${exam.examId}`}
+                      className="rounded-lg border border-border bg-background p-4 transition-colors duration-200 hover:border-primary/30 hover:bg-primary-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    >
+                      <p className="line-clamp-2 text-sm font-semibold leading-5 text-text-primary">
+                        {exam.title}
+                      </p>
+                      <p className="mt-2 text-xs text-text-secondary">
+                        {exam.durationMinutes} phút
+                        {exam.matchedWeakQuestionCount > 0
+                          ? ` · ${exam.matchedWeakQuestionCount} câu bám topic yếu`
+                          : ''}
+                      </p>
+                      <p className="mt-3 text-xs leading-5 text-text-secondary">
+                        {exam.reason}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link
+                  href="/"
+                  className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  Quay về danh sách đề
+                </Link>
+                {recommendedExams[0] ? (
+                  <Link
+                    href={`/exam/${recommendedExams[0].examId}`}
+                    className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    Làm đề được gợi ý
+                  </Link>
+                ) : null}
+              </div>
+            </section>
             <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -657,11 +618,10 @@ export function AnalyticsClient() {
                             </p>
                           </div>
                           <span
-                            className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${
-                              subtopic.weak
+                            className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${subtopic.weak
                                 ? 'border-warning/30 bg-warning/10 text-warning'
                                 : 'border-success-border bg-success-light text-success'
-                            }`}
+                              }`}
                           >
                             {accuracy}%
                           </span>
@@ -669,9 +629,8 @@ export function AnalyticsClient() {
 
                         <div className="mt-3 h-2 overflow-hidden rounded-full bg-background-alt">
                           <div
-                            className={`h-full rounded-full ${
-                              subtopic.weak ? 'bg-warning' : 'bg-success'
-                            }`}
+                            className={`h-full rounded-full ${subtopic.weak ? 'bg-warning' : 'bg-success'
+                              }`}
                             style={{ width: `${accuracy}%` }}
                           />
                         </div>
@@ -832,68 +791,107 @@ export function AnalyticsClient() {
               </section>
             </div>
 
-            <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                    Đề nên làm tiếp
-                  </h2>
-                  <p className="mt-1 text-sm text-text-secondary">
-                    Chọn nhanh một đề phù hợp với các chuyên đề bạn cần cải thiện.
-                  </p>
-                </div>
-                <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
-                  {recommendedExams.length} đề
-                </span>
-              </div>
+            {progressSummary.attemptCount > 0 && (
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+                <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
+                        Tiến độ gần đây
+                      </h2>
+                      <p className="mt-1 text-sm text-text-secondary">
+                        Theo dõi 10 lần làm gần nhất để xem mức độ ổn định.
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
+                      {progressByAttempt.length} lần
+                    </span>
+                  </div>
 
-              {recommendedExams.length === 0 ? (
-                <p className="mt-4 text-sm leading-6 text-text-secondary">
-                  Chưa có đề gợi ý riêng cho bạn. Hãy tiếp tục làm bài để hệ thống có
-                  thêm dữ liệu.
-                </p>
-              ) : (
-                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {recommendedExams.map((exam) => (
-                    <Link
-                      key={exam.examId}
-                      href={`/exam/${exam.examId}`}
-                      className="rounded-lg border border-border bg-background p-4 transition-colors duration-200 hover:border-primary/30 hover:bg-primary-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    >
-                      <p className="line-clamp-2 text-sm font-semibold leading-5 text-text-primary">
-                        {exam.title}
-                      </p>
-                      <p className="mt-2 text-xs text-text-secondary">
-                        {exam.durationMinutes} phút
-                        {exam.matchedWeakQuestionCount > 0
-                          ? ` · ${exam.matchedWeakQuestionCount} câu bám topic yếu`
-                          : ''}
-                      </p>
-                      <p className="mt-3 text-xs leading-5 text-text-secondary">
-                        {exam.reason}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              )}
+                  <div className="mt-4 space-y-3">
+                    {progressByAttempt.map((attempt, index) => (
+                      <div
+                        key={attempt.attemptId}
+                        className="rounded-lg border border-border bg-background p-3"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-text-primary">
+                              Lần {index + 1} · {attempt.examTitle}
+                            </p>
+                            <p className="mt-1 text-xs text-text-secondary">
+                              {formatSubmittedAt(attempt.submittedAt)}
+                            </p>
+                          </div>
 
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  href="/"
-                  className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  Quay về danh sách đề
-                </Link>
-                {recommendedExams[0] ? (
-                  <Link
-                    href={`/exam/${recommendedExams[0].examId}`}
-                    className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    Làm đề được gợi ý
-                  </Link>
-                ) : null}
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-semibold text-text-primary">
+                              {attempt.score.toFixed(1)} điểm
+                            </p>
+                            <p className="mt-1 text-xs text-text-secondary">
+                              {attempt.accuracy}% đúng
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-background-alt">
+                          <div
+                            className="h-full rounded-full bg-primary"
+                            style={{ width: `${clampAccuracy(attempt.accuracy)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
+                        Các lần làm gần nhất
+                      </h2>
+                      <p className="mt-1 text-sm text-text-secondary">
+                        Mở nhanh từng bài đã làm để xem lại kết quả chi tiết.
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
+                      {recentAttempts.length} lần
+                    </span>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    {recentAttempts.map((attempt) => (
+                      <Link
+                        key={attempt.attemptId}
+                        href={`/attempts/${attempt.attemptId}`}
+                        className="block rounded-lg border border-border bg-background p-3 transition-colors duration-200 hover:border-primary/30 hover:bg-primary-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-text-primary">
+                              {attempt.examTitle}
+                            </p>
+                            <p className="mt-1 text-xs text-text-secondary">
+                              {formatSubmittedAt(attempt.submittedAt)}
+                            </p>
+                          </div>
+
+                          <span className="shrink-0 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-text-secondary">
+                            {attempt.score.toFixed(1)} điểm
+                          </span>
+                        </div>
+
+                        <p className="mt-3 text-xs leading-5 text-text-secondary">
+                          {attempt.correctCount}/{attempt.totalQuestions} câu đúng
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
               </div>
-            </section>
+            )}
+
           </>
         )}
       </div>

@@ -7,6 +7,9 @@
  */
 
 @theme {
+  /* ── Typography ── */
+  --font-outfit: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
   /* ── Brand Colors ── */
   --color-primary: #3B82F6;
   --color-primary-hover: #2563EB;
@@ -64,24 +67,46 @@
   --animate-slide-up: slide-up 0.3s ease-out;
 
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes timer-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
   }
 
   @keyframes slide-up {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
 /* ── Base ── */
 
 @layer base {
+
   *,
   ::before,
   ::after {
@@ -150,6 +175,7 @@ a:focus-visible,
 /* ── Reduced Motion ── */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

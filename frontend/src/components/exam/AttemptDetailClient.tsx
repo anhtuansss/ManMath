@@ -296,7 +296,7 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
             </p>
           </div>
         </section>
-        
+
         {topicStats.length > 0 && (
           <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
             <div className="flex flex-col gap-1">
@@ -354,136 +354,136 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
           <div className="mt-6 flex flex-col-reverse items-start gap-6 lg:flex-row">
             <div className="min-w-0 flex-1 space-y-4">
               {answers.map((answer, index) => {
-              const selectedAnswer =
-                answer.selectedOptionIndex === null
-                  ? 'Chưa chọn đáp án'
-                  : answer.options[answer.selectedOptionIndex];
-              const selectedOptionImageUrl =
-                answer.selectedOptionIndex === null
-                  ? null
-                  : answer.optionImageUrls?.[answer.selectedOptionIndex] ?? null;
+                const selectedAnswer =
+                  answer.selectedOptionIndex === null
+                    ? 'Chưa chọn đáp án'
+                    : answer.options[answer.selectedOptionIndex];
+                const selectedOptionImageUrl =
+                  answer.selectedOptionIndex === null
+                    ? null
+                    : answer.optionImageUrls?.[answer.selectedOptionIndex] ?? null;
 
-              const correctAnswer = answer.options[answer.correctOptionIndex];
-              const correctOptionImageUrl =
-                answer.optionImageUrls?.[answer.correctOptionIndex] ?? null;
+                const correctAnswer = answer.options[answer.correctOptionIndex];
+                const correctOptionImageUrl =
+                  answer.optionImageUrls?.[answer.correctOptionIndex] ?? null;
 
-              const isUnanswered = answer.selectedOptionIndex === null;
+                const isUnanswered = answer.selectedOptionIndex === null;
 
-              const statusAccentClass = isUnanswered
-                ? 'border-l-warning'
-                : answer.isCorrect
-                  ? 'border-l-success'
-                  : 'border-l-error';
+                const statusAccentClass = isUnanswered
+                  ? 'border-l-warning'
+                  : answer.isCorrect
+                    ? 'border-l-success'
+                    : 'border-l-error';
 
-              const statusBadgeClass = isUnanswered
-                ? 'bg-warning-light text-warning border-warning-border'
-                : answer.isCorrect
-                  ? 'bg-success-light text-success border-success-border'
-                  : 'bg-error-light text-error border-error-border';
+                const statusBadgeClass = isUnanswered
+                  ? 'bg-warning-light text-warning border-warning-border'
+                  : answer.isCorrect
+                    ? 'bg-success-light text-success border-success-border'
+                    : 'bg-error-light text-error border-error-border';
 
-              const statusLabel = isUnanswered
-                ? 'Chưa làm'
-                : answer.isCorrect
-                  ? 'Đúng'
-                  : 'Sai';
+                const statusLabel = isUnanswered
+                  ? 'Chưa làm'
+                  : answer.isCorrect
+                    ? 'Đúng'
+                    : 'Sai';
 
-              const answerBoxClass = isUnanswered
-                ? 'border-warning-border bg-warning-light/50'
-                : answer.isCorrect
-                  ? 'border-success-border bg-success-light/50'
-                  : 'border-error-border bg-error-light/50';
+                const answerBoxClass = isUnanswered
+                  ? 'border-warning-border bg-warning-light/50'
+                  : answer.isCorrect
+                    ? 'border-success-border bg-success-light/50'
+                    : 'border-error-border bg-error-light/50';
 
-              const statusHeaderClass = isUnanswered
-                ? 'bg-warning/5'
-                : answer.isCorrect
-                  ? 'bg-success/5'
-                  : 'bg-error/5';
+                const statusHeaderClass = isUnanswered
+                  ? 'bg-warning/5'
+                  : answer.isCorrect
+                    ? 'bg-success/5'
+                    : 'bg-error/5';
 
-              return (
-                <article
-                  id={`question-${answer.questionId}`}
-                  key={answer.questionId}
-                  className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card border-l-[6px] ${statusAccentClass}`}
-                >
-                  <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${statusHeaderClass}`}>
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
-                        {index + 1}
-                      </span>
-                      <span className="text-xs font-medium text-text-secondary">
-                        ID: {answer.questionId}
+                return (
+                  <article
+                    id={`question-${answer.questionId}`}
+                    key={answer.questionId}
+                    className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card border-l-[6px] ${statusAccentClass}`}
+                  >
+                    <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${statusHeaderClass}`}>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
+                          {index + 1}
+                        </span>
+                        <span className="text-xs font-medium text-text-secondary">
+                          ID: {answer.questionId}
+                        </span>
+                      </div>
+                      <span
+                        className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${statusBadgeClass}`}
+                      >
+                        {statusLabel}
                       </span>
                     </div>
-                    <span
-                      className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${statusBadgeClass}`}
-                    >
-                      {statusLabel}
-                    </span>
-                  </div>
 
-                  <div className="p-4 sm:p-5">
-                    <MathText
-                      as="p"
-                      text={answer.question}
-                      className="text-sm sm:text-base leading-7 text-text-primary"
-                    />
+                    <div className="p-4 sm:p-5">
+                      <MathText
+                        as="p"
+                        text={answer.question}
+                        className="text-sm sm:text-base leading-7 text-text-primary"
+                      />
 
-                    <QuestionImage
-                      imageUrl={answer.imageUrl}
-                      alt={`Hình minh họa câu ${index + 1}`}
-                      className="mt-3 sm:mt-4"
-                    />
+                      <QuestionImage
+                        imageUrl={answer.imageUrl}
+                        alt={`Hình minh họa câu ${index + 1}`}
+                        className="mt-3 sm:mt-4"
+                      />
 
-                    <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
-                      <div className={`rounded-lg border p-3 sm:p-4 ${answerBoxClass}`}>
-                        <p className="text-xs font-semibold text-text-secondary">
-                          Đáp án của bạn
-                        </p>
-                        <MathText
-                          as="p"
-                          text={selectedAnswer}
-                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                        />
-                        <OptionImage
-                          imageUrl={selectedOptionImageUrl}
-                          alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
-                          className="mt-2 sm:mt-3"
-                        />
+                      <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
+                        <div className={`rounded-lg border p-3 sm:p-4 ${answerBoxClass}`}>
+                          <p className="text-xs font-semibold text-text-secondary">
+                            Đáp án của bạn
+                          </p>
+                          <MathText
+                            as="p"
+                            text={selectedAnswer}
+                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
+                          />
+                          <OptionImage
+                            imageUrl={selectedOptionImageUrl}
+                            alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
+                            className="mt-2 sm:mt-3"
+                          />
+                        </div>
+
+                        <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
+                          <p className="text-xs font-semibold text-text-secondary">
+                            Đáp án đúng
+                          </p>
+                          <MathText
+                            as="p"
+                            text={correctAnswer}
+                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
+                          />
+                          <OptionImage
+                            imageUrl={correctOptionImageUrl}
+                            alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
+                            className="mt-2 sm:mt-3"
+                          />
+                        </div>
                       </div>
 
-                      <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
-                        <p className="text-xs font-semibold text-text-secondary">
-                          Đáp án đúng
-                        </p>
-                        <MathText
-                          as="p"
-                          text={correctAnswer}
-                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                        />
-                        <OptionImage
-                          imageUrl={correctOptionImageUrl}
-                          alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
-                          className="mt-2 sm:mt-3"
-                        />
-                      </div>
+                      {answer.explanation ? (
+                        <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
+                            Lời giải
+                          </p>
+                          <MathText
+                            as="div"
+                            text={answer.explanation}
+                            className="text-sm leading-6 text-text-primary"
+                          />
+                        </div>
+                      ) : null}
                     </div>
-
-                    {answer.explanation ? (
-                      <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
-                          Lời giải
-                        </p>
-                        <MathText
-                          as="div"
-                          text={answer.explanation}
-                          className="text-sm leading-6 text-text-primary"
-                        />
-                      </div>
-                    ) : null}
-                  </div>
-                </article>
-              );
-            })}
+                  </article>
+                );
+              })}
             </div>
 
             <aside className="w-full shrink-0 lg:sticky lg:top-6 lg:w-80">

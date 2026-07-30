@@ -396,7 +396,7 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
           <div className="relative overflow-hidden rounded-xl border border-border bg-surface p-6 shadow-card">
             {/* Subtle glow background */}
             <div className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-[200px] w-[200px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
-            
+
             <p className="text-sm font-semibold text-text-secondary">Điểm số</p>
             <div className="mt-5 flex items-center justify-center">
               <div
@@ -546,109 +546,109 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
           <div className="mt-6 flex flex-col-reverse items-start gap-6 lg:flex-row">
             <div className="min-w-0 flex-1 space-y-4">
               {exam?.questions.map((question, index) => {
-              const selectedOptionIndex = resultSession.answers[question.id];
-              const selectedAnswer =
-                selectedOptionIndex !== undefined
-                  ? question.options[selectedOptionIndex] ?? 'Đáp án không hợp lệ'
-                  : 'Chưa chọn đáp án';
-              const selectedOptionImageUrl =
-                selectedOptionIndex !== undefined
-                  ? question.optionImageUrls?.[selectedOptionIndex] ?? null
-                  : null;
-              const correctOptionIndex = question.options.indexOf(question.correctAnswer);
-              const correctOptionImageUrl =
-                correctOptionIndex >= 0
-                  ? question.optionImageUrls?.[correctOptionIndex] ?? null
-                  : null;
-              const status = getReviewStatus(question, selectedOptionIndex);
+                const selectedOptionIndex = resultSession.answers[question.id];
+                const selectedAnswer =
+                  selectedOptionIndex !== undefined
+                    ? question.options[selectedOptionIndex] ?? 'Đáp án không hợp lệ'
+                    : 'Chưa chọn đáp án';
+                const selectedOptionImageUrl =
+                  selectedOptionIndex !== undefined
+                    ? question.optionImageUrls?.[selectedOptionIndex] ?? null
+                    : null;
+                const correctOptionIndex = question.options.indexOf(question.correctAnswer);
+                const correctOptionImageUrl =
+                  correctOptionIndex >= 0
+                    ? question.optionImageUrls?.[correctOptionIndex] ?? null
+                    : null;
+                const status = getReviewStatus(question, selectedOptionIndex);
 
-              return (
-                <article
-                  id={`question-${question.id}`}
-                  key={question.id}
-                  className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card ${reviewAccentClass[status]}`}
-                >
-                  <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${reviewHeaderClass[status]}`}>
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
-                        {index + 1}
-                      </span>
-                      <span className="text-xs font-medium text-text-secondary">
-                        ID: {question.id}
-                      </span>
-                    </div>
-                    <span
-                      className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${reviewBadgeClass[status]}`}
-                    >
-                      {reviewLabel[status]}
-                    </span>
-                  </div>
-
-                  <div className="p-4 sm:p-5">
-                    <MathText
-                      as="p"
-                      text={question.question}
-                      className="text-sm sm:text-base leading-7 text-text-primary"
-                    />
-
-                    <QuestionImage
-                      imageUrl={question.imageUrl}
-                      alt={`Hình minh họa câu ${index + 1}`}
-                      className="mt-3 sm:mt-4"
-                    />
-
-                    <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
-                      <div
-                        className={`rounded-lg border p-3 sm:p-4 ${reviewAnswerClass[status]}`}
+                return (
+                  <article
+                    id={`question-${question.id}`}
+                    key={question.id}
+                    className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card ${reviewAccentClass[status]}`}
+                  >
+                    <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${reviewHeaderClass[status]}`}>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
+                          {index + 1}
+                        </span>
+                        <span className="text-xs font-medium text-text-secondary">
+                          ID: {question.id}
+                        </span>
+                      </div>
+                      <span
+                        className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${reviewBadgeClass[status]}`}
                       >
-                        <p className="text-xs font-semibold text-text-secondary">
-                          Đáp án của bạn
-                        </p>
-                        <MathText
-                          as="p"
-                          text={selectedAnswer}
-                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                        />
-                        <OptionImage
-                          imageUrl={selectedOptionImageUrl}
-                          alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
-                          className="mt-2 sm:mt-3"
-                        />
-                      </div>
-
-                      <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
-                        <p className="text-xs font-semibold text-text-secondary">
-                          Đáp án đúng
-                        </p>
-                        <MathText
-                          as="p"
-                          text={question.correctAnswer}
-                          className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                        />
-                        <OptionImage
-                          imageUrl={correctOptionImageUrl}
-                          alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
-                          className="mt-2 sm:mt-3"
-                        />
-                      </div>
+                        {reviewLabel[status]}
+                      </span>
                     </div>
 
-                    {question.explanation ? (
-                      <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
-                          Lời giải
-                        </p>
-                        <MathText
-                          as="div"
-                          text={question.explanation}
-                          className="text-sm leading-6 text-text-primary"
-                        />
+                    <div className="p-4 sm:p-5">
+                      <MathText
+                        as="p"
+                        text={question.question}
+                        className="text-sm sm:text-base leading-7 text-text-primary"
+                      />
+
+                      <QuestionImage
+                        imageUrl={question.imageUrl}
+                        alt={`Hình minh họa câu ${index + 1}`}
+                        className="mt-3 sm:mt-4"
+                      />
+
+                      <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
+                        <div
+                          className={`rounded-lg border p-3 sm:p-4 ${reviewAnswerClass[status]}`}
+                        >
+                          <p className="text-xs font-semibold text-text-secondary">
+                            Đáp án của bạn
+                          </p>
+                          <MathText
+                            as="p"
+                            text={selectedAnswer}
+                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
+                          />
+                          <OptionImage
+                            imageUrl={selectedOptionImageUrl}
+                            alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
+                            className="mt-2 sm:mt-3"
+                          />
+                        </div>
+
+                        <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
+                          <p className="text-xs font-semibold text-text-secondary">
+                            Đáp án đúng
+                          </p>
+                          <MathText
+                            as="p"
+                            text={question.correctAnswer}
+                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
+                          />
+                          <OptionImage
+                            imageUrl={correctOptionImageUrl}
+                            alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
+                            className="mt-2 sm:mt-3"
+                          />
+                        </div>
                       </div>
-                    ) : null}
-                  </div>
-                </article>
-              );
-            })}
+
+                      {question.explanation ? (
+                        <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
+                            Lời giải
+                          </p>
+                          <MathText
+                            as="div"
+                            text={question.explanation}
+                            className="text-sm leading-6 text-text-primary"
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
 
             {exam && (

@@ -63,12 +63,11 @@ export function ExamSidebar({
                   className={`
                     flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border text-xs font-semibold transition-all duration-200
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
-                    ${
-                      isCurrent
-                        ? 'border-primary bg-primary text-white shadow-ring-primary'
-                        : isAnswered
-                          ? 'border-success-border bg-success-light text-success hover:border-success'
-                          : 'border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
+                    ${isCurrent
+                      ? 'border-primary bg-primary text-white shadow-ring-primary'
+                      : isAnswered
+                        ? 'border-success-border bg-success-light text-success hover:border-success'
+                        : 'border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
                     }
                   `}
                 >

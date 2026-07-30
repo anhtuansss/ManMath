@@ -55,13 +55,13 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
             <div className="hidden sm:block text-right w-20">
               <span className="text-sm font-medium text-text-secondary">{simulatedViewCount.toLocaleString()}</span>
             </div>
-            
+
             <div className="w-28 shrink-0 flex justify-center">
               <span className={`inline-flex whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold ${difficultyStyles[exam.difficulty]}`}>
                 {difficultyLabels[exam.difficulty]}
               </span>
             </div>
-            
+
             <div className="flex shrink-0 w-[72px] justify-end">
               <Link
                 href={exam.href}
@@ -91,7 +91,7 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
             {difficultyLabels[exam.difficulty]}
           </span>
         </div>
-        
+
         <p className="mt-4 text-xs font-medium text-text-secondary">
           Đã có {simulatedViewCount.toLocaleString()} lượt làm
         </p>

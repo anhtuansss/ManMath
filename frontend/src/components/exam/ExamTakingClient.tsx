@@ -523,7 +523,7 @@ export function ExamTakingClient({ examId }: ExamTakingClientProps) {
         onSubmit={confirmSubmit}
       />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
           <QuestionList
             questions={exam?.questions}
             answers={answers}
