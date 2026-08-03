@@ -10,10 +10,6 @@
  * localStorage -> khôi phục/lưu nháp đáp án và thời gian theo từng đề.
  * POST /api/exam/submit -> sessionStorage -> chuyển sang /exam/[id]/result.
  *
- * File liên quan:
- * frontend/src/components/exam/ExamHeader.tsx
- * frontend/src/components/exam/QuestionList.tsx
- * frontend/src/components/exam/ExamSidebar.tsx
  * frontend/src/lib/storage.ts
  * backend/server.ts
  */
@@ -25,7 +21,6 @@ import { ExamSidebar } from './ExamSidebar';
 import { QuestionList } from './QuestionList';
 import { API_BASE_URL } from '../../config/api';
 import { getAuthToken } from '../../lib/authStorage';
-import { updateUserStats } from '../../lib/userStats';
 import {
   clearDraftStorage,
   getExamResultKey,
@@ -33,6 +28,7 @@ import {
   writeDraftStorage,
   writeJsonStorage,
 } from '../../lib/storage';
+import { Button, Modal } from '../ui';
 
 import type {
   Answers,
@@ -283,9 +279,6 @@ export function ExamTakingClient({ examId }: ExamTakingClientProps) {
 
       // Xóa nháp khi nộp bài thành công
       clearDraftStorage(localStorage, examId);
-      
-      // Cập nhật thống kê cá nhân
-      updateUserStats(result.score, Object.keys(answers).length);
 
       writeJsonStorage(sessionStorage, getExamResultKey(examId), resultSession);
       router.push(`/exam/${examId}/result`);
@@ -429,7 +422,7 @@ export function ExamTakingClient({ examId }: ExamTakingClientProps) {
           </h1>
           <p className="mt-2 text-sm leading-6 text-error">{error}</p>
           <Link
-            href="/"
+            href="/dashboard"
             className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Quay về danh sách đề
@@ -441,78 +434,56 @@ export function ExamTakingClient({ examId }: ExamTakingClientProps) {
 
   return (
     <div className="min-h-[100dvh] bg-background text-text-primary">
-      {showDraftPrompt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-fade-in">
-          <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-card">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 2.5v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
-              </div>
-              <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-text-primary">
-                Bạn có bài làm chưa hoàn thành
-              </h2>
-            </div>
-            <p className="mt-4 text-sm leading-6 text-text-secondary">
-              ManMath đã lưu tạm đáp án và thời gian còn lại của lần làm trước.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
-              <button
-                type="button"
-                onClick={handleContinueDraft}
-                className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Tiếp tục làm bài
-              </button>
-              <button
-                type="button"
-                onClick={handleStartFresh}
-                className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-secondary transition-colors duration-200 hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Làm lại từ đầu
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={showDraftPrompt}
+        onClose={() => setShowDraftPrompt(false)}
+        title="Bạn có bài làm chưa hoàn thành"
+        icon={
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2.5v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
+          </svg>
+        }
+        footer={
+          <>
+            <Button onClick={handleContinueDraft} variant="primary">
+              Tiếp tục làm bài
+            </Button>
+            <Button onClick={handleStartFresh} variant="outline">
+              Làm lại từ đầu
+            </Button>
+          </>
+        }
+      >
+        <p>ManMath đã lưu tạm đáp án và thời gian còn lại của lần làm trước.</p>
+      </Modal>
 
-      {showSubmitConfirm && exam && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-fade-in">
-          <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-card">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-                  <path d="M13.354 2.646a.5.5 0 0 1 .058.638l-.058.07L6.707 10l-3-3a.5.5 0 0 1 .638-.765l.07.058L7 8.586l6.293-6.293a.5.5 0 0 1 .708 0l-.647.353Z" fill="currentColor"/>
-                  <path d="M14.5 8a.5.5 0 0 1 .492.41L15 8.5V12a3 3 0 0 1-2.824 2.995L12 15H4a3 3 0 0 1-2.995-2.824L1 12V4a3 3 0 0 1 2.824-2.995L4 1h5.5a.5.5 0 0 1 .09.992L9.5 2H4a2 2 0 0 0-1.995 1.85L2 4v8a2 2 0 0 0 1.85 1.995L4 14h8a2 2 0 0 0 1.995-1.85L14 12V8.5a.5.5 0 0 1 .5-.5Z" fill="currentColor"/>
-                </svg>
-              </div>
-              <h2 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-text-primary">
-                Xác nhận nộp bài
-              </h2>
-            </div>
-            <p className="mt-4 text-sm leading-6 text-text-secondary">
-              Bạn đã hoàn thành <span className="font-semibold text-text-primary">{Object.keys(answers).length}/{exam.questions.length}</span> câu. Bạn có chắc chắn muốn nộp bài ngay bây giờ?
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
+      {exam && (
+        <Modal
+          isOpen={showSubmitConfirm}
+          onClose={() => setShowSubmitConfirm(false)}
+          title="Xác nhận nộp bài"
+          icon={
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+              <path d="M13.354 2.646a.5.5 0 0 1 .058.638l-.058.07L6.707 10l-3-3a.5.5 0 0 1 .638-.765l.07.058L7 8.586l6.293-6.293a.5.5 0 0 1 .708 0l-.647.353Z" fill="currentColor"/>
+              <path d="M14.5 8a.5.5 0 0 1 .492.41L15 8.5V12a3 3 0 0 1-2.824 2.995L12 15H4a3 3 0 0 1-2.995-2.824L1 12V4a3 3 0 0 1 2.824-2.995L4 1h5.5a.5.5 0 0 1 .09.992L9.5 2H4a2 2 0 0 0-1.995 1.85L2 4v8a2 2 0 0 0 1.85 1.995L4 14h8a2 2 0 0 0 1.995-1.85L14 12V8.5a.5.5 0 0 1 .5-.5Z" fill="currentColor"/>
+            </svg>
+          }
+          footer={
+            <>
+              <Button onClick={handleSubmit} variant="primary">
                 Nộp bài ngay
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowSubmitConfirm(false)}
-                className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-secondary transition-colors duration-200 hover:bg-background-alt hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
+              </Button>
+              <Button onClick={() => setShowSubmitConfirm(false)} variant="outline">
                 Tiếp tục làm bài
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </>
+          }
+        >
+          <p>
+            Bạn đã hoàn thành <span className="font-semibold text-text-primary">{Object.keys(answers).length}/{exam.questions.length}</span> câu. Bạn có chắc chắn muốn nộp bài ngay bây giờ?
+          </p>
+        </Modal>
       )}
 
       <ExamHeader
@@ -523,7 +494,7 @@ export function ExamTakingClient({ examId }: ExamTakingClientProps) {
         onSubmit={confirmSubmit}
       />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
           <QuestionList
             questions={exam?.questions}
             answers={answers}

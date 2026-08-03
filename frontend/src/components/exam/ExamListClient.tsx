@@ -11,7 +11,7 @@ import type {
   TopicsResponseDto,
 } from './types';
 import { API_BASE_URL } from '../../config/api';
-import { getUserStats, type UserStats } from '../../lib/userStats';
+import { getAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
 
 const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
   ...exam,
@@ -153,11 +153,10 @@ function ExamListError({ message, onRetry }: ExamListErrorProps) {
         </div>
 
         <h1 className="mt-5 text-center font-[family-name:var(--font-outfit)] text-2xl font-bold tracking-tight text-text-primary">
-          Kiểm tra backend rồi thử lại
+          Không thể tải danh sách đề
         </h1>
         <p className="mt-3 text-center text-sm leading-6 text-text-secondary">
-          {message}. Hãy đảm bảo backend đang chạy và cấu hình API base URL của
-          frontend đang trỏ đúng môi trường hiện tại.
+          {message}. Đã có lỗi xảy ra trong quá trình kết nối với máy chủ. Vui lòng kiểm tra đường truyền mạng và thử lại.
         </p>
 
         <div className="mt-6 flex justify-center">
@@ -199,8 +198,7 @@ function ExamListEmpty({ onRetry }: ExamListEmptyProps) {
           Chưa có đề luyện nào
         </h1>
         <p className="mt-3 text-center text-sm leading-6 text-text-secondary">
-          API đã trả về danh sách rỗng. Khi backend có dữ liệu đề, màn này sẽ hiển
-          thị khu đề đề xuất, danh sách đề và tổng quan kho đề.
+          Hiện tại kho đề chưa có dữ liệu. Vui lòng quay lại sau khi hệ thống cập nhật thêm đề thi mới nhé.
         </p>
 
         <div className="mx-auto mt-6 flex h-20 w-20 items-center justify-center rounded-full bg-background-alt">
@@ -249,7 +247,6 @@ export function ExamListClient() {
   const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [topicsError, setTopicsError] = useState<string | null>(null);
-  const [stats, setStats] = useState<UserStats | null>(null);
   const [draftExamId, setDraftExamId] = useState<string | null>(null);
   const [searchInput, setSearchInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -261,6 +258,7 @@ export function ExamListClient() {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedSource, setSelectedSource] = useState('');
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const selectedTopicData = useMemo(
     () => topics.find((topic) => topic.slug === selectedTopic) ?? null,
@@ -373,7 +371,6 @@ export function ExamListClient() {
   useEffect(() => {
     void fetchExams({ initialLoad: true });
     void fetchTopics();
-    setStats(getUserStats());
 
     try {
       for (let i = 0; i < localStorage.length; i++) {
@@ -386,6 +383,13 @@ export function ExamListClient() {
     } catch {
       // safe localStorage access
     }
+  }, []);
+
+  useEffect(() => {
+    const syncAuthState = () => setIsAuthenticated(getAuthToken() !== null);
+
+    syncAuthState();
+    return subscribeAuthTokenChange(syncAuthState);
   }, []);
 
   useEffect(() => {
@@ -508,7 +512,6 @@ export function ExamListClient() {
   return (
     <ExamList
       exams={exams}
-      stats={stats}
       draftExamId={draftExamId}
       searchInput={searchInput}
       selectedTopic={selectedTopic}
@@ -532,6 +535,7 @@ export function ExamListClient() {
       onYearChange={setSelectedYear}
       onSourceChange={setSelectedSource}
       onClearFilters={handleClearFilters}
+      isAuthenticated={isAuthenticated}
     />
   );
 }

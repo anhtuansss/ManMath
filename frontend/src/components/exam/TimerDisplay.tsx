@@ -16,13 +16,12 @@ export function TimerDisplay({ remainingSeconds }: TimerDisplayProps) {
   return (
     <div
       aria-live="polite"
-      className={`inline-flex h-10 items-center gap-2 rounded-lg border px-3 transition-colors duration-200 ${
-        isTimeDanger
+      className={`inline-flex h-10 items-center gap-2 rounded-lg border px-3 transition-colors duration-200 ${isTimeDanger
           ? 'border-error bg-error/10 text-error ring-1 ring-error/30 motion-safe:animate-timer-pulse'
           : isTimeWarning
             ? 'border-warning-border bg-warning-light text-warning'
             : 'border-border bg-background text-text-primary'
-      }`}
+        }`}
     >
       <svg
         width="16"

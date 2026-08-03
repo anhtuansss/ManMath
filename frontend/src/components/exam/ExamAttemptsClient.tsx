@@ -7,14 +7,13 @@ import {
   fetchProtectedJson,
   isUnauthorizedError,
 } from '../../lib/authApi';
+import { useFetch } from '../../lib/useFetch';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
 import type { ExamAttemptSummaryDto } from './types';
 
 type ExamAttemptsClientProps = {
   examId: string;
 };
-
-type AttemptsErrorType = 'unauthorized' | 'generic';
 
 const formatSubmittedAt = (submittedAt: string) => {
   return new Intl.DateTimeFormat('vi-VN', {
@@ -44,49 +43,23 @@ const formatDurationSeconds = (durationSeconds: number | null) => {
 };
 
 export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
-  const [attempts, setAttempts] = useState<ExamAttemptSummaryDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<AttemptsErrorType | null>(null);
+  const { data: attemptsData, loading, error, refetch } = useFetch(
+    () => fetchProtectedJson<ExamAttemptSummaryDto[]>(`/api/exams/${examId}/attempts`),
+    [examId]
+  );
 
-  const fetchAttempts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setErrorType(null);
-
-      const data = await fetchProtectedJson<ExamAttemptSummaryDto[]>(
-        `/api/exams/${examId}/attempts`,
-      );
-      setAttempts(data);
-    } catch (fetchError: unknown) {
-      if (isUnauthorizedError(fetchError)) {
-        setAttempts([]);
-        setErrorType('unauthorized');
-        setError('Bạn cần đăng nhập để xem lịch sử làm bài.');
-      } else {
-        setErrorType('generic');
-        setError(
-          fetchError instanceof Error
-            ? fetchError.message
-            : 'Lỗi không xác định khi tải lịch sử làm bài',
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const attempts = attemptsData ?? [];
+  const isUnauthorized = error !== null && error.toLowerCase().includes('đăng nhập');
 
   useEffect(() => {
-    void fetchAttempts();
     const unsubscribeAuthTokenChange = subscribeAuthTokenChange(() => {
-      void fetchAttempts();
+      void refetch();
     });
 
     return () => {
       unsubscribeAuthTokenChange();
     };
-  }, [examId]);
+  }, [refetch]);
 
   const latestAttempt = attempts[0] ?? null;
 
@@ -123,7 +96,7 @@ export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
         <header className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <Link
-              href="/"
+              href="/dashboard"
               aria-label="Về trang chủ"
               className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
@@ -187,7 +160,7 @@ export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
           </section>
         )}
 
-        {errorType === 'unauthorized' && (
+        {isUnauthorized && (
           <section className="rounded-xl border border-border bg-surface p-8 text-center shadow-card">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-light text-primary">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -202,7 +175,7 @@ export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
             </p>
             <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
-                href="/"
+                href="/dashboard"
                 className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Về danh sách đề
@@ -217,7 +190,7 @@ export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
           </section>
         )}
 
-        {error && errorType !== 'unauthorized' && (
+        {error && !isUnauthorized && (
           <section className="rounded-xl border border-error-border bg-surface p-6 shadow-card">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-error-light">
@@ -232,7 +205,7 @@ export function ExamAttemptsClient({ examId }: ExamAttemptsClientProps) {
                 <p className="mt-1 text-sm text-text-secondary">{error}</p>
                 <button
                   type="button"
-                  onClick={fetchAttempts}
+                  onClick={() => void refetch()}
                   className="mt-4 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Thử lại
