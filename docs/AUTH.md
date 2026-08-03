@@ -64,6 +64,10 @@ Các route đang protected:
 
 - `GET /api/auth/me`
 - `GET /api/me/topic-stats`
+- `GET /api/me/subtopic-stats`
+- `GET /api/me/recommendations`
+- `GET /api/me/progress`
+- `GET /api/me/attempts`
 - `GET /api/exams/:id/attempts`
 - `GET /api/attempts/:attemptId`
 

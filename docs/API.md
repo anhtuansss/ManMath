@@ -331,7 +331,7 @@ Array<{
 
 ```ts
 {
-  attempts: Array<{
+  items: Array<{
     attemptId: string;
     examId: string;
     examTitle: string;
@@ -342,6 +342,10 @@ Array<{
     durationSeconds: number | null;
     submittedAt: string;
   }>;
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
   summary: {
     totalAttempts: number;
     averageScore: number;
@@ -352,9 +356,12 @@ Array<{
 
 ### Query params cho `/api/me/attempts`
 
-- `limit`: mặc định `20`
+- `page`: số trang dương, mặc định `1`.
+- `limit`: số item mỗi trang, mặc định `10`, tối đa `50`.
 - `examId`: lọc lịch sử theo một đề cụ thể
 - `sort`: hiện MVP chỉ hỗ trợ `latest`
+
+Response luôn được sort theo `submittedAt` giảm dần. `page` vượt phạm vi được clamp về trang hợp lệ; `page` hoặc `limit` không phải số nguyên dương, hay `limit > 50`, trả `400`.
 
 ### Ghi chú analytics
 
