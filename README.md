@@ -1,49 +1,42 @@
 # ManMath
 
-## Giới thiệu
+ManMath là ứng dụng luyện đề Toán THPT theo nhịp làm bài thật: chọn đề, làm bài có bấm giờ, nộp bài, xem lại đáp án và xác định chuyên đề cần ôn tiếp.
 
-ManMath là web luyện đề Toán THPT theo hướng MVP gọn, dễ học và để demo. Người dùng có thể chọn đề, làm bài, nộp bài, xem kết quả, review đáp án, xem lịch sử, theo dõi analytics và nhận gợi ý luyện tập.
+## Trạng thái hiện tại
 
-Hệ thống hiện dùng Next.js ở frontend, Express ở backend, PostgreSQL + Prisma cho dữ liệu, và Google Login + JWT cho tài khoản.
+MVP đã có landing page công khai, workspace học tập, làm đề ở focus mode, chấm điểm và review, lịch sử làm bài phân trang, analytics theo topic/subtopic, hồ sơ và recommendation rule-based. Guest có thể làm đề; dữ liệu history, analytics và attempt detail yêu cầu đăng nhập Google.
 
-## Tính năng chính
+## Tính năng đã có
 
-- [x] Danh sách đề thi và route `/exams`
-- [x] Làm bài, autosave, submit, result page, review đáp án
-- [x] Search/filter đề theo keyword, topic, subtopic, thời lượng, độ khó, năm, nguồn
-- [x] App navigation, mobile filter collapse và active filter chips
-- [x] Global history `/history`, attempt detail và profile `/profile`
-- [x] Google Login + JWT + protect history/analytics theo user
-- [x] Topic analytics, recommendation MVP, analytics dashboard `/analytics`
-- [x] Practice by weak topic MVP với focus mode
-- [x] KaTeX math rendering
-- [x] Question image, option image và explanation MVP
-- [x] Import đề từ JSON qua backend script
+- Landing page public và dashboard luyện tập tại `/dashboard`.
+- Danh sách đề, tìm kiếm/lọc, làm đề, timer và autosave local.
+- Submit, score, result/review, lời giải, KaTeX và ảnh câu hỏi/đáp án.
+- Google Login + JWT; ownership cho history và attempt detail.
+- History phân trang phía server, analytics topic/subtopic, profile và practice theo topic.
+- Import đề từ JSON qua script backend.
 
-## Tech Stack
-
-| Thành phần | Công nghệ |
-| --- | --- |
-| Frontend | Next.js App Router, React, TypeScript, Tailwind CSS |
-| Backend | Express, TypeScript |
-| Database | PostgreSQL |
-| ORM | Prisma |
-| Auth | Google Login, JWT |
-| Math rendering | KaTeX |
-
-## Kiến trúc tổng quan
+## Kiến trúc
 
 ```text
-Browser
-↓
-Next.js Frontend
-↓
-Express API
-↓
-Prisma ORM
-↓
-PostgreSQL
+Next.js App Router → Express API → Prisma → PostgreSQL
 ```
+
+Frontend dùng ba route groups:
+
+| Nhóm | Mục đích | Routes chính |
+| --- | --- | --- |
+| `(public)` | Landing và thông tin công khai | `/`, `/about` |
+| `(workspace)` | Không gian luyện tập có sidebar/header | `/dashboard`, `/analytics`, `/history`, `/profile` |
+| `(focus)` | Làm bài và review không bị phân tán | `/exam/[id]`, `/exam/[id]/result`, `/attempts/[attemptId]`, `/practice/topic/[topicSlug]` |
+
+`/exams` là route tương thích cũ và redirect về `/dashboard`.
+
+## Tech stack
+
+- Frontend: Next.js App Router, React, TypeScript, Tailwind CSS, KaTeX.
+- Backend: Express, TypeScript, Prisma.
+- Database: PostgreSQL.
+- Auth: Google Login và JWT.
 
 ## Chạy local
 
@@ -61,43 +54,46 @@ npm install
 npm run dev
 ```
 
-## Env chính
+## Biến môi trường
 
-### Backend
+Backend cần `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET` và `JWT_EXPIRES_IN`.
 
-- `DATABASE_URL`
-- `GOOGLE_CLIENT_ID`
-- `JWT_SECRET`
-- `JWT_EXPIRES_IN`
+Frontend dùng `NEXT_PUBLIC_API_BASE_URL` và `NEXT_PUBLIC_GOOGLE_CLIENT_ID` khi cần Google Login. Không commit `.env` hoặc `.env.local`; `JWT_SECRET` chỉ thuộc backend.
 
-### Frontend
+## Kiểm tra
 
-- `NEXT_PUBLIC_API_BASE_URL`
-- `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
+```bash
+cd backend
+npx tsc --noEmit
+npx prisma validate
+```
 
-Ghi chú:
+```bash
+cd frontend
+npm run type-check
+npm run build
+```
 
-- Không commit `.env` hoặc `.env.local`
-- `JWT_SECRET` chỉ dùng ở backend
-- Biến `NEXT_PUBLIC_*` là public env cho browser
+## Tài liệu
 
-## Docs chi tiết
-
-- [Kiến trúc hệ thống](docs/ARCHITECTURE.md)
-- [API hiện có](docs/API.md)
-- [Auth flow](docs/AUTH.md)
-- [Database và Prisma](docs/DATABASE.md)
+- [Kiến trúc](docs/ARCHITECTURE.md)
+- [API](docs/API.md)
+- [Auth](docs/AUTH.md)
+- [Database](docs/DATABASE.md)
+- [Design system](docs/UI_DESIGN_SYSTEM.md)
 - [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
-- [Import đề từ JSON](docs/IMPORT_JSON.md)
+- [Import JSON](docs/IMPORT_JSON.md)
 
-Analytics/recommendation cá nhân cần user login và submit bài thật. Workflow tạo dữ liệu demo nằm trong [Hướng dẫn phát triển](docs/DEVELOPMENT.md#demo-analytics-data-workflow).
+## Screenshot sản phẩm
+
+Các ảnh chụp từ UI thật được dùng cho landing:
+
+- `frontend/public/images/landing/exam-workspace.webp`
+- `frontend/public/images/landing/result-review.webp`
 
 ## Roadmap ngắn
 
-- Refresh Token
-- Email/password login
-- Cập nhật thông tin cá nhân
-- Upload và quản lý ảnh câu hỏi/đáp án
-- Analytics sâu hơn và theo dõi tiến bộ dài hạn
-- Mở rộng import đề ngoài JSON
-- AI feedback / explanation runtime
+- Mở rộng analytics theo subtopic khi dữ liệu nội dung đủ tin cậy.
+- Mở rộng pipeline import ngoài JSON.
+- Cải thiện testing và manual QA cho các flow có auth.
+- AI feedback/explanation runtime được để lại sau khi content và analytics ổn định.

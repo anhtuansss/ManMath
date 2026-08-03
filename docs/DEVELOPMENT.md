@@ -128,7 +128,7 @@ Workflow demo khuyến nghị:
    - `/analytics`: topic stats, progress và recommendation.
    - `/history`: lịch sử làm bài toàn cục.
    - `/profile`: thông tin user, hoạt động gần đây và CTA học tiếp.
-   - `/exams`: danh sách đề và card gợi ý luyện tập.
+   - `/dashboard`: danh sách đề, workspace và gợi ý luyện tập.
 
 Cảnh báo:
 
@@ -159,12 +159,15 @@ npm run build
 
 Manual QA nên kiểm tra thêm:
 
-- `/exams`: search/filter, active chips, filter collapse trên mobile, sidebar recommendation
+- `/`: landing public, CTA tới `/dashboard`, responsive screenshot và navigation
+- `/dashboard`: workspace, exam list, quick actions và sidebar state
+- `/exams`: xác minh redirect tương thích về `/dashboard`
 - `/exam/[id]`: timer, autosave, question image, option image
 - `/exam/[id]/result`: result question navigator, review, explanation
 - `/exam/[id]/attempts` và `/attempts/[attemptId]`: protected state và review navigation
-- `/history`, `/profile`, `/analytics`
-- `/practice/topic/[topicSlug]`: focus mode, không hiện global AppNav, timer/submit local vẫn hoạt động
+- `/history`: pagination URL `?page=`, summary toàn history và empty state
+- `/profile`, `/analytics`: guest/onboarding state và dữ liệu user thật sau login
+- `/practice/topic/[topicSlug]`: focus mode, không hiện navigation workspace, timer/submit local vẫn hoạt động
 - Google login/logout với credential thật nếu có
 
 ## Git workflow gợi ý

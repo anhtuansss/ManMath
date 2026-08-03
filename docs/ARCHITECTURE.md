@@ -2,243 +2,74 @@
 
 ## Tổng quan
 
-ManMath gồm hai phần chính:
-
-- Frontend Next.js để hiển thị danh sách đề, màn làm bài, kết quả, lịch sử, profile, analytics và practice.
-- Backend Express để xử lý đề thi, submit bài, auth, history, analytics, recommendation và import data.
-
-Database hiện dùng PostgreSQL, truy cập qua Prisma ORM.
-
 ```text
-Browser
-↓
-Next.js Frontend
-↓
-Express API
-↓
-Prisma ORM
-↓
-PostgreSQL
+Browser → Next.js App Router → Express API → Prisma → PostgreSQL
 ```
 
-## Trách nhiệm từng lớp
+Frontend chịu trách nhiệm về presentation, local persistence cho flow làm đề và gọi API. Express tổ chức theo route → middleware → controller → service; Prisma là lớp truy cập PostgreSQL.
 
-### Frontend
+## Route architecture
 
-- Render UI danh sách đề, làm bài, result review, history, profile, analytics và practice.
-- Gọi backend API qua `NEXT_PUBLIC_API_BASE_URL`.
-- Lưu autosave bài làm bằng `localStorage`.
-- Lưu kết quả submit tạm thời để hiển thị result page.
-- Lưu JWT phía client và gửi `Authorization: Bearer <token>` khi user đã login.
-- Render KaTeX, ảnh câu hỏi (`imageUrl`), ảnh đáp án (`optionImageUrls`) và lời giải (`explanation`) ở các màn review phù hợp.
+| Route group | Trách nhiệm | Routes |
+| --- | --- | --- |
+| `(public)` | Nội dung công khai, không phụ thuộc backend để render landing | `/`, `/about` |
+| `(workspace)` | App shell với sidebar/header; guest vẫn xem được các màn có state phù hợp | `/dashboard`, `/analytics`, `/history`, `/profile`, `/exams` |
+| `(focus)` | Flow cần tập trung, không có workspace sidebar/header | `/exam/[id]`, `/exam/[id]/result`, `/exam/[id]/attempts`, `/attempts/[attemptId]`, `/practice/topic/[topicSlug]` |
 
-### Backend
+`/` là landing page. `/dashboard` là điểm vào workspace. `/exams` là compatibility route và redirect tới `/dashboard`.
 
-- Nhận request HTTP từ frontend.
-- Tách flow theo route, middleware, controller và service.
-- Verify Google credential, ký và verify JWT.
-- Chấm điểm bài thi, lưu `Attempt` và `AttemptAnswer`.
-- Expose exam/question DTO cho frontend, gồm topic, subtopic, image và explanation.
-- Tổng hợp topic/subtopic analytics, progress, recent activity và recommendation.
-- Import exam từ JSON single file hoặc batch manifest.
+## Frontend responsibilities
 
-### Database
+- Render landing, workspace, focus mode, KaTeX, câu hỏi/đáp án có ảnh và explanation.
+- Đọc `NEXT_PUBLIC_API_BASE_URL` để gọi backend.
+- Lưu nháp exam bằng `localStorage`; result sau submit được lưu tạm bằng `sessionStorage` để render route result.
+- Đọc JWT ở client và gửi `Authorization: Bearer <token>` cho protected API.
+- Presentation filters như filter review chỉ thay đổi UI client, không đổi score hoặc dữ liệu backend.
 
-- Lưu exam, question, topic và subtopic.
-- Lưu user.
-- Lưu lịch sử làm bài.
-- Lưu dữ liệu phục vụ analytics theo user.
+## Backend responsibilities
 
-## App shell và focus mode
+- Cung cấp exam/topic/practice APIs; chấm điểm submit và lưu `Attempt`/`AttemptAnswer` khi request có JWT hợp lệ.
+- Verify Google credential, phát hành/verify JWT và bảo vệ history/attempt detail theo owner.
+- Tổng hợp analytics topic/subtopic, progress và recommendation rule-based.
+- Import JSON theo single file hoặc manifest batch.
 
-Frontend có global `AppNav` cho các trang thông tin và học tập tổng quan:
+## Data flows
 
-- `/`
-- `/exams`
-- `/analytics`
-- `/history`
-- `/profile`
-
-Các màn cần tập trung cao có header riêng và ẩn global `AppNav`:
-
-- `/exam/[id]`
-- `/attempts/[attemptId]`
-- `/practice/topic/[topicSlug]`
-
-Practice Topic page dùng focus layout riêng: header practice gồm brand nhỏ, số câu, tên chuyên đề, timer và nút nộp bài. Flow này giúp màn luyện tập không bị hai tầng navigation.
-
-## Luồng request tổng quát
+### Làm đề và result
 
 ```text
-Request
-→ Route
-→ Middleware
-→ Controller
-→ Service
-→ Prisma
-→ PostgreSQL
+/exam/[id]
+→ GET /api/exams/:id
+→ chọn đáp án + autosave localStorage
+→ POST /api/exam/submit
+→ backend chấm điểm, có thể lưu Attempt
+→ sessionStorage result
+→ /exam/[id]/result review
 ```
 
-## Luồng làm bài exam
+Guest vẫn submit/làm đề được. Attempt chỉ được gắn user khi JWT hợp lệ. Result route đọc session result; nếu payload không kèm chi tiết exam, frontend lấy lại `GET /api/exams/:id` để review.
+
+### History và ownership
 
 ```text
-User vào /exam/[id]
-→ Frontend gọi GET /api/exams/:id
-→ Render câu hỏi, công thức, ảnh câu hỏi và ảnh đáp án nếu có
-→ User chọn đáp án
-→ Frontend autosave localStorage
-→ User submit
-→ Frontend gọi POST /api/exam/submit
-→ Backend chấm điểm và lưu Attempt
-→ Frontend chuyển sang /exam/[id]/result
-→ Result review hiện đáp án, image, explanation và topicStats
+/history?page=n
+→ GET /api/me/attempts?page=n&limit=10
+→ authMiddleware
+→ Prisma aggregate summary toàn history + findMany skip/take theo userId
+→ items + pagination metadata + summary
 ```
 
-## Luồng lịch sử làm bài
+`/api/exams/:id/attempts` và `/api/attempts/:attemptId` cũng yêu cầu login; service chỉ trả dữ liệu của owner hiện tại.
 
-### Theo đề
+### Analytics và recommendation
 
-```text
-User đã login
-→ Frontend gọi GET /api/exams/:id/attempts
-→ Backend dùng authMiddleware
-→ Service chỉ lấy attempt của user hiện tại trong đề đó
-→ Frontend hiển thị lịch sử theo đề
-```
+Analytics dùng các endpoint protected `/api/me/topic-stats`, `/api/me/subtopic-stats`, `/api/me/progress` và `/api/me/recommendations`. Recommendation là rule-based: xếp topic yếu từ attempt thật, sau đó chọn đề phù hợp; không phải AI.
 
-### Toàn cục
+Practice theo topic dùng `GET /api/practice/topic/:topicSlug?limit=10`, chấm local ở frontend và không tạo `Attempt` hay ảnh hưởng history/analytics.
 
-```text
-User đã login
-→ Frontend gọi GET /api/me/attempts
-→ Backend dùng authMiddleware
-→ Service lấy attempts của user hiện tại trên tất cả đề
-→ Frontend hiển thị /history
-```
+## Quyết định và trade-off
 
-## Luồng chi tiết attempt
-
-```text
-User đã login
-→ Frontend gọi GET /api/attempts/:attemptId
-→ Backend dùng authMiddleware
-→ Service kiểm tra owner
-→ Trả attempt + answers + topicStats + imageUrl + optionImageUrls + explanation + subtopic
-```
-
-## Luồng topic analytics
-
-### Theo lần submit
-
-```text
-POST /api/exam/submit
-→ Backend chấm từng câu
-→ Gom nhóm theo topic
-→ Trả topicStats trong response
-```
-
-### Theo attempt detail
-
-```text
-GET /api/attempts/:attemptId
-→ Backend đọc AttemptAnswer của attempt đó
-→ Gom nhóm theo topic
-→ Trả topicStats
-```
-
-### Theo user
-
-```text
-GET /api/me/topic-stats
-→ Backend lấy attempts của user hiện tại
-→ Tổng hợp theo topic
-→ Trả topicStats đã sort
-```
-
-### Theo subtopic
-
-```text
-GET /api/me/subtopic-stats
-→ Backend lấy attempts của user hiện tại
-→ Join AttemptAnswer với Question/Subtopic/Topic
-→ Trả subtopicStats để /analytics chỉ ra nhóm kiến thức nhỏ cần ôn
-```
-
-## Luồng recommendation MVP
-
-```text
-User đã login
-→ Frontend gọi GET /api/me/recommendations
-→ Backend lấy topicStats của user
-→ Xác định chuyên đề yếu
-→ Tìm đề có nhiều câu thuộc weak topics
-→ Trả weakTopics + recommendedExams
-→ Frontend hiển thị trên Exam List, Profile và Analytics
-```
-
-Recommendation hiện vẫn là rule-based MVP, không dùng AI.
-
-## Luồng practice theo chuyên đề
-
-```text
-User vào /analytics hoặc card recommendation
-→ Bấm "Luyện chuyên đề này"
-→ Frontend mở /practice/topic/[topicSlug]
-→ Global AppNav bị ẩn để vào focus mode
-→ GET /api/practice/topic/:topicSlug?limit=10
-→ Backend tạo practice payload động từ Question theo topic
-→ Frontend render câu hỏi, KaTeX, image và option image
-→ User chọn đáp án và submit local
-→ Frontend tự chấm điểm và review local
-```
-
-Ghi chú:
-
-- Flow practice không gọi `POST /api/exam/submit`.
-- Flow practice không tạo `Attempt` và không đi vào history/analytics.
-- Explanation chỉ hiện sau khi submit local, không hiện khi đang làm.
-
-## Luồng analytics dashboard
-
-```text
-User vào /analytics
-→ Frontend kiểm tra token
-→ Gọi GET /api/me/topic-stats
-→ Gọi GET /api/me/subtopic-stats
-→ Gọi GET /api/me/progress
-→ Gọi GET /api/me/recommendations
-→ Render topic overview, subtopic weak spots, progress, weak/strong topics và recommended exams
-```
-
-## Luồng profile
-
-```text
-User vào /profile
-→ Frontend kiểm tra token
-→ Gọi GET /api/auth/me
-→ Gọi GET /api/me/progress để lấy recentAttempts
-→ Gọi GET /api/me/recommendations nếu có token
-→ Render user info, recent activity, link analytics và CTA đề nên làm tiếp
-```
-
-## Luồng import JSON
-
-```text
-npm run import:exam -- ./src/data/import/sample-exam.json
-→ Script đọc JSON
-→ Validate schema import
-→ Upsert Exam, Topic, Subtopic và Question
-→ Không tạo Attempt
-```
-
-Batch mode:
-
-```text
-npm run import:exam -- ./src/data/import/manifest.json --batch
-→ Đọc manifest
-→ Resolve path relative theo manifest
-→ Validate tất cả file
-→ Import từng exam nếu hợp lệ
-```
-
-Dry-run mode chỉ validate và in report, không ghi database.
+- **Public/workspace/focus tách route group:** giảm navigation dư trong exam/review, đổi lại cần giữ layout rules rõ ràng.
+- **Autosave/result ở browser storage:** giữ flow guest nhanh và không mở rộng API; đổi lại result session không là lịch sử bền vững.
+- **History phân trang ở database:** tránh tải toàn bộ attempt về browser; summary vẫn tính trên toàn history, không chỉ page hiện tại.
+- **Topic là lớp analytics chính, subtopic là bổ sung:** phù hợp taxonomy MVP nhưng cần dữ liệu nội dung tốt hơn trước khi nâng recommendation.
