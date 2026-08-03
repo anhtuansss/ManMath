@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from './Logo';
 import {
   fetchProtectedJson,
-  isUnauthorizedError,
 } from '../../lib/authApi';
+import { useFetch } from '../../lib/useFetch';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
 import { MathText } from './MathText';
 import { OptionImage } from './OptionImage';
@@ -17,8 +17,6 @@ import type { ExamAttemptDetailDto } from './types';
 type AttemptDetailClientProps = {
   attemptId: string;
 };
-
-type AttemptDetailErrorType = 'unauthorized' | 'generic';
 
 const formatSubmittedAt = (submittedAt: string) => {
   return new Intl.DateTimeFormat('vi-VN', {
@@ -48,51 +46,20 @@ const formatDurationSeconds = (durationSeconds: number | null) => {
 };
 
 export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
-  const [attemptDetail, setAttemptDetail] = useState<ExamAttemptDetailDto | null>(
-    null,
+  const { data: attemptDetail, loading, error, refetch } = useFetch(
+    () => fetchProtectedJson<ExamAttemptDetailDto>(`/api/attempts/${attemptId}`),
+    [attemptId]
   );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<AttemptDetailErrorType | null>(null);
-
-  const fetchAttemptDetail = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setErrorType(null);
-
-      const data = await fetchProtectedJson<ExamAttemptDetailDto>(
-        `/api/attempts/${attemptId}`,
-      );
-      setAttemptDetail(data);
-    } catch (fetchError: unknown) {
-      if (isUnauthorizedError(fetchError)) {
-        setAttemptDetail(null);
-        setErrorType('unauthorized');
-        setError('Bạn cần đăng nhập để xem lịch sử làm bài.');
-      } else {
-        setErrorType('generic');
-        setError(
-          fetchError instanceof Error
-            ? fetchError.message
-            : 'Lỗi không xác định khi tải chi tiết lần làm bài',
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    void fetchAttemptDetail();
     const unsubscribeAuthTokenChange = subscribeAuthTokenChange(() => {
-      void fetchAttemptDetail();
+      void refetch();
     });
 
     return () => {
       unsubscribeAuthTokenChange();
     };
-  }, [attemptId]);
+  }, [refetch]);
 
   if (loading) {
     return (
@@ -126,7 +93,9 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
     );
   }
 
-  if (errorType === 'unauthorized') {
+  const isUnauthorized = error !== null && error.toLowerCase().includes('đăng nhập');
+
+  if (isUnauthorized) {
     return (
       <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-10 text-text-primary">
         <section className="flex w-full max-w-xl animate-fade-in flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-card">
@@ -142,7 +111,7 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
             Chi tiết lần làm bài chỉ hiển thị cho tài khoản đã đăng nhập.
           </p>
           <Link
-            href="/"
+            href="/dashboard"
             className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Về danh sách đề
@@ -166,7 +135,7 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
           </h1>
           <p className="mt-2 text-sm text-text-secondary">{error}</p>
           <Link
-            href="/"
+            href="/dashboard"
             className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Về danh sách đề
@@ -201,7 +170,7 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
         <header className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <Link
-              href="/"
+              href="/dashboard"
               aria-label="Về trang chủ"
               className="group inline-flex cursor-pointer items-center gap-3 rounded-lg text-sm font-semibold text-text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
@@ -253,7 +222,7 @@ export function AttemptDetailClient({ attemptId }: AttemptDetailClientProps) {
               Phân tích học tập
             </Link>
             <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

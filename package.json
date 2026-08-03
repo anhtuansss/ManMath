@@ -3,10 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "description": "ManMath monorepo root. Use backend/ and frontend/ package scripts for development.",
-  "scripts": {},
-  "dependencies": {
-    "@astryxdesign/cli": "^0.1.9",
-    "@astryxdesign/core": "^0.1.9",
-    "@astryxdesign/theme-neutral": "^0.1.9"
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:frontend": "npm --prefix frontend run build"
   }
 }

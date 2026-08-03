@@ -40,17 +40,8 @@ function UserIcon(props: React.SVGProps<SVGSVGElement>) {
 export function AppSidebar() {
   const pathname = usePathname();
 
-  // Hide on focus-mode pages
-  if (
-    pathname.startsWith('/exam/') ||
-    pathname.startsWith('/attempts/') ||
-    pathname.startsWith('/practice/topic/')
-  ) {
-    return null;
-  }
-
   const links = [
-    { href: '/', label: 'Trang chủ', icon: HomeIcon, aliases: ['/exams'] },
+    { href: '/dashboard', label: 'Luyện đề', icon: HomeIcon, aliases: ['/exams'] },
     { href: '/analytics', label: 'Phân tích', icon: ChartBarIcon },
     { href: '/history', label: 'Lịch sử', icon: ClockIcon },
     { href: '/profile', label: 'Hồ sơ', icon: UserIcon },
@@ -60,7 +51,7 @@ export function AppSidebar() {
     <>
       <aside className="sticky top-0 z-40 hidden h-[100dvh] w-64 shrink-0 flex-col border-r border-border bg-surface lg:flex">
         <div className="flex h-16 shrink-0 items-center px-6">
-          <Link href="/" className="group flex items-center gap-3" aria-label="ManMath Home">
+          <Link href="/dashboard" className="group flex items-center gap-3" aria-label="ManMath workspace">
             <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
             <span className="font-[family-name:var(--font-outfit)] text-xl font-bold tracking-tight text-text-primary transition-colors group-hover:text-primary">
               ManMath

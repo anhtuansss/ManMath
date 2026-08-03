@@ -11,30 +11,13 @@ import {
 } from '../../lib/authApi';
 import { clearAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
 
+import type {
+  HistoryAttempt,
+  HistorySummary,
+  UserAttemptsResponse,
+} from '../../lib/apiTypes';
+
 type HistoryStatus = 'loading' | 'unauthorized' | 'ready' | 'error';
-
-type HistoryAttempt = {
-  attemptId: string;
-  examId: string;
-  examTitle: string;
-  score: number;
-  correctCount: number;
-  totalQuestions: number;
-  unansweredCount: number;
-  durationSeconds: number | null;
-  submittedAt: string;
-};
-
-type HistorySummary = {
-  totalAttempts: number;
-  averageScore: number;
-  bestScore: number;
-};
-
-type UserAttemptsResponse = {
-  attempts: HistoryAttempt[];
-  summary: HistorySummary;
-};
 
 const EMPTY_SUMMARY: HistorySummary = {
   totalAttempts: 0,
@@ -163,7 +146,7 @@ export function HistoryClient() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -248,7 +231,7 @@ export function HistoryClient() {
               lần luyện đề đã lưu.
             </p>
             <Link
-              href="/"
+              href="/dashboard"
               className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -294,7 +277,7 @@ export function HistoryClient() {
                   theo dõi tiến độ học tập.
                 </p>
                 <Link
-                  href="/"
+                  href="/dashboard"
                   className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Đi đến danh sách đề

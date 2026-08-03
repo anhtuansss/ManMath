@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ExamCard } from './ExamCard';
 import { Logo } from './Logo';
-import { TypewriterText } from './TypewriterText';
 
 import type {
   ExamDifficulty,
@@ -10,12 +9,10 @@ import type {
   ExamListItem,
   TopicFilterDto,
 } from './types';
-import type { UserStats } from '../../lib/userStats';
 import { Footer } from './Footer';
 
 type ExamListProps = {
   exams: ExamListItem[];
-  stats?: UserStats | null;
   draftExamId?: string | null;
   searchInput: string;
   selectedTopic: string;
@@ -53,7 +50,6 @@ const durationFilterLabels: Record<ExamDurationFilter, string> = {
 
 export function ExamList({
   exams,
-  stats,
   draftExamId,
   searchInput,
   selectedTopic,
@@ -413,9 +409,6 @@ export function ExamList({
                         <span className="text-xs font-semibold text-text-secondary">Đề thi</span>
                       </div>
                       <div className="flex shrink-0 items-center justify-between gap-6 md:justify-end">
-                        <div className="w-20 text-right">
-                          <span className="text-xs font-semibold text-text-secondary">Lượt làm</span>
-                        </div>
                         <div className="w-28 shrink-0 flex justify-center">
                           <span className="text-xs font-semibold text-text-secondary">Độ khó</span>
                         </div>

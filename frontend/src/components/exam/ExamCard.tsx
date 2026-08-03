@@ -35,9 +35,6 @@ const getExamMeta = (exam: ExamListItem) => {
 };
 
 export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
-  // We use a pseudo-random but deterministic number for 'Lượt làm' since we don't have it in API
-  const simulatedViewCount = (exam.id.charCodeAt(0) * 123 + exam.id.charCodeAt(exam.id.length - 1) * 456) % 15000 + 1000;
-
   if (variant === 'compact') {
     return (
       <article className="group cursor-pointer border-b border-border py-4 transition-colors duration-200 hover:bg-background-alt px-3 -mx-3 rounded-lg">
@@ -52,12 +49,8 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
           </div>
 
           <div className="flex shrink-0 items-center justify-between gap-6 md:justify-end">
-            <div className="hidden sm:block text-right w-20">
-              <span className="text-sm font-medium text-text-secondary">{simulatedViewCount.toLocaleString()}</span>
-            </div>
-
             <div className="w-28 shrink-0 flex justify-center">
-              <span className={`inline-flex whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold ${difficultyStyles[exam.difficulty]}`}>
+              <span className={`inline-flex whitespace-nowrap rounded-md border px-2.5 py-0.5 text-xs font-semibold ${difficultyStyles[exam.difficulty]}`}>
                 {difficultyLabels[exam.difficulty]}
               </span>
             </div>
@@ -77,7 +70,7 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
   }
 
   return (
-    <article className="group flex min-h-[220px] cursor-pointer flex-col rounded-xl border border-border bg-surface p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-card-hover">
+    <article className="group flex min-h-[200px] cursor-pointer flex-col rounded-xl border border-border bg-surface p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-card-hover">
       <div className="flex-1 min-w-0">
         <h3 className="line-clamp-2 font-[family-name:var(--font-outfit)] text-lg font-bold leading-6 text-text-primary transition-colors duration-200 group-hover:text-primary">
           {exam.title}
@@ -91,21 +84,17 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
             {difficultyLabels[exam.difficulty]}
           </span>
         </div>
-
-        <p className="mt-4 text-xs font-medium text-text-secondary">
-          Đã có {simulatedViewCount.toLocaleString()} lượt làm
-        </p>
       </div>
 
       <div className="mt-6 flex items-center justify-between gap-3">
         <Link
           href={exam.href}
           aria-label={`Bắt đầu làm bài ${exam.title}`}
-          className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.985]"
         >
           Bắt đầu làm bài
         </Link>
-        <button type="button" aria-label="Lưu đề" className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-text-muted hover:bg-background-alt hover:text-text-primary transition-colors">
+        <button type="button" aria-label="Lưu đề" className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-text-muted hover:bg-background-alt hover:text-text-primary transition-colors active:scale-[0.985]">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
         </button>
       </div>

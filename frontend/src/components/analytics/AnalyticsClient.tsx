@@ -10,81 +10,20 @@ import {
   type AuthUser,
 } from '../../lib/authApi';
 import { clearAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
+import { SubtopicAnalyticsCard } from './SubtopicAnalyticsCard';
 import type { TopicStatDto } from '../exam/types';
-
-type RecommendationWeakTopic = {
-  topicId: string | null;
-  topicName: string;
-  topicSlug: string | null;
-  correct: number;
-  total: number;
-  accuracy: number;
-  reason: string;
-};
-
-type RecommendedExam = {
-  examId: string;
-  title: string;
-  durationMinutes: number;
-  matchedWeakTopicCount: number;
-  matchedWeakQuestionCount: number;
-  reason: string;
-};
-
-type TopicStatsResponse = {
-  topicStats: TopicStatDto[];
-};
-
-type SubtopicStat = {
-  subtopicSlug: string;
-  subtopicName: string;
-  topicSlug: string;
-  topicName: string;
-  totalAnswers: number;
-  correctAnswers: number;
-  accuracy: number;
-  weak: boolean;
-};
-
-type SubtopicStatsResponse = {
-  subtopicStats: SubtopicStat[];
-};
-
-type RecommendationsResponse = {
-  weakTopics: RecommendationWeakTopic[];
-  recommendedExams: RecommendedExam[];
-};
-
-type ProgressSummary = {
-  attemptCount: number;
-  averageScore: number;
-  bestScore: number;
-  latestScore: number | null;
-};
-
-type RecentAttempt = {
-  attemptId: string;
-  examId: string;
-  examTitle: string;
-  score: number;
-  correctCount: number;
-  totalQuestions: number;
-  submittedAt: string;
-};
-
-type ProgressByAttempt = {
-  attemptId: string;
-  examTitle: string;
-  score: number;
-  accuracy: number;
-  submittedAt: string;
-};
-
-type ProgressResponse = {
-  summary: ProgressSummary;
-  recentAttempts: RecentAttempt[];
-  progressByAttempt: ProgressByAttempt[];
-};
+import type {
+  ProgressAttemptPoint as ProgressByAttempt,
+  ProgressResponse,
+  ProgressSummary,
+  RecentAttempt,
+  RecommendationsResponse,
+  RecommendationWeakTopic,
+  RecommendedExam,
+  SubtopicStat,
+  SubtopicStatsResponse,
+  TopicStatsResponse,
+} from '../../lib/apiTypes';
 
 type AnalyticsStatus = 'loading' | 'unauthorized' | 'ready' | 'error';
 
@@ -370,7 +309,7 @@ export function AnalyticsClient() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -462,7 +401,7 @@ export function AnalyticsClient() {
               chuyên đề yếu, đề gợi ý tiếp theo và tiến độ làm bài gần đây.
             </p>
             <Link
-              href="/"
+              href="/dashboard"
               className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -564,7 +503,7 @@ export function AnalyticsClient() {
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
-                  href="/"
+                  href="/dashboard"
                   className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Quay về danh sách đề
@@ -579,86 +518,7 @@ export function AnalyticsClient() {
                 ) : null}
               </div>
             </section>
-            <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-[family-name:var(--font-outfit)] text-lg font-semibold text-text-primary">
-                    Phân tích chuyên đề nhỏ
-                  </h2>
-                  <p className="mt-1 text-sm text-text-secondary">
-                    Xem các mảng kiến thức nhỏ cần ôn kỹ hơn trong từng chuyên đề.
-                  </p>
-                </div>
-                <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-text-secondary">
-                  Top {weakSubtopics.length}
-                </span>
-              </div>
-
-              {weakSubtopics.length === 0 ? (
-                <p className="mt-4 text-sm leading-6 text-text-secondary">
-                  Chưa có đủ dữ liệu subtopic. Hãy làm thêm các đề đã được gắn subtopic để xem phân tích chi tiết hơn.
-                </p>
-              ) : (
-                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {weakSubtopics.map((subtopic) => {
-                    const accuracy = clampAccuracy(subtopic.accuracy);
-
-                    return (
-                      <div
-                        key={subtopic.subtopicSlug}
-                        className="rounded-lg border border-border bg-background p-4"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-text-primary">
-                              {subtopic.subtopicName}
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                              {subtopic.topicName} · {subtopic.correctAnswers}/{subtopic.totalAnswers} câu đúng
-                            </p>
-                          </div>
-                          <span
-                            className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${subtopic.weak
-                                ? 'border-warning/30 bg-warning/10 text-warning'
-                                : 'border-success-border bg-success-light text-success'
-                              }`}
-                          >
-                            {accuracy}%
-                          </span>
-                        </div>
-
-                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-background-alt">
-                          <div
-                            className={`h-full rounded-full ${subtopic.weak ? 'bg-warning' : 'bg-success'
-                              }`}
-                            style={{ width: `${accuracy}%` }}
-                          />
-                        </div>
-
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {subtopic.weak ? (
-                            <span className="rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">
-                              Cần ôn lại
-                            </span>
-                          ) : (
-                            <span className="rounded-full border border-success-border bg-success-light px-2.5 py-1 text-xs font-semibold text-success">
-                              Đang ổn định
-                            </span>
-                          )}
-
-                          <Link
-                            href={`/practice/topic/${subtopic.topicSlug}`}
-                            className="inline-flex h-7 items-center justify-center rounded-full border border-border bg-surface px-2.5 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                          >
-                            Luyện topic
-                          </Link>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </section>
+            <SubtopicAnalyticsCard weakSubtopics={weakSubtopics} />
 
             <div className="grid gap-6 lg:grid-cols-2">
               <section className="rounded-xl border border-border bg-surface p-5 shadow-card">

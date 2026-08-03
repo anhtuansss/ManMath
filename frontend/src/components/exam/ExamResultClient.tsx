@@ -21,8 +21,8 @@ import { useRouter } from 'next/navigation';
 import { MathText } from './MathText';
 import { Logo } from './Logo';
 import { OptionImage } from './OptionImage';
-import { QuestionImage } from './QuestionImage';
 import { ResultQuestionNavigator } from './ResultQuestionNavigator';
+import { getReviewStatus, ReviewQuestionCard } from './ReviewQuestionCard';
 import type { ExamDetailDto, ExamResultSession, QuestionDto } from './types';
 import { API_BASE_URL } from '../../config/api';
 import {
@@ -34,48 +34,6 @@ import {
 
 type ExamResultClientProps = {
   examId: string;
-};
-
-type ReviewStatus = 'correct' | 'incorrect' | 'unanswered';
-
-const getReviewStatus = (
-  question: QuestionDto,
-  selectedOptionIndex: number | undefined,
-): ReviewStatus => {
-  if (selectedOptionIndex === undefined) return 'unanswered';
-
-  const correctOptionIndex = question.options.indexOf(question.correctAnswer);
-  return selectedOptionIndex === correctOptionIndex ? 'correct' : 'incorrect';
-};
-
-const reviewBadgeClass: Record<ReviewStatus, string> = {
-  correct: 'border-success-border bg-success-light text-success',
-  incorrect: 'border-error-border bg-error-light text-error',
-  unanswered: 'border-warning-border bg-warning-light text-warning',
-};
-
-const reviewAccentClass: Record<ReviewStatus, string> = {
-  correct: 'border-l-[6px] border-l-success',
-  incorrect: 'border-l-[6px] border-l-error',
-  unanswered: 'border-l-[6px] border-l-warning',
-};
-
-const reviewHeaderClass: Record<ReviewStatus, string> = {
-  correct: 'bg-success/5',
-  incorrect: 'bg-error/5',
-  unanswered: 'bg-warning/5',
-};
-
-const reviewAnswerClass: Record<ReviewStatus, string> = {
-  correct: 'border-success-border bg-success-light/50',
-  incorrect: 'border-error-border bg-error-light/50',
-  unanswered: 'border-warning-border bg-warning-light/50',
-};
-
-const reviewLabel: Record<ReviewStatus, string> = {
-  correct: 'Đúng',
-  incorrect: 'Sai',
-  unanswered: 'Chưa làm',
 };
 
 const getScoreLabel = (score: number) => {
@@ -101,7 +59,7 @@ function ResultEmptyState({ examId }: ExamResultClientProps) {
     <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-10 text-text-primary">
       <section className="w-full max-w-xl animate-fade-in rounded-xl border border-border bg-surface p-8 shadow-card">
         {/* Logo */}
-        <Link href="/" aria-label="Về trang chủ" className="group flex cursor-pointer items-center gap-3 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+        <Link href="/dashboard" aria-label="Về trang luyện đề" className="group flex cursor-pointer items-center gap-3 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
           <Logo className="h-10 w-10 transition-transform group-hover:scale-105" />
           <div>
             <p className="font-[family-name:var(--font-outfit)] text-base font-bold text-text-primary transition-colors group-hover:text-primary">ManMath</p>
@@ -130,7 +88,7 @@ function ResultEmptyState({ examId }: ExamResultClientProps) {
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            href="/"
+            href="/dashboard"
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Về danh sách đề
@@ -329,7 +287,7 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
         <header className="flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             {/* Logo */}
-            <Link href="/" aria-label="Về trang chủ" className="group flex cursor-pointer items-center gap-3 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+            <Link href="/dashboard" aria-label="Về trang luyện đề" className="group flex cursor-pointer items-center gap-3 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
               <Logo className="h-10 w-10 transition-transform group-hover:scale-105" />
               <div>
                 <p className="font-[family-name:var(--font-outfit)] text-base font-bold text-text-primary transition-colors group-hover:text-primary">ManMath</p>
@@ -379,7 +337,7 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
               Xem lịch sử
             </Link>
             <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex h-10 cursor-pointer items-center gap-2 justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -545,110 +503,14 @@ export function ExamResultClient({ examId }: ExamResultClientProps) {
 
           <div className="mt-6 flex flex-col-reverse items-start gap-6 lg:flex-row">
             <div className="min-w-0 flex-1 space-y-4">
-              {exam?.questions.map((question, index) => {
-                const selectedOptionIndex = resultSession.answers[question.id];
-                const selectedAnswer =
-                  selectedOptionIndex !== undefined
-                    ? question.options[selectedOptionIndex] ?? 'Đáp án không hợp lệ'
-                    : 'Chưa chọn đáp án';
-                const selectedOptionImageUrl =
-                  selectedOptionIndex !== undefined
-                    ? question.optionImageUrls?.[selectedOptionIndex] ?? null
-                    : null;
-                const correctOptionIndex = question.options.indexOf(question.correctAnswer);
-                const correctOptionImageUrl =
-                  correctOptionIndex >= 0
-                    ? question.optionImageUrls?.[correctOptionIndex] ?? null
-                    : null;
-                const status = getReviewStatus(question, selectedOptionIndex);
-
-                return (
-                  <article
-                    id={`question-${question.id}`}
-                    key={question.id}
-                    className={`overflow-hidden rounded-xl border border-border bg-surface shadow-card ${reviewAccentClass[status]}`}
-                  >
-                    <div className={`flex items-center justify-between border-b border-border px-4 py-2.5 ${reviewHeaderClass[status]}`}>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-text-primary shadow-sm border border-border">
-                          {index + 1}
-                        </span>
-                        <span className="text-xs font-medium text-text-secondary">
-                          ID: {question.id}
-                        </span>
-                      </div>
-                      <span
-                        className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${reviewBadgeClass[status]}`}
-                      >
-                        {reviewLabel[status]}
-                      </span>
-                    </div>
-
-                    <div className="p-4 sm:p-5">
-                      <MathText
-                        as="p"
-                        text={question.question}
-                        className="text-sm sm:text-base leading-7 text-text-primary"
-                      />
-
-                      <QuestionImage
-                        imageUrl={question.imageUrl}
-                        alt={`Hình minh họa câu ${index + 1}`}
-                        className="mt-3 sm:mt-4"
-                      />
-
-                      <div className="mt-4 grid gap-3 sm:gap-4 md:grid-cols-2">
-                        <div
-                          className={`rounded-lg border p-3 sm:p-4 ${reviewAnswerClass[status]}`}
-                        >
-                          <p className="text-xs font-semibold text-text-secondary">
-                            Đáp án của bạn
-                          </p>
-                          <MathText
-                            as="p"
-                            text={selectedAnswer}
-                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                          />
-                          <OptionImage
-                            imageUrl={selectedOptionImageUrl}
-                            alt={`Hình minh họa đáp án bạn chọn ở câu ${index + 1}`}
-                            className="mt-2 sm:mt-3"
-                          />
-                        </div>
-
-                        <div className="rounded-lg border border-border bg-background p-3 sm:p-4">
-                          <p className="text-xs font-semibold text-text-secondary">
-                            Đáp án đúng
-                          </p>
-                          <MathText
-                            as="p"
-                            text={question.correctAnswer}
-                            className="mt-1.5 sm:mt-2 text-sm font-medium leading-6 text-text-primary"
-                          />
-                          <OptionImage
-                            imageUrl={correctOptionImageUrl}
-                            alt={`Hình minh họa đáp án đúng ở câu ${index + 1}`}
-                            className="mt-2 sm:mt-3"
-                          />
-                        </div>
-                      </div>
-
-                      {question.explanation ? (
-                        <div className="mt-4 sm:mt-5 rounded-lg bg-background-alt p-3 sm:p-4">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-1.5 sm:mb-2">
-                            Lời giải
-                          </p>
-                          <MathText
-                            as="div"
-                            text={question.explanation}
-                            className="text-sm leading-6 text-text-primary"
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                  </article>
-                );
-              })}
+              {exam?.questions.map((question, index) => (
+                <ReviewQuestionCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  selectedOptionIndex={resultSession.answers[question.id]}
+                />
+              ))}
             </div>
 
             {exam && (

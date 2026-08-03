@@ -12,56 +12,14 @@ import {
 } from '../../lib/authApi';
 import { clearAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
 
+import type {
+  ProgressResponse,
+  RecentAttempt,
+  RecommendationsResponse,
+  RecommendedExam,
+} from '../../lib/apiTypes';
+
 type ProfileStatus = 'loading' | 'unauthorized' | 'ready' | 'error';
-
-type RecommendedExam = {
-  examId: string;
-  title: string;
-  durationMinutes: number;
-  matchedWeakTopicCount: number;
-  matchedWeakQuestionCount: number;
-  reason: string;
-};
-
-type RecommendationsResponse = {
-  weakTopics: Array<{
-    topicId: string | null;
-    topicName: string;
-    topicSlug: string | null;
-    correct: number;
-    total: number;
-    accuracy: number;
-    reason: string;
-  }>;
-  recommendedExams: RecommendedExam[];
-};
-
-type RecentAttempt = {
-  attemptId: string;
-  examId: string;
-  examTitle: string;
-  score: number;
-  correctCount: number;
-  totalQuestions: number;
-  submittedAt: string;
-};
-
-type ProgressResponse = {
-  summary: {
-    attemptCount: number;
-    averageScore: number;
-    bestScore: number;
-    latestScore: number | null;
-  };
-  recentAttempts: RecentAttempt[];
-  progressByAttempt: Array<{
-    attemptId: string;
-    examTitle: string;
-    score: number;
-    accuracy: number;
-    submittedAt: string;
-  }>;
-};
 
 const formatSubmittedAt = (submittedAt: string): string => {
   return new Date(submittedAt).toLocaleString('vi-VN', {
@@ -210,7 +168,7 @@ export function ProfileClient() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -268,7 +226,7 @@ export function ProfileClient() {
               Hãy đăng nhập bằng Google ở trang danh sách đề để xem thông tin tài khoản.
             </p>
             <Link
-              href="/"
+              href="/dashboard"
               className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Quay về danh sách đề
@@ -328,7 +286,7 @@ export function ProfileClient() {
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/"
+                  href="/dashboard"
                   className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Quay về danh sách đề

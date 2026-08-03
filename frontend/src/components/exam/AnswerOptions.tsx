@@ -30,11 +30,11 @@ export function AnswerOptions({
             disabled={isTimeUp}
             onClick={() => onSelectAnswer(question.id, choiceIndex)}
             className={`
-              group flex w-full cursor-pointer items-start gap-4 rounded-xl border p-4 text-left transition-all duration-200
+              group flex w-full cursor-pointer items-start gap-4 rounded-xl border p-4 text-left transition-all duration-200 active:scale-[0.985]
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
               disabled:cursor-not-allowed disabled:border-border disabled:bg-background-alt disabled:text-text-muted
               ${isSelected
-                ? 'border-primary bg-primary-50 text-text-primary shadow-ring-primary'
+                ? 'border-primary bg-primary-light/30 text-text-primary'
                 : 'border-border bg-surface text-text-primary hover:border-border-hover hover:bg-background-alt'
               }
             `}
@@ -44,7 +44,7 @@ export function AnswerOptions({
                 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold transition-all duration-200
                 ${isSelected
                   ? 'border-primary bg-primary text-white'
-                  : 'border-border bg-background text-text-secondary group-hover:border-primary/40 group-hover:text-primary'
+                  : 'border-border bg-background text-text-secondary group-hover:border-primary-hover group-hover:text-primary'
                 }
               `}
               aria-hidden="true"

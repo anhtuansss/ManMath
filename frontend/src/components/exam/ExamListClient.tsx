@@ -11,7 +11,6 @@ import type {
   TopicsResponseDto,
 } from './types';
 import { API_BASE_URL } from '../../config/api';
-import { getUserStats, type UserStats } from '../../lib/userStats';
 
 const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
   ...exam,
@@ -247,7 +246,6 @@ export function ExamListClient() {
   const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [topicsError, setTopicsError] = useState<string | null>(null);
-  const [stats, setStats] = useState<UserStats | null>(null);
   const [draftExamId, setDraftExamId] = useState<string | null>(null);
   const [searchInput, setSearchInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -371,7 +369,6 @@ export function ExamListClient() {
   useEffect(() => {
     void fetchExams({ initialLoad: true });
     void fetchTopics();
-    setStats(getUserStats());
 
     try {
       for (let i = 0; i < localStorage.length; i++) {
@@ -506,7 +503,6 @@ export function ExamListClient() {
   return (
     <ExamList
       exams={exams}
-      stats={stats}
       draftExamId={draftExamId}
       searchInput={searchInput}
       selectedTopic={selectedTopic}

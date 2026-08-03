@@ -22,7 +22,7 @@ export function ExamHeader({
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div className="flex min-w-0 items-center gap-4">
           <Link
-            href="/"
+            href="/dashboard"
             aria-label="Về trang chủ"
             className="group flex shrink-0 cursor-pointer items-center gap-2 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >

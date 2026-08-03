@@ -42,7 +42,7 @@ export function ResultQuestionNavigator({ questions, answers }: Props) {
             <button
               key={q.id}
               onClick={() => scrollToQuestion(q.id)}
-              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${navButtonClass[status]}`}
+              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition-all duration-200 active:scale-[0.9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${navButtonClass[status]}`}
               aria-label={`Câu ${index + 1} - ${status}`}
             >
               {index + 1}
