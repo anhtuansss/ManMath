@@ -20,7 +20,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0">
           <AppHeader />
-          <div id="main-content" tabIndex={-1} className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1">
             {children}
           </div>
         </div>

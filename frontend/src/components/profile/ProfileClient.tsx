@@ -87,7 +87,7 @@ export function ProfileClient() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8">
+    <main id="main-content" tabIndex={-1} className="min-h-[100dvh] bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-6xl animate-fade-in flex-col gap-6">
         <header className="border-b border-border pb-5">
           <p className="workspace-eyebrow">Hồ sơ học tập</p>

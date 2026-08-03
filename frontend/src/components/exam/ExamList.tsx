@@ -151,7 +151,7 @@ export function ExamList({
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
-      <main className="flex-1 bg-background pb-16 text-text-primary">
+      <main id="main-content" tabIndex={-1} className="flex-1 bg-background pb-16 text-text-primary">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <header className="relative pb-7">
             <div
@@ -162,13 +162,13 @@ export function ExamList({
             <div className="flex flex-col gap-5 pt-1 sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0 max-w-2xl">
                 <div>
-                  <p className="workspace-eyebrow">
+                  <p className="workspace-eyebrow text-[13px] font-medium leading-5">
                     {isAuthenticated ? 'Không gian luyện tập' : 'Luyện đề Toán THPT'}
                   </p>
-                  <h1 className="workspace-page-title mt-1 text-text-primary">
+                  <h1 className="workspace-page-title mt-1 text-[26px] font-bold leading-[1.2] tracking-[-0.025em] text-text-primary sm:text-[28px] lg:text-[32px]">
                     {isAuthenticated ? 'Tiếp tục nhịp luyện tập của bạn' : 'Chọn một đề để bắt đầu'}
                   </h1>
-                  <p className="workspace-page-description mt-2">
+                  <p className="workspace-page-description mt-2 text-[15px] font-normal leading-6">
                     {isAuthenticated ? 'Xem đề phù hợp hoặc tiếp tục bài đang dở.' : 'Bạn có thể làm đề ngay, không cần đăng nhập.'}
                   </p>
                 </div>
