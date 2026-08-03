@@ -11,7 +11,7 @@ export function AppHeader() {
       <div className="flex items-center lg:hidden">
         <Link href="/dashboard" className="group flex items-center gap-2" aria-label="ManMath workspace">
           <Logo className="h-6 w-6 transition-transform group-hover:scale-105" />
-          <span className="font-[family-name:var(--font-outfit)] font-bold text-text-primary transition-colors group-hover:text-primary">
+          <span className="font-semibold text-text-primary transition-colors group-hover:text-primary">
             ManMath
           </span>
         </Link>

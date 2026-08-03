@@ -93,6 +93,10 @@ export type HistorySummary = {
 };
 
 export type UserAttemptsResponse = {
-  attempts: HistoryAttempt[];
+  items: HistoryAttempt[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
   summary: HistorySummary;
 };

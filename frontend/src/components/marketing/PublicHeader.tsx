@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '../exam/Logo';
+import { LandingAuthActions } from './LandingAuthActions';
 
 export function PublicHeader() {
   return (
@@ -16,9 +17,7 @@ export function PublicHeader() {
           <Link href="/about" className="rounded-sm transition-colors hover:text-text-primary">Về ManMath</Link>
         </nav>
 
-        <Link href="/dashboard" className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-hover">
-          Bắt đầu luyện đề
-        </Link>
+        <LandingAuthActions showSecondary={false} />
       </div>
     </header>
   );

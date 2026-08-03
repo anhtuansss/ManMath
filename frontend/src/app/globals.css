@@ -14,24 +14,24 @@
 
   --font-outfit: var(--font-family-heading);
 
-  /* ── Brand Colors (Desaturated Indigo/Teal Academic Palette) ── */
-  --color-primary: #4F46E5;
-  --color-primary-hover: #4338CA;
-  --color-primary-light: #EEF2FF;
-  --color-primary-50: #FAF9F6;
+  /* ── Brand Colors (Concept 2 Blue) ── */
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-primary-light: #DBEAFE;
+  --color-primary-50: #EFF6FF;
 
-  --color-accent: #0F766E;
-  --color-accent-hover: #0D9488;
-  --color-accent-light: #F0FDF4;
+  --color-accent: #3B82F6;
+  --color-accent-hover: #2563EB;
+  --color-accent-light: #EFF6FF;
 
   /* ── Surfaces ── */
   --color-surface: #FFFFFF;
   --color-surface-raised: #FFFFFF;
-  --color-background: #F7F8FC;
-  --color-background-alt: #EEF2F7;
+  --color-background: #F8FAFC;
+  --color-background-alt: #F1F5F9;
 
   /* ── Borders ── */
-  --color-border: #DCE3EC;
+  --color-border: #E2E8F0;
   --color-border-hover: #CBD5E1;
 
   /* ── Text ── */
@@ -40,23 +40,23 @@
   --color-text-muted: #64748B;
 
   /* ── Semantic (Muted) ── */
-  --color-success: #059669;
+  --color-success: #10B981;
   --color-success-light: #ECFDF5;
   --color-success-border: #A7F3D0;
 
-  --color-error: #DC2626;
+  --color-error: #EF4444;
   --color-error-light: #FEF2F2;
-  --color-error-border: #FCA5A5;
+  --color-error-border: #FECACA;
 
-  --color-warning: #D97706;
+  --color-warning: #F59E0B;
   --color-warning-light: #FFFBEB;
-  --color-warning-border: #FCD34D;
+  --color-warning-border: #FDE68A;
 
   /* ── Shadows (Extremely soft and tinted) ── */
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.03), 0 1px 3px rgba(15, 23, 42, 0.01);
   --shadow-card-hover: 0 4px 10px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.02);
   --shadow-header: 0 1px 2px rgba(15, 23, 42, 0.03);
-  --shadow-ring-primary: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  --shadow-ring-primary: 0 0 0 3px rgba(59, 130, 246, 0.15);
 
   /* ── Border Radius ── */
   --radius-sm: 6px;
@@ -124,6 +124,139 @@ body {
   color: var(--color-text-primary);
 }
 
+/* Workspace typography stays separate from the public landing and focus mode. */
+.workspace-shell {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace-shell h1 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+/* Legacy heading utilities remain in focus components, but workspace text
+   inherits the Inter/system stack instead of the old display-font variable. */
+.workspace-shell [class*="font-[family-name:var(--font-outfit)]"] {
+  font-family: inherit;
+}
+
+.workspace-shell h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.75rem;
+}
+
+.workspace-shell h3:not(.workspace-sidebar-label) {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.375rem;
+}
+
+.workspace-shell button,
+.workspace-shell a.inline-flex {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.workspace-shell [class~="text-xs"][class~="text-text-secondary"]:not(.workspace-badge-text):not(.workspace-sidebar-label) {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .workspace-shell h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .workspace-shell h1 {
+    font-size: 2rem;
+  }
+}
+
+.workspace-shell .workspace-eyebrow {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.workspace-shell .workspace-page-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .workspace-shell .workspace-page-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .workspace-shell .workspace-page-title {
+    font-size: 2rem;
+  }
+}
+
+.workspace-shell .workspace-page-description {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+}
+
+.workspace-shell .workspace-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.75rem;
+}
+
+.workspace-shell .workspace-item-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.375rem;
+}
+
+.workspace-shell .workspace-metadata {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25rem;
+}
+
+.workspace-shell .workspace-sidebar-label {
+  color: var(--color-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1rem;
+  text-transform: uppercase;
+}
+
+.workspace-shell .workspace-button-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.workspace-shell .workspace-badge-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1rem;
+}
+
 /* ── Focus ring utility ── */
 
 *:focus-visible {
@@ -131,11 +264,24 @@ body {
   outline-offset: 2px;
 }
 
-/* We override the above for buttons/links that define their own focus ring */
-button:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible {
-  outline: none;
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  padding: 0.75rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 /* ── KaTeX ── */

@@ -106,11 +106,16 @@ export type UserAttemptHistorySummaryDto = {
 };
 
 export type UserAttemptHistoryDto = {
-  attempts: UserAttemptHistoryItemDto[];
+  items: UserAttemptHistoryItemDto[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
   summary: UserAttemptHistorySummaryDto;
 };
 
 export type GetUserAttemptsFilters = {
+  page?: number;
   limit?: number;
   examId?: string;
 };
@@ -122,7 +127,7 @@ const MAX_PROGRESS_ATTEMPTS = 10;
 const MAX_RECENT_RECOMMENDATION_ATTEMPTS = 3;
 const WEAK_TOPIC_ACCURACY_THRESHOLD = 85;
 const WEAK_SUBTOPIC_ACCURACY_THRESHOLD = 70;
-const DEFAULT_ATTEMPT_HISTORY_LIMIT = 20;
+const DEFAULT_ATTEMPT_HISTORY_LIMIT = 10;
 
 const buildWeakTopicReason = (topicStat: TopicStatDto): string => {
   if (topicStat.accuracy < 40) {
@@ -704,47 +709,48 @@ export const getUserAttemptHistory = async (
     ...(filters?.examId ? { examId: filters.examId } : {}),
   };
 
-  const [summaryAggregate, attempts] = await prisma.$transaction([
-    prisma.attempt.aggregate({
-      where,
-      _avg: {
-        score: true,
-      },
-      _max: {
-        score: true,
-      },
-      _count: {
-        _all: true,
-      },
-    }),
-    prisma.attempt.findMany({
-      where,
-      orderBy: {
-        submittedAt: 'desc',
-      },
-      take,
-      select: {
-        id: true,
-        examId: true,
-        score: true,
-        correctCount: true,
-        totalQuestions: true,
-        unansweredCount: true,
-        durationSeconds: true,
-        submittedAt: true,
-        exam: {
-          select: {
-            title: true,
-          },
+  const summaryAggregate = await prisma.attempt.aggregate({
+    where,
+    _avg: {
+      score: true,
+    },
+    _max: {
+      score: true,
+    },
+    _count: {
+      _all: true,
+    },
+  });
+  const totalItems = summaryAggregate._count._all;
+  const totalPages = Math.max(1, Math.ceil(totalItems / take));
+  const requestedPage = filters?.page ?? 1;
+  const page = Math.min(requestedPage, totalPages);
+  const attempts = await prisma.attempt.findMany({
+    where,
+    orderBy: {
+      submittedAt: 'desc',
+    },
+    skip: (page - 1) * take,
+    take,
+    select: {
+      id: true,
+      examId: true,
+      score: true,
+      correctCount: true,
+      totalQuestions: true,
+      unansweredCount: true,
+      durationSeconds: true,
+      submittedAt: true,
+      exam: {
+        select: {
+          title: true,
         },
       },
-    }),
-  ]);
-
-  const totalAttempts = summaryAggregate._count._all;
+    },
+  });
 
   return {
-    attempts: attempts.map((attempt) => ({
+    items: attempts.map((attempt) => ({
       attemptId: attempt.id,
       examId: attempt.examId,
       examTitle: attempt.exam.title,
@@ -755,14 +761,18 @@ export const getUserAttemptHistory = async (
       durationSeconds: attempt.durationSeconds,
       submittedAt: attempt.submittedAt.toISOString(),
     })),
+    page,
+    limit: take,
+    totalItems,
+    totalPages,
     summary: {
-      totalAttempts,
+      totalAttempts: totalItems,
       averageScore:
-        totalAttempts > 0 && typeof summaryAggregate._avg.score === 'number'
+        totalItems > 0 && typeof summaryAggregate._avg.score === 'number'
           ? Math.round(summaryAggregate._avg.score * 10) / 10
           : 0,
       bestScore:
-        totalAttempts > 0 && typeof summaryAggregate._max.score === 'number'
+        totalItems > 0 && typeof summaryAggregate._max.score === 'number'
           ? summaryAggregate._max.score
           : 0,
     },

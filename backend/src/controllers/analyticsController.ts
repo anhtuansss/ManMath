@@ -107,6 +107,8 @@ const parseOptionalPositiveInteger = (
   return parsedValue;
 };
 
+const MAX_ATTEMPT_HISTORY_LIMIT = 50;
+
 export const getMyAttempts = async (
   req: Request,
   res: Response,
@@ -117,12 +119,18 @@ export const getMyAttempts = async (
       return;
     }
 
+    const page = parseOptionalPositiveInteger(req.query.page);
     const limit = parseOptionalPositiveInteger(req.query.limit);
     const examId =
       typeof req.query.examId === 'string' ? req.query.examId.trim() : undefined;
     const sort = typeof req.query.sort === 'string' ? req.query.sort.trim() : undefined;
 
-    if (limit === 'invalid') {
+    if (page === 'invalid') {
+      res.status(400).json({ message: 'page khong hop le' });
+      return;
+    }
+
+    if (limit === 'invalid' || (typeof limit === 'number' && limit > MAX_ATTEMPT_HISTORY_LIMIT)) {
       res.status(400).json({ message: 'limit khong hop le' });
       return;
     }
@@ -133,6 +141,7 @@ export const getMyAttempts = async (
     }
 
     const attempts = await getUserAttemptHistory(req.user.userId, {
+      page: page === null ? undefined : page,
       limit: limit === null ? undefined : limit,
       examId: examId && examId.length > 0 ? examId : undefined,
     });

@@ -53,13 +53,13 @@ export function AppSidebar() {
         <div className="flex h-16 shrink-0 items-center px-6">
           <Link href="/dashboard" className="group flex items-center gap-3" aria-label="ManMath workspace">
             <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
-            <span className="font-[family-name:var(--font-outfit)] text-xl font-bold tracking-tight text-text-primary transition-colors group-hover:text-primary">
+            <span className="text-xl font-semibold tracking-tight text-text-primary transition-colors group-hover:text-primary">
               ManMath
             </span>
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-6">
+        <nav className="flex-1 space-y-1 px-3 py-6" aria-label="Điều hướng workspace">
           {links.map((link) => {
             const isActive = pathname === link.href || link.aliases?.includes(pathname);
             const Icon = link.icon;
@@ -68,6 +68,7 @@ export function AppSidebar() {
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={isActive ? 'page' : undefined}
                 className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-text-secondary hover:bg-background-alt hover:text-text-primary'
@@ -82,7 +83,7 @@ export function AppSidebar() {
       </aside>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-surface/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-surface/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden" aria-label="Điều hướng workspace trên di động">
         {links.map((link) => {
           const isActive = pathname === link.href || link.aliases?.includes(pathname);
           const Icon = link.icon;
@@ -91,7 +92,8 @@ export function AppSidebar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex min-w-[64px] flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 transition-colors ${isActive
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex min-h-11 min-w-[64px] flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 transition-colors ${isActive
                   ? 'text-primary'
                   : 'text-text-secondary hover:text-text-primary'
                 }`}

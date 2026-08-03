@@ -11,6 +11,7 @@ import type {
   TopicsResponseDto,
 } from './types';
 import { API_BASE_URL } from '../../config/api';
+import { getAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
 
 const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
   ...exam,
@@ -257,6 +258,7 @@ export function ExamListClient() {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedSource, setSelectedSource] = useState('');
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const selectedTopicData = useMemo(
     () => topics.find((topic) => topic.slug === selectedTopic) ?? null,
@@ -381,6 +383,13 @@ export function ExamListClient() {
     } catch {
       // safe localStorage access
     }
+  }, []);
+
+  useEffect(() => {
+    const syncAuthState = () => setIsAuthenticated(getAuthToken() !== null);
+
+    syncAuthState();
+    return subscribeAuthTokenChange(syncAuthState);
   }, []);
 
   useEffect(() => {
@@ -526,6 +535,7 @@ export function ExamListClient() {
       onYearChange={setSelectedYear}
       onSourceChange={setSelectedSource}
       onClearFilters={handleClearFilters}
+      isAuthenticated={isAuthenticated}
     />
   );
 }

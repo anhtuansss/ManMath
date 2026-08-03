@@ -13,11 +13,16 @@ type WorkspaceLayoutProps = {
 export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   return (
     <AuthProvider>
-      <div className="flex min-h-[100dvh] bg-background">
+      <div className="workspace-shell flex min-h-[100dvh] bg-background">
+        <a href="#main-content" className="skip-link">
+          Bỏ qua điều hướng
+        </a>
         <AppSidebar />
-        <div className="flex min-w-0 flex-1 flex-col pb-16 lg:pb-0">
+        <div className="flex min-w-0 flex-1 flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0">
           <AppHeader />
-          {children}
+          <div id="main-content" tabIndex={-1} className="min-w-0 flex-1">
+            {children}
+          </div>
         </div>
       </div>
     </AuthProvider>

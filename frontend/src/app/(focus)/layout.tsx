@@ -1,3 +1,5 @@
+import 'katex/dist/katex.min.css';
+
 type FocusLayoutProps = {
   children: React.ReactNode;
 };
