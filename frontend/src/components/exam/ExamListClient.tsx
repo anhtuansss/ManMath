@@ -20,7 +20,7 @@ const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
 
 function ExamListSkeleton() {
   return (
-    <main className="min-h-screen bg-background text-text-primary">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-text-primary">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <header className="pb-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -137,7 +137,7 @@ type ExamListErrorProps = {
 
 function ExamListError({ message, onRetry }: ExamListErrorProps) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-text-primary">
+    <main id="main-content" tabIndex={-1} className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-text-primary">
       <section className="w-full max-w-xl animate-fade-in rounded-xl border border-error-border bg-surface p-8 shadow-card">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-error-light">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-error">
@@ -188,7 +188,7 @@ type ExamListEmptyProps = {
 
 function ExamListEmpty({ onRetry }: ExamListEmptyProps) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-text-primary">
+    <main id="main-content" tabIndex={-1} className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-text-primary">
       <section className="w-full max-w-xl animate-fade-in rounded-xl border border-border bg-surface p-8 shadow-card">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-primary shadow-card">
           <span className="text-2xl font-bold text-white">M</span>
