@@ -18,6 +18,10 @@ enum QuestionType {
   short_answer
 }
 
+enum AttemptScoringPolicy {
+  vietnam_thpt_math_2025
+}
+
 enum AuthProvider {
   google
   password
@@ -118,6 +122,9 @@ model Attempt {
   userId          String?
   user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   score           Float
+  scoringPolicy   AttemptScoringPolicy?
+  scoreUnits      Int?
+  maxScoreUnits   Int?
   correctCount    Int
   totalQuestions  Int
   unansweredCount Int
@@ -137,8 +144,14 @@ model AttemptAnswer {
   attempt             Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
   questionId          Int
   selectedOptionIndex Int?
-  correctOptionIndex  Int
+  correctOptionIndex  Int?
   isCorrect           Boolean
+  questionExternalId  String?
+  questionType        QuestionType?
+  response            Json?
+  awardedScoreUnits   Int?
+  maxScoreUnits       Int?
+  isFullyCorrect      Boolean?
 
   @@index([attemptId])
   @@index([questionId])

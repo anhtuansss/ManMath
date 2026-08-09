@@ -2,12 +2,16 @@ import { Router } from 'express';
 import {
   getAttemptDetail,
   getExamAttempts,
+  getExamContentV2,
   getExamDetail,
   getExamList,
   getHealth,
   getTopicPractice,
   getTopicList,
+  createExamContentAttemptV2,
+  getExamContentAttemptReceiptV2,
   submitExamController,
+  gradeExamContentV2,
 } from '../controllers/examController';
 import { 
   authMiddleware, 
@@ -23,6 +27,7 @@ examRouter.get('/health', getHealth);
 examRouter.get('/exams', getExamList);
 examRouter.get('/topics', getTopicList);
 examRouter.get('/practice/topic/:topicSlug', getTopicPractice);
+examRouter.get('/v2/exams/:id', getExamContentV2);
 
 // Lấy danh sách các lần thi đã nộp cho một đề thi cụ thể
 examRouter.get('/exams/:id/attempts', authMiddleware, getExamAttempts);
@@ -35,3 +40,15 @@ examRouter.get('/attempts/:attemptId', authMiddleware, getAttemptDetail);
 
 // Xử lý nộp bài thi, tính điểm và trả về kết quả
 examRouter.post('/exam/submit', optionalAuthMiddleware, submitExamController);
+
+examRouter.post('/v2/exams/:id/grade', gradeExamContentV2);
+examRouter.post(
+  '/v2/exams/:id/attempts',
+  optionalAuthMiddleware,
+  createExamContentAttemptV2,
+);
+examRouter.get(
+  '/v2/attempts/:attemptId',
+  authMiddleware,
+  getExamContentAttemptReceiptV2,
+);
