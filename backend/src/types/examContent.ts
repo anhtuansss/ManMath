@@ -22,9 +22,7 @@ export type ScoreUnits = number & {
   readonly [scoreUnitsBrand]: true;
 };
 
-export type ScoringPolicyId =
-  | 'vietnam_thpt_math_2025'
-  | 'manmath_equal_weight_v1';
+export type ScoringPolicyId = 'vietnam_thpt_math_2025';
 
 export type QuestionSection = 1 | 2 | 3;
 
@@ -154,7 +152,7 @@ export type SubmittedResponse =
 
 export type GradingResult = {
   readonly questionId: QuestionId;
-  readonly response: SubmittedResponse;
+  readonly response?: SubmittedResponse;
   readonly isCorrect: boolean;
   readonly awardedScore: ScoreUnits;
 };

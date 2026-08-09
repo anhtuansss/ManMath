@@ -12,6 +12,12 @@ enum ExamDifficulty {
   hard
 }
 
+enum QuestionType {
+  single_choice
+  true_false_group
+  short_answer
+}
+
 enum AuthProvider {
   google
   password
@@ -87,11 +93,20 @@ model Question {
   options       String[]
   optionImageUrls String[] @default([])
   correctAnswer String
+  externalId    String?
+  type          QuestionType @default(single_choice)
+  section       Int?
+  assets        Json?
+  choices       Json?
+  statements    Json?
+  answerKey     Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@unique([examId, order])
+  @@unique([examId, externalId])
   @@index([examId])
+  @@index([examId, type])
   @@index([topicId])
   @@index([subtopicId])
 }
