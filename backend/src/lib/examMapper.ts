@@ -31,7 +31,7 @@ type QuestionDbRecord = {
     name: string;
     slug: string;
   } | null;
-  correctAnswer: string;
+  correctAnswer: string | null;
 };
 
 type ExamDetailDbRecord = {
@@ -101,7 +101,23 @@ export const mapExamRecordToDetailDto = (
         question.optionImageUrls,
       ),
       subtopic: question.subtopic,
-      correctAnswer: question.correctAnswer,
+      correctAnswer: requireLegacyCorrectAnswer(
+        question.id,
+        question.correctAnswer,
+      ),
     })),
   };
+};
+
+export const requireLegacyCorrectAnswer = (
+  questionId: number,
+  correctAnswer: string | null,
+): string => {
+  if (correctAnswer === null) {
+    throw new Error(
+      `Question ${questionId} cannot be returned by the legacy reader`,
+    );
+  }
+
+  return correctAnswer;
 };

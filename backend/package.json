@@ -8,7 +8,10 @@
     "seed": "ts-node src/data/seed.ts",
     "seed:demo": "ts-node src/data/seedDemo.ts",
     "import:exam": "ts-node src/scripts/importExamFromJson.ts",
-    "verify:exam-domain": "ts-node src/scripts/verifyExamDomain.ts"
+    "import:exam-content": "ts-node src/scripts/importExamContentFromJson.ts",
+    "verify:exam-domain": "ts-node src/scripts/verifyExamDomain.ts",
+    "verify:exam-content-import": "ts-node src/scripts/verifyExamContentImport.ts",
+    "verify:exam-content-persistence": "ts-node src/scripts/verifyExamContentPersistence.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
