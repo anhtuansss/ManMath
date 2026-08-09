@@ -1,42 +1,45 @@
 # ManMath
 
-ManMath là ứng dụng luyện đề Toán THPT theo nhịp làm bài thật: chọn đề, làm bài có bấm giờ, nộp bài, xem lại đáp án và xác định chuyên đề cần ôn tiếp.
+ManMath là ứng dụng web luyện đề Toán THPT bằng tiếng Việt. MVP hỗ trợ chọn đề, làm bài có bấm giờ, nộp bài, xem kết quả và theo dõi lịch sử học tập.
 
-## Trạng thái hiện tại
+## Trạng thái dự án
 
-MVP đã có landing page công khai, workspace học tập, làm đề ở focus mode, chấm điểm và review, lịch sử làm bài phân trang, analytics theo topic/subtopic, hồ sơ và recommendation rule-based. Guest có thể làm đề; dữ liệu history, analytics và attempt detail yêu cầu đăng nhập Google.
+Sản phẩm có landing page công khai, workspace học tập, flow làm đề legacy và một exam engine V2 song song. V2 hiện hỗ trợ ba dạng câu hỏi (`single_choice`, `true_false_group`, `short_answer`), runtime validation, chấm điểm ở backend, lưu attempt và receipt theo owner.
 
-## Tính năng đã có
+Flow chính từ dashboard, recommendation, history và profile vẫn dùng legacy route `/exam/[id]`. V2 nằm tại `/exam-v2/[id]` và chưa thay thế toàn bộ flow legacy.
 
-- Landing page public và dashboard luyện tập tại `/dashboard`.
-- Danh sách đề, tìm kiếm/lọc, làm đề, timer và autosave local.
-- Submit, score, result/review, lời giải, KaTeX và ảnh câu hỏi/đáp án.
-- Google Login + JWT; ownership cho history và attempt detail.
-- History phân trang phía server, analytics topic/subtopic, profile và practice theo topic.
-- Import đề từ JSON qua script backend.
+## Tính năng hiện có
 
-## Kiến trúc
+- Landing public tại `/`; workspace tại `/dashboard`; `/exams` redirect tương thích về `/dashboard`.
+- Danh sách đề, tìm kiếm/lọc, timer và autosave browser cho flow làm đề.
+- Legacy exam: submit, review đáp án/lời giải, ảnh câu hỏi/đáp án và KaTeX.
+- V2 exam: stable string IDs, ba loại câu hỏi, autosave V2, server-side grading, persisted attempt và safe result receipt.
+- Google Login + JWT; ownership cho history, attempt detail legacy và V2 receipt.
+- History phân trang phía server, analytics topic/subtopic, profile và recommendation rule-based.
+- Hai importer JSON: legacy importer và V2 content importer có runtime validation.
+
+## Kiến trúc ngắn
 
 ```text
 Next.js App Router → Express API → Prisma → PostgreSQL
 ```
 
-Frontend dùng ba route groups:
+Frontend chia ba route group:
 
 | Nhóm | Mục đích | Routes chính |
 | --- | --- | --- |
-| `(public)` | Landing và thông tin công khai | `/`, `/about` |
-| `(workspace)` | Không gian luyện tập có sidebar/header | `/dashboard`, `/analytics`, `/history`, `/profile` |
-| `(focus)` | Làm bài và review không bị phân tán | `/exam/[id]`, `/exam/[id]/result`, `/attempts/[attemptId]`, `/practice/topic/[topicSlug]` |
+| `(public)` | Landing và nội dung công khai | `/`, `/about` |
+| `(workspace)` | Workspace với sidebar/header | `/dashboard`, `/analytics`, `/history`, `/profile`, `/exams` |
+| `(focus)` | Làm đề, kết quả và review không có workspace shell | `/exam/[id]`, `/exam-v2/[id]`, result/attempt routes, `/practice/topic/[topicSlug]` |
 
-`/exams` là route tương thích cũ và redirect về `/dashboard`.
+Xem [kiến trúc chi tiết](docs/ARCHITECTURE.md) để biết ranh giới V1/V2 và các technical debt còn lại.
 
 ## Tech stack
 
 - Frontend: Next.js App Router, React, TypeScript, Tailwind CSS, KaTeX.
 - Backend: Express, TypeScript, Prisma.
 - Database: PostgreSQL.
-- Auth: Google Login và JWT.
+- Auth: Google Login và JWT ManMath.
 
 ## Chạy local
 
@@ -44,7 +47,6 @@ Frontend dùng ba route groups:
 cd backend
 npm install
 npx prisma migrate dev
-npm run seed:demo
 npm run dev
 ```
 
@@ -54,9 +56,16 @@ npm install
 npm run dev
 ```
 
+Hoặc từ root:
+
+```bash
+npm run dev:backend
+npm run dev:frontend
+```
+
 ## Biến môi trường
 
-Backend cần `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET` và `JWT_EXPIRES_IN`.
+Backend bắt buộc có `DATABASE_URL`, `GOOGLE_CLIENT_ID` và `JWT_SECRET`. `JWT_EXPIRES_IN` là optional, mặc định `7d`; `PORT` mặc định `5000`.
 
 Frontend dùng `NEXT_PUBLIC_API_BASE_URL` và `NEXT_PUBLIC_GOOGLE_CLIENT_ID` khi cần Google Login. Không commit `.env` hoặc `.env.local`; `JWT_SECRET` chỉ thuộc backend.
 
@@ -66,6 +75,19 @@ Frontend dùng `NEXT_PUBLIC_API_BASE_URL` và `NEXT_PUBLIC_GOOGLE_CLIENT_ID` khi
 cd backend
 npx tsc --noEmit
 npx prisma validate
+npm run verify:exam-domain
+npm run verify:exam-content-import
+```
+
+Các verify V2 đọc/ghi database cần `DATABASE_URL` hợp lệ:
+
+```bash
+cd backend
+npm run verify:exam-content-persistence
+npm run verify:exam-content-read
+npm run verify:exam-content-grading-api
+npm run verify:exam-content-attempt-persistence
+npm run verify:exam-content-attempt-read
 ```
 
 ```bash
@@ -77,16 +99,17 @@ npm run build
 ## Tài liệu
 
 - [Kiến trúc](docs/ARCHITECTURE.md)
-- [API](docs/API.md)
+- [API V1 và V2](docs/API.md)
 - [Auth](docs/AUTH.md)
-- [Database](docs/DATABASE.md)
-- [Design system](docs/UI_DESIGN_SYSTEM.md)
-- [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
+- [Database và Prisma](docs/DATABASE.md)
+- [Scoring V2](docs/SCORING.md)
 - [Import JSON](docs/IMPORT_JSON.md)
+- [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
+- [UI design system](docs/UI_DESIGN_SYSTEM.md)
 
 ## Roadmap ngắn
 
-- Mở rộng analytics theo subtopic khi dữ liệu nội dung đủ tin cậy.
-- Mở rộng pipeline import ngoài JSON.
-- Cải thiện testing và manual QA cho các flow có auth.
-- AI feedback/explanation runtime được để lại sau khi content và analytics ổn định.
+- Hoàn thiện migration từ legacy exam flow sang V2.
+- Quy định review-answer reveal và snapshot/versioning cho attempt V2.
+- Mở rộng analytics để diễn giải partial score V2 chính xác hơn.
+- Tăng test coverage và manual QA cho auth, ownership và attempt compatibility.

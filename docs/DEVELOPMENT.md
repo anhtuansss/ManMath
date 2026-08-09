@@ -1,239 +1,128 @@
 # Hướng dẫn phát triển
 
-## Chạy local chi tiết
+## Chạy local
 
-Repo có `backend/` và `frontend/` package riêng. Root `package.json` chỉ là manifest nhỏ, không chứa script dev/build chính.
-
-### Backend
+Repository có package riêng trong `backend/` và `frontend/`. Root cung cấp các shortcut `dev:backend`, `dev:frontend` và `build:frontend`.
 
 ```bash
 cd backend
 npm install
+npx prisma migrate dev
 npm run dev
 ```
-
-### Frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+Backend cần `DATABASE_URL`, `GOOGLE_CLIENT_ID` và `JWT_SECRET`. Xem [README](../README.md) và [AUTH.md](AUTH.md) để biết các biến còn lại.
 
 ## Prisma commands
 
 ```bash
 cd backend
 npx prisma validate
-npx prisma migrate dev
 npx prisma migrate status
+npx prisma migrate dev
 npx prisma studio
-npm run seed
-npm run seed:demo
 ```
 
-## Typecheck và build
+`npm run seed` và `npm run seed:demo` reset dữ liệu demo/development, bao gồm attempts. Chỉ chạy khi chấp nhận mất history/analytics local.
 
-### Backend
-
-```bash
-cd backend
-npx tsc --noEmit
-```
-
-### Frontend
-
-```bash
-cd frontend
-npx tsc --noEmit
-npm run build
-```
-
-## Import đề từ JSON
-
-Script import MVP dùng để thêm hoặc cập nhật đề thi từ file JSON vào PostgreSQL.
-
-Workflow chuẩn:
-
-- `npm run seed`: reset về dataset mock chuẩn
-- `npm run seed:demo`: reset dataset mock chuẩn và import thêm sample JSON exam
-- `npm run import:exam -- ./src/data/import/sample-exam.json`: import hoặc cập nhật riêng một đề JSON
-- `npm run import:exam -- ./src/data/import/sample-exam.json --dry-run`: validate và in summary, không ghi DB
-- `npm run import:exam -- ./src/data/import/manifest.json --batch`: import nhiều đề qua manifest
-- `npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run`: validate cả batch mà không ghi DB
-
-Lệnh mẫu:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/sample-exam.json
-```
-
-Dry-run mẫu:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/sample-exam.json --dry-run
-```
-
-Batch import mẫu:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/manifest.json --batch
-```
-
-Batch dry-run mẫu:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
-```
-
-Ghi chú:
-
-- `npm run seed` và `npm run seed:demo` sẽ reset dữ liệu exam/question/topic và xóa attempt local; chỉ chạy khi đang dùng DB dev/demo
-- import lại cùng `exam.id` sẽ update thay vì tạo duplicate
-- `question.id` phải ổn định và không được trùng với exam khác
-- dry-run sẽ báo danh sách lỗi rõ theo field, ví dụ `questions[3].correctAnswer must be one of options`
-- batch mode resolve path theo thư mục chứa file manifest
-- tài liệu chi tiết nằm ở [docs/IMPORT_JSON.md](./IMPORT_JSON.md)
-
-## Demo analytics data workflow
-
-Seed/import chỉ tạo dữ liệu nội dung như exam, question, topic, subtopic, image và explanation. Các màn analytics cá nhân cần dữ liệu học tập thật của user trong `Attempt` và `AttemptAnswer`.
-
-Workflow demo khuyến nghị:
-
-1. Chuẩn bị đề/câu hỏi demo:
-
-   ```bash
-   cd backend
-   npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
-   npm run import:exam -- ./src/data/import/manifest.json --batch
-   ```
-
-2. Chỉ reset database demo/dev khi chấp nhận mất lịch sử làm bài:
-
-   ```bash
-   cd backend
-   npm run seed:demo
-   ```
-
-3. Chạy backend và frontend.
-4. Login bằng Google trên frontend.
-5. Làm 1-2 đề và submit. Nếu cần demo recommendation rõ hơn, có thể cố tình sai vài câu trong cùng một topic để tạo chuyên đề yếu.
-6. Mở các màn:
-
-   - `/analytics`: topic stats, progress và recommendation.
-   - `/history`: lịch sử làm bài toàn cục.
-   - `/profile`: thông tin user, hoạt động gần đây và CTA học tiếp.
-   - `/dashboard`: danh sách đề, workspace và gợi ý luyện tập.
-
-Cảnh báo:
-
-- `npm run seed` và `npm run seed:demo` xóa `Attempt`/`AttemptAnswer`, nên sẽ làm mất dữ liệu analytics/history đã tạo bằng cách submit bài.
-- Import JSON chỉ upsert `Exam`, `Question`, `Topic`, `Subtopic`; không tạo user giả và không tạo attempt.
-- Practice theo topic là flow luyện local/dynamic, không ghi `Attempt`, nên không làm tăng progress/history.
-
-## Smoke test tối thiểu
-
-### Backend
+## Typecheck, build và verify
 
 ```bash
 cd backend
 npx tsc --noEmit
 npx prisma validate
-npx prisma migrate status
-npm run seed:demo
-npm run import:exam -- ./src/data/import/sample-exam.json --dry-run
-npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
+npm run verify:exam-domain
+npm run verify:exam-content-import
 ```
 
-### Frontend
+Các script dưới đây cần database development hợp lệ và có thể ghi dữ liệu kiểm tra:
+
+```bash
+cd backend
+npm run verify:exam-content-persistence
+npm run verify:exam-content-read
+npm run verify:exam-content-grading-api
+npm run verify:exam-content-attempt-persistence
+npm run verify:exam-content-attempt-read
+```
 
 ```bash
 cd frontend
+npm run type-check
 npm run build
 ```
 
-Manual QA nên kiểm tra thêm:
+Không có markdown lint script trong package scripts hiện tại. Với thay đổi docs, xác minh link nội bộ, paths, endpoint, script và Prisma field names là đủ; không cần chạy app build chỉ vì docs.
 
-- `/`: landing public, CTA tới `/dashboard`, responsive screenshot và navigation
-- `/dashboard`: workspace, exam list, quick actions và sidebar state
-- `/exams`: xác minh redirect tương thích về `/dashboard`
-- `/exam/[id]`: timer, autosave, question image, option image
-- `/exam/[id]/result`: result question navigator, review, explanation
-- `/exam/[id]/attempts` và `/attempts/[attemptId]`: protected state và review navigation
-- `/history`: pagination URL `?page=`, summary toàn history và empty state
-- `/profile`, `/analytics`: guest/onboarding state và dữ liệu user thật sau login
-- `/practice/topic/[topicSlug]`: focus mode, không hiện navigation workspace, timer/submit local vẫn hoạt động
-- Google login/logout với credential thật nếu có
+## Legacy JSON import
 
-## Git workflow gợi ý
+Legacy importer dùng shape `options` + `correctAnswer` và mặc định ghi database.
 
-- Tạo branch riêng cho từng task
-- Commit theo step nhỏ
-- Với thay đổi lớn, chia thành nhiều commit rõ mục tiêu
-- Tránh `git add .` khi đang có nhiều thay đổi lẫn nhau
-- Kiểm tra `git status` trước khi commit
-- Không commit `.env`, `.env.local`, `.next`, `node_modules`, file build/cache local
+```bash
+cd backend
+npm run import:exam -- ./src/data/import/sample-exam.json
+npm run import:exam -- ./src/data/import/sample-exam.json --dry-run
+npm run import:exam -- ./src/data/import/manifest.json --batch
+npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
+```
+
+Single-file import chạy trong transaction. Batch validate toàn bộ files trước khi ghi, sau đó import từng file; batch không phải một transaction bao trùm mọi file.
+
+## V2 JSON content import
+
+V2 importer yêu cầu `schemaVersion: 2`, exam metadata, taxonomy và V2 domain questions. Mặc định là dry-run. Chỉ `--write` mới thay đổi database.
+
+```bash
+cd backend
+npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json
+npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json --write
+```
+
+V2 import validate toàn bộ payload rồi upsert exam/taxonomy/questions trong một Prisma transaction. Nó không có manifest batch mode hiện tại.
+
+Xem [IMPORT_JSON.md](IMPORT_JSON.md) để biết hai format và giới hạn pipeline.
+
+## Manual QA
+
+### Legacy surfaces
+
+- `/`: landing và public navigation.
+- `/dashboard`: exam library, search/filter và workspace shell.
+- `/exams`: redirect về `/dashboard`.
+- `/exam/[id]`: timer, autosave, submit và guest/auth behavior.
+- `/exam/[id]/result`: legacy review, correct answers/explanations.
+- `/exam/[id]/attempts`, `/attempts/[attemptId]`: owner-only history/review.
+- `/history`, `/profile`, `/analytics`: logged-out state, logged-in state và pagination.
+- `/practice/topic/[topicSlug]`: focus layout, local grading, no persisted attempt.
+
+### V2 surfaces
+
+- `/exam-v2/[id]`: public V2 content, stable-ID answers, single choice/true-false/short-answer UI, autosave và timer.
+- Submit V2 with and without JWT: attempt persistence, session result và anonymous limitation.
+- `/exam-v2/[id]/result?attemptId=...`: owner receipt reload after login; anonymous result only from the immediate browser session.
+- Confirm that V2 result does not reveal answer key/explanation.
+- Confirm existing V2 attempts in global history do not claim full legacy review compatibility.
 
 ## Troubleshooting
 
-### Thiếu `node_modules`
+### Missing dependencies
 
-Triệu chứng:
+Run `npm install` inside the affected package directory.
 
-- `npm run dev` hoặc `npm run build` báo thiếu package
+### Missing environment variables
 
-Cách xử lý:
+Check `backend/.env` for backend secrets/database and `frontend/.env.local` for public API/Google settings. Backend fails fast when required variables are absent.
 
-```bash
-npm install
-```
+### Prisma drift
 
-### Thiếu `.env`
+Use `npx prisma migrate status` first. `npx prisma migrate reset` is destructive for the local database; only use it after accepting data loss and then seed/import again.
 
-Triệu chứng:
+### Next.js cache or fonts
 
-- backend fail fast vì thiếu `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET`
-- frontend không gọi đúng API hoặc không hiện Google Login
-
-Cách xử lý:
-
-- kiểm tra `backend/.env`
-- kiểm tra `frontend/.env.local`
-
-### Prisma drift ở local
-
-Triệu chứng:
-
-- `prisma migrate dev` báo drift hoặc migration history lệch
-
-Cách xử lý:
-
-- xác nhận đây là local dev database
-- nếu chấp nhận mất dữ liệu local, dùng `npx prisma migrate reset`
-- seed lại dữ liệu sau khi reset
-
-### Frontend build và font
-
-Trạng thái hiện tại:
-
-- frontend đã bỏ phụ thuộc build-time vào `next/font/google`
-- build không cần tải Google Fonts từ internet
-
-Nếu ai đó thêm lại `next/font/google`, cần kiểm tra `src/app/layout.tsx`.
-
-### Cache Next.js hoặc Tailwind
-
-Triệu chứng:
-
-- giao diện không phản ánh thay đổi mới
-
-Cách xử lý:
-
-- dùng dev server
-- chạy lại `npm run dev`
-- nếu cần, xóa cache build local trước khi chạy lại
+The frontend does not depend on `next/font/google` at build time. Restart the dev server after CSS/config changes; do not commit `.next` or `node_modules`.

@@ -1,383 +1,92 @@
 # API ManMath
 
-## Ghi chú chung
+Base URL local: `http://localhost:5000`. Exam router được mount dưới `/api`; auth/me routers ở `/api/auth` và `/api/me`. Protected endpoints dùng `Authorization: Bearer <JWT>`.
 
-- Base URL backend local: `http://localhost:5000`
-- Các route exam được mount dưới `/api`
-- Route protected dùng JWT Bearer token
+## API V1 legacy
 
-## Exam APIs
+V1 vẫn active vì dashboard, practice, history, analytics và legacy exam flow đang dùng nó. V1 không phải contract cho content V2.
 
-| Method | Endpoint | Auth | Mục đích |
+| Method | Endpoint | Auth | Purpose |
 | --- | --- | --- | --- |
-| `GET` | `/api/health` | Public | Kiểm tra backend còn hoạt động |
-| `GET` | `/api/exams` | Public | Lấy danh sách đề, hỗ trợ tìm kiếm và lọc theo topic/subtopic/thời lượng/độ khó/năm/nguồn |
-| `GET` | `/api/exams/:id` | Public | Lấy chi tiết một đề |
-| `GET` | `/api/topics` | Public | Lấy danh sách topic và subtopic để filter exam list |
-| `GET` | `/api/practice/topic/:topicSlug` | Public | Tạo bộ luyện tập động theo topic, không lưu attempt vào DB |
-| `POST` | `/api/exam/submit` | Optional JWT | Nộp bài, chấm điểm, lưu attempt và trả kết quả |
+| `GET` | `/api/health` | Public | Health check |
+| `GET` | `/api/exams` | Public | Exam summaries, search/filter |
+| `GET` | `/api/exams/:id` | Public | Legacy exam detail |
+| `GET` | `/api/topics` | Public | Topic/subtopic filter data |
+| `GET` | `/api/practice/topic/:topicSlug` | Public | Dynamic topic practice, no persisted attempt |
+| `POST` | `/api/exam/submit` | Optional JWT | Grade legacy option-index answers and persist attempt |
+| `GET` | `/api/exams/:id/attempts` | Protected | Current user's attempts for a legacy exam |
+| `GET` | `/api/attempts/:attemptId` | Protected | Owner-only legacy attempt detail/review |
 
-### Exam list query params
+`GET /api/exams` supports `search`, `topic`, `subtopic`, `durationMin`, `durationMax`, `difficulty`, `year` and `source`. Invalid numeric/difficulty query values return `400`.
 
-`GET /api/exams` hỗ trợ các query param additive sau:
+### Legacy security note
 
-- `search`: tìm theo `title` và `description`
-- `topic`: lọc theo `Topic.slug`
-- `subtopic`: lọc theo `Subtopic.slug`
-- `durationMin`: lọc đề có `durationMinutes >= durationMin`
-- `durationMax`: lọc đề có `durationMinutes <= durationMax`
-- `difficulty`: lọc theo `easy | medium | hard`
-- `year`: lọc theo năm thi chính xác
-- `source`: lọc theo nguồn đề, tìm kiếm không phân biệt hoa thường
+Legacy detail/practice contracts include `correctAnswer` and use numeric question IDs plus option indices. This is known answer-key leakage and is retained only for coexist compatibility. New V2 frontend work must not depend on this behavior.
 
-Ví dụ:
+`POST /api/exam/submit` accepts optional auth. Anonymous requests are graded and persisted without an owner; valid JWT requests associate the attempt with the user. Legacy score is an integer-rounded V1 representation, not V2 score units.
 
-```txt
-/api/exams?search=ham
-/api/exams?topic=ham-so
-/api/exams?topic=ham-so&subtopic=cuc-tri
-/api/exams?durationMin=60&durationMax=90
-/api/exams?difficulty=easy
-/api/exams?year=2026
-/api/exams?source=ManMath
-/api/exams?search=ham&topic=ham-so&difficulty=easy&year=2026
-```
+## API V2 exam engine
 
-Nếu không truyền query param, response giữ shape cũ.
-
-Nếu `durationMin`, `durationMax`, `difficulty` hoặc `year` không hợp lệ, API trả `400`.
-
-### Exam detail response shape
-
-```ts
-{
-  id: string;
-  examTitle: string;
-  durationMinutes: number;
-  subject: string;
-  difficulty: "easy" | "medium" | "hard";
-  source: string | null;
-  year: number | null;
-  statusLabel: string;
-  questions: Array<{
-    id: number;
-    question: string;
-    imageUrl: string | null;
-    explanation: string | null;
-    options: string[];
-    optionImageUrls: Array<string | null>;
-    subtopic: {
-      id: string;
-      name: string;
-      slug: string;
-    } | null;
-    correctAnswer: string;
-  }>;
-}
-```
-
-### Exam list response shape
-
-```ts
-Array<{
-  id: string;
-  title: string;
-  description: string;
-  durationMinutes: number;
-  totalQuestions: number;
-  subject: string;
-  difficulty: "easy" | "medium" | "hard";
-  source: string | null;
-  year?: number;
-  statusLabel: string;
-}>
-```
-
-### Topics response shape
-
-```ts
-{
-  topics: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    subtopics: Array<{
-      id: string;
-      name: string;
-      slug: string;
-    }>;
-  }>;
-}
-```
-
-### Submit response shape
-
-```ts
-{
-  correctCount: number;
-  totalQuestions: number;
-  score: number;
-  topicStats: TopicStatDto[];
-}
-```
-
-### Topic practice response shape
-
-```ts
-{
-  practiceId: string;
-  topic: {
-    name: string;
-    slug: string;
-  };
-  title: string;
-  durationMinutes: number;
-  questions: Array<{
-    id: number;
-    question: string;
-    imageUrl: string | null;
-    explanation: string | null;
-    options: string[];
-    optionImageUrls: Array<string | null>;
-    subtopic: {
-      id: string;
-      name: string;
-      slug: string;
-    } | null;
-    correctAnswer: string;
-  }>;
-}
-```
-
-### Topic practice query params
-
-- `limit`: optional, mặc định `10`
-
-### Ghi chú practice
-
-- practice payload được tạo động theo `topicSlug`
-- KaTeX, `imageUrl` và `optionImageUrls` vẫn đi qua contract này
-- `explanation` và `subtopic` vẫn được giữ trong practice payload để frontend có thể reuse review UI
-- MVP hiện chỉ chấm điểm local ở frontend
-- practice flow không tạo `Attempt` và không đi vào history
-
-## Attempt / History APIs
-
-| Method | Endpoint | Auth | Mục đích |
+| Method | Endpoint | Auth | Purpose |
 | --- | --- | --- | --- |
-| `GET` | `/api/exams/:id/attempts` | Protected | Lấy lịch sử làm bài của user hiện tại theo đề |
-| `GET` | `/api/attempts/:attemptId` | Protected | Lấy chi tiết một lần làm bài nếu user là owner |
+| `GET` | `/api/v2/exams/:id` | Public | Read validated public V2 content |
+| `POST` | `/api/v2/exams/:id/grade` | Public | Grade raw typed responses without persisting |
+| `POST` | `/api/v2/exams/:id/attempts` | Optional JWT | Grade and persist a V2 attempt |
+| `GET` | `/api/v2/attempts/:attemptId` | Protected | Read authenticated owner's safe V2 receipt |
 
-### Attempt detail response shape
+### `GET /api/v2/exams/:id`
 
-```ts
-{
-  attempt: {
-    id: string;
-    score: number;
-    correctCount: number;
-    totalQuestions: number;
-    submittedAt: string;
-  };
-  exam: {
-    id: string;
-    title: string;
-  };
-  answers: Array<{
-    questionId: number;
-    question: string;
-    imageUrl: string | null;
-    explanation: string | null;
-    options: string[];
-    optionImageUrls: Array<string | null>;
-    subtopic: {
-      id: string;
-      name: string;
-      slug: string;
-    } | null;
-    selectedOptionIndex: number | null;
-    correctOptionIndex: number;
-    isCorrect: boolean;
-  }>;
-  topicStats: TopicStatDto[];
-}
-```
+Purpose: expose a public exam DTO for V2 taking UI. Backend reconstructs persisted question storage, validates it at runtime and strips `answerKey` before responding.
 
-### Ghi chú
+High-level output contains exam metadata and discriminated public questions. Questions use stable string external IDs, with choice IDs for `single_choice`, statement IDs for `true_false_group`, and no key material for `short_answer`.
 
-- `imageUrl` dùng cho ảnh câu hỏi
-- `explanation` là lời giải tĩnh của câu hỏi, có thể chứa KaTeX
-- `optionImageUrls` map theo index với `options`
-- `subtopic` là metadata bổ sung cho taxonomy MVP
-- `POST /api/exam/submit` giữ response cũ và bổ sung `topicStats` theo hướng additive
+`404` means no exam; `409` means an existing exam does not provide V2 content; invalid persisted V2 content returns `500` without exposing validation details.
+
+### `POST /api/v2/exams/:id/grade`
+
+Purpose: grade a payload shaped as `{ responses: RawSubmittedResponse[] }` without creating an attempt.
+
+Each response must belong to the exam, appear at most once and match the public question type. Valid responses are normalized before grading. Output includes policy ID, total awarded score, policy maximum and one result per question.
+
+This route is public and does not return answer keys. It does return correctness and awarded score for submitted responses, so it should be treated as a potential grading oracle until a future policy/rate-limiting decision is made.
+
+### `POST /api/v2/exams/:id/attempts`
+
+Purpose: validate, grade and persist `{ responses, durationSeconds? }`.
+
+`durationSeconds` must be a non-negative integer when provided. The response contains attempt ID, scoring policy, score/max score units, counts, submission time and per-question grading results. Persistence is one Prisma transaction that creates `Attempt` and all `AttemptAnswer` rows.
+
+JWT is optional. A valid JWT sets attempt ownership; anonymous attempts are stored without an owner and cannot later be retrieved by the receipt API.
+
+### `GET /api/v2/attempts/:attemptId`
+
+Purpose: reload a safe result receipt for the authenticated owner.
+
+Output contains attempt metadata and per-question external ID, type, normalized submitted response or `null`, awarded/max score units and fully-correct status. It deliberately excludes answer keys and explanations. A missing result covers absent attempts, another user's attempt and anonymous attempts.
 
 ## Auth APIs
 
-| Method | Endpoint | Auth | Mục đích |
+| Method | Endpoint | Auth | Purpose |
 | --- | --- | --- | --- |
-| `POST` | `/api/auth/google` | Public | Đăng nhập bằng Google credential |
-| `GET` | `/api/auth/me` | Protected | Lấy user hiện tại từ JWT |
+| `POST` | `/api/auth/google` | Public | Verify Google credential and issue JWT |
+| `GET` | `/api/auth/me` | Protected | Read current JWT user |
 
-### Auth response shape
+Login response contains `{ token, user }`, where user includes id, email, full name and avatar URL.
 
-```ts
-{
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    fullName: string | null;
-    avatarUrl: string | null;
-  };
-}
-```
+## Me and analytics APIs
 
-## Me / Analytics APIs
-
-| Method | Endpoint | Auth | Mục đích |
+| Method | Endpoint | Auth | Purpose |
 | --- | --- | --- | --- |
-| `GET` | `/api/me/topic-stats` | Protected | Lấy thống kê độ chính xác theo topic của user hiện tại |
-| `GET` | `/api/me/subtopic-stats` | Protected | Lấy thống kê độ chính xác theo subtopic của user hiện tại |
-| `GET` | `/api/me/recommendations` | Protected | Lấy weak topics và đề nên làm tiếp |
-| `GET` | `/api/me/progress` | Protected | Lấy summary tiến độ, recent attempts và progress theo thời gian |
-| `GET` | `/api/me/attempts` | Protected | Lấy lịch sử làm bài toàn cục của user hiện tại |
+| `GET` | `/api/me/topic-stats` | Protected | Accuracy by topic |
+| `GET` | `/api/me/subtopic-stats` | Protected | Accuracy by subtopic |
+| `GET` | `/api/me/recommendations` | Protected | Rule-based weak topics and recommended exams |
+| `GET` | `/api/me/progress` | Protected | Summary, recent attempts and progress trend |
+| `GET` | `/api/me/attempts` | Protected | Paginated global owner history |
 
-### Topic stats response shape
+`/api/me/attempts` accepts `page`, `limit`, optional `examId` and `sort=latest`. Page defaults to `1`, limit defaults to `10` and has maximum `50`. The service returns page metadata and a summary for the user's full history, not only the current page.
 
-```ts
-{
-  topicStats: Array<{
-    topicId: string | null;
-    topicName: string;
-    topicSlug: string | null;
-    correct: number;
-    total: number;
-    accuracy: number;
-  }>;
-}
-```
+Analytics remains rule-based. It reads shared `Attempt` data during V1/V2 coexist; V2 partial true/false scoring is not yet represented as a separate analytics metric.
 
-### Subtopic stats response shape
+## Import APIs
 
-```ts
-{
-  subtopicStats: Array<{
-    subtopicSlug: string;
-    subtopicName: string;
-    topicSlug: string;
-    topicName: string;
-    totalAnswers: number;
-    correctAnswers: number;
-    accuracy: number;
-    weak: boolean;
-  }>;
-}
-```
-
-### Recommendations response shape
-
-```ts
-{
-  weakTopics: Array<{
-    topicId: string | null;
-    topicName: string;
-    topicSlug: string | null;
-    correct: number;
-    total: number;
-    accuracy: number;
-    reason: string;
-  }>;
-  recommendedExams: Array<{
-    examId: string;
-    title: string;
-    durationMinutes: number;
-    matchedWeakTopicCount: number;
-    matchedWeakQuestionCount: number;
-    reason: string;
-  }>;
-}
-```
-
-### Progress response shape
-
-```ts
-{
-  summary: {
-    attemptCount: number;
-    averageScore: number;
-    bestScore: number;
-    latestScore: number | null;
-  };
-  recentAttempts: Array<{
-    attemptId: string;
-    examId: string;
-    examTitle: string;
-    score: number;
-    correctCount: number;
-    totalQuestions: number;
-    submittedAt: string;
-  }>;
-  progressByAttempt: Array<{
-    attemptId: string;
-    examTitle: string;
-    score: number;
-    accuracy: number;
-    submittedAt: string;
-  }>;
-}
-```
-
-### Global attempts response shape
-
-```ts
-{
-  items: Array<{
-    attemptId: string;
-    examId: string;
-    examTitle: string;
-    score: number;
-    correctCount: number;
-    totalQuestions: number;
-    unansweredCount: number;
-    durationSeconds: number | null;
-    submittedAt: string;
-  }>;
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
-  summary: {
-    totalAttempts: number;
-    averageScore: number;
-    bestScore: number;
-  };
-}
-```
-
-### Query params cho `/api/me/attempts`
-
-- `page`: số trang dương, mặc định `1`.
-- `limit`: số item mỗi trang, mặc định `10`, tối đa `50`.
-- `examId`: lọc lịch sử theo một đề cụ thể
-- `sort`: hiện MVP chỉ hỗ trợ `latest`
-
-Response luôn được sort theo `submittedAt` giảm dần. `page` vượt phạm vi được clamp về trang hợp lệ; `page` hoặc `limit` không phải số nguyên dương, hay `limit > 50`, trả `400`.
-
-### Ghi chú analytics
-
-- Recommendation hiện vẫn là rule-based MVP
-- `reason` có thể nhắc thêm subtopic nếu đề gợi ý có nhiều câu thuộc một nhóm con cụ thể
-- Analytics hiện có topic-level và subtopic-level MVP; topic vẫn là lớp phân tích chính, subtopic dùng để chỉ ra mảng kiến thức nhỏ cần ôn lại
-- `/api/me/progress` là nền dữ liệu cho dashboard `/analytics` và recent activity trong `/profile`
-- `/api/me/attempts` là nền dữ liệu cho global history page `/history`
-
-## Import script nội bộ
-
-Import đề từ JSON hiện chưa phải HTTP API. MVP đang dùng backend script:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/sample-exam.json
-```
-
-Xem format và rule chi tiết tại [docs/IMPORT_JSON.md](./IMPORT_JSON.md).
+Import is not an HTTP API. Use backend CLI scripts documented in [IMPORT_JSON.md](IMPORT_JSON.md).

@@ -1,322 +1,83 @@
-# Import đề từ JSON
+# Import content từ JSON
 
-## Mục đích
+## Scope
 
-Import JSON dùng để thêm hoặc cập nhật đề thi vào PostgreSQL mà không cần sửa trực tiếp file seed.
+ManMath có hai JSON import pipeline. JSON là transport format để validate và ghi PostgreSQL, không phải runtime source. PostgreSQL + runtime validation là source of truth cho V2 content.
 
-MVP hiện tại phù hợp cho:
+| Pipeline | Script | Content shape | Write behavior |
+| --- | --- | --- | --- |
+| Legacy V1 | `npm run import:exam` | numeric question ID, `options`, `correctAnswer` | Mặc định ghi; `--dry-run` không ghi |
+| V2 | `npm run import:exam-content` | `schemaVersion: 2`, taxonomy, discriminated questions | Mặc định dry-run; chỉ `--write` mới ghi |
 
-- thêm đề mới nhanh hơn
-- chuẩn hóa dữ liệu trước khi đưa đề thật vào hệ thống
-- test image support, topic, subtopic và option image
-- test explanation tĩnh để phục vụ review và AI-ready flow
+Không có OCR, AI parsing, web upload, admin UI, Word/PDF/Excel import trong scope hiện tại.
 
-Hiện tại chưa có admin UI và chưa hỗ trợ upload file qua web.
-
-## Workflow khuyến nghị
-
-### Reset dữ liệu mock chuẩn
-
-```bash
-cd backend
-npm run seed
-```
-
-### Setup demo đầy đủ
-
-```bash
-cd backend
-npm run seed:demo
-```
-
-Lệnh này:
-
-- seed lại các đề mock chuẩn
-- import thêm `sample-json-exam-01`
-
-## Lệnh import
+## Legacy V1 importer
 
 ```bash
 cd backend
 npm run import:exam -- ./src/data/import/sample-exam.json
-```
-
-### Dry-run
-
-```bash
-cd backend
 npm run import:exam -- ./src/data/import/sample-exam.json --dry-run
-```
-
-### Batch import bằng manifest
-
-```bash
-cd backend
 npm run import:exam -- ./src/data/import/manifest.json --batch
-```
-
-### Batch dry-run
-
-```bash
-cd backend
 npm run import:exam -- ./src/data/import/manifest.json --batch --dry-run
 ```
 
-Dry-run sẽ:
+V1 supports exam metadata, question images, option images, explanation, topic/subtopic, `options` và `correctAnswer`. Import lại cùng exam ID sẽ update record. V1 validator yêu cầu `correctAnswer` thuộc `options`; question numeric IDs không được trùng với exam khác.
 
-- đọc file JSON
-- validate dữ liệu
-- in summary
-- không ghi vào database
+Single-file V1 import chạy trong transaction. Batch resolve paths relative to manifest, validate toàn bộ files trước khi ghi rồi import tuần tự. Nếu lỗi runtime xảy ra ở giữa batch, các file đã commit trước đó không tự động rollback.
 
-## Script hiện tại làm gì
-
-- upsert `Exam`
-- upsert `Topic` theo `slug`
-- upsert `Subtopic` theo `slug` nếu có
-- upsert `Question` theo `id`
-- hỗ trợ metadata exam `difficulty`, `source`, `year`
-- hỗ trợ `imageUrl`
-- hỗ trợ `optionImageUrls`
-- hỗ trợ `explanation`
-- hỗ trợ `topic`
-- hỗ trợ `subtopic`
-- hỗ trợ manifest để import nhiều exam file trong một lần chạy
-
-Import lại cùng `exam.id` sẽ update, không tạo duplicate.
-
-## Summary của dry-run
-
-Dry-run hiện in:
-
-- `exam id`
-- `title`
-- số câu hỏi
-- số topic detect được
-- số subtopic detect được
-- số câu có `imageUrl`
-- số câu có `optionImageUrls`
-
-### Summary của batch mode
-
-Batch mode hiện in:
-
-- tổng số file trong manifest
-- số file valid
-- số file lỗi
-- số exam sẽ import
-- tổng số question
-- danh sách lỗi theo từng file nếu có
-
-## JSON format đầy đủ
-
-```json
-{
-  "id": "sample-json-exam-01",
-  "title": "De import mau tu JSON",
-  "description": "De mau de test import pipeline",
-  "durationMinutes": 90,
-  "subject": "Toan",
-  "difficulty": "medium",
-  "source": "JSON Demo",
-  "year": 2026,
-  "statusLabel": "Imported JSON",
-  "questions": [
-    {
-      "id": 1001,
-      "question": "Cho ham so $y=x^2$. Do thi cua ham so la gi?",
-      "imageUrl": "/images/questions/sample-parabola.svg",
-      "explanation": "Do thi cua ham so bac hai $y=x^2$ la mot parabol.",
-      "options": [
-        "A. Duong thang",
-        "B. Parabol",
-        "C. Duong tron",
-        "D. Hyperbol"
-      ],
-      "optionImageUrls": ["", "", "", ""],
-      "correctAnswer": "B. Parabol",
-      "topic": {
-        "name": "Ham so",
-        "slug": "ham-so"
-      },
-      "subtopic": {
-        "name": "Do thi ham so",
-        "slug": "do-thi-ham-so"
-      }
-    }
-  ]
-}
-```
-
-## Manifest format
-
-```json
-{
-  "exams": [
-    "./sample-exam.json",
-    "./sample-exam-02.json"
-  ]
-}
-```
-
-Ghi chú:
-
-- path trong manifest được tính từ thư mục chứa file manifest
-- batch dry-run validate tất cả file và không ghi DB
-- batch import thật hiện tại validate toàn bộ trước, sau đó import tuần tự
-- nếu gặp lỗi runtime khi đang import thật, script sẽ dừng ngay tại file lỗi
-
-## Demo sample data hiện có
-
-Thư mục `backend/src/data/import/` hiện có:
-
-- `sample-exam.json`: 5 câu, metadata đầy đủ, có topic/subtopic, question image, option image và explanation.
-- `sample-exam-02.json`: 4 câu, dùng cho batch import và demo analytics/recommendation theo nhiều topic.
-- `manifest.json`: import cả hai đề mẫu theo batch.
-
-Hai sample hiện dùng question id trong dải `1001-1005` và `1101-1104` để giảm nguy cơ trùng với mock exam chính.
-
-## Field bắt buộc
-
-### Cấp độ exam
-
-- `id`
-- `title`
-- `durationMinutes`
-- `questions`
-
-### Cấp độ question
-
-- `id`
-- `question`
-- `options`
-- `correctAnswer`
-
-## Field optional
-
-### Cấp độ exam
-
-- `description`
-- `subject`
-- `difficulty`
-- `source`
-- `year`
-- `statusLabel`
-
-### Cấp độ question
-
-- `imageUrl`
-- `explanation`
-- `optionImageUrls`
-- `topic`
-- `subtopic`
-
-### Cấp độ topic / subtopic
-
-- `name`
-- `slug`
-
-## Rule dữ liệu
-
-- `correctAnswer` phải nằm trong `options`
-- `options` hiện nên có đúng 4 đáp án
-- `optionImageUrls` map theo index với `options`
-- `optionImageUrls[index] = ""` được hiểu là đáp án đó không có ảnh
-- `explanation` nếu có thì phải là string
-- `difficulty` nếu có phải nằm trong `easy | medium | hard`
-- `source` nếu có phải là string
-- `year` nếu có phải nằm trong khoảng hợp lệ
-- `question.id` không được trùng trong cùng file import
-- `question.id` cũng không được trùng với question đang thuộc exam khác
-- nếu có `subtopic` thì phải có `topic`
-- `subtopic` được import vào đúng `topic`; không có cơ chế infer topic tự động để tránh sai taxonomy
-- manifest phải có `exams` là mảng không rỗng
-- mỗi phần tử trong `manifest.exams` phải là đường dẫn string hợp lệ
-
-## Validation hiện có
-
-Script hiện báo lỗi rõ theo field/path, ví dụ:
-
-- `id is required`
-- `durationMinutes must be a positive integer`
-- `year must be between 1900 and 2100`
-- `questions must be a non-empty array`
-- `questions[2].id must be a positive integer`
-- `questions[3].question is required`
-- `questions[1].options must contain exactly 4 items`
-- `questions[3].correctAnswer must be one of options`
-- `questions[0].optionImageUrls must be an array of strings`
-- `questions[0].explanation must be a string`
-- `difficulty must be one of easy, medium, hard`
-- `questions[0].topic.slug must contain only lowercase letters, numbers, and hyphens`
-- `questions[0].subtopic requires topic to be provided`
-- `questions contain duplicate id: 1001`
-- `Manifest.exams phải là mảng không rỗng`
-- `Manifest.exams[1] phải là đường dẫn string hợp lệ`
-
-Nếu file có nhiều lỗi, script sẽ in toàn bộ danh sách lỗi.
-
-## Giới hạn hiện tại
-
-- chưa import Word
-- chưa import PDF
-- chưa import Excel
-- chưa có OCR
-- chưa có AI parse đề
-- chưa có upload ảnh
-- chưa có admin UI
-- image support hiện dùng static public path
-- explanation hiện là nội dung tĩnh, chưa có AI runtime
-- topic/subtopic taxonomy hiện vẫn là MVP, chưa có taxonomy manager
-
-## Troubleshooting
-
-### Thiếu `DATABASE_URL`
-
-- kiểm tra `backend/.env`
-- đảm bảo database local đang chạy
-
-### Prisma Client chưa sẵn sàng
+## V2 importer
 
 ```bash
 cd backend
-npx prisma generate
+npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json
+npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json --write
 ```
 
-### `correctAnswer` không nằm trong `options`
+Không truyền `--write` là dry-run: script đọc file, parse JSON, validate, in summary và không thay đổi database.
 
-- kiểm tra chuỗi trong `correctAnswer`
-- chuỗi này phải khớp một phần tử trong `options`
+V2 envelope có dạng khái quát:
 
-### `subtopic` có nhưng `topic` thiếu
-
-- bổ sung object `topic`
-- đảm bảo `subtopic` thuộc đúng topic đó
-
-### Dry-run pass nhưng import thật fail
-
-- kiểm tra `question.id` có đang thuộc exam khác trong DB không
-- nếu là đề mới, đổi sang dải `question.id` chưa dùng
-
-### Sai path file JSON
-
-Ví dụ đúng:
-
-```bash
-cd backend
-npm run import:exam -- ./src/data/import/sample-exam.json
+```json
+{
+  "schemaVersion": 2,
+  "exam": {
+    "id": "exam-v2-example",
+    "title": "Đề mẫu",
+    "description": "Mô tả",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "medium",
+    "source": null,
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [{ "name": "Hàm số", "slug": "ham-so" }],
+    "subtopics": []
+  },
+  "questions": []
+}
 ```
 
-### Sai path trong manifest
+`questions` phải là mảng không rỗng của V2 domain questions. Mỗi question có stable string `id`, `type`, `section`, `order`, `content`, `topicSlug` và dữ liệu theo discriminant:
 
-- kiểm tra file `manifest.json`
-- đường dẫn phải relative theo thư mục chứa manifest
-- ví dụ `./sample-exam-02.json` là hợp lệ nếu file nằm cùng thư mục với `manifest.json`
+- `single_choice`: exactly four choices với stable choice IDs và `answerKey.correctChoiceId`.
+- `true_false_group`: exactly four statements với stable statement IDs và boolean answer values.
+- `short_answer`: answer key exact/numeric/numeric-with-tolerance.
 
-### Batch import có file lỗi
+Validator kiểm tra metadata, taxonomy slug, duplicate question ID/order, question type/shape và việc question subtopic thuộc topic đã khai báo. V2 import upsert Exam, Topic, Subtopic và Question trong một Prisma transaction.
 
-Hành vi hiện tại:
+## Persistence rules
 
-- `--batch --dry-run`: báo tất cả lỗi theo file, không ghi DB
-- `--batch`: validate toàn bộ trước; nếu có file invalid thì dừng trước khi ghi DB
-- nếu tất cả file đều valid nhưng xảy ra lỗi runtime trong lúc import thật, script sẽ fail-fast tại file lỗi
+V2 importer lưu `externalId`, `type`, `section`, assets/choices/statements/answerKey JSON fields. Với single choice, importer cũng materialize legacy `options` và `correctAnswer` để coexist; true/false/short-answer không có legacy correct answer.
+
+JSON fields không được public API tin cậy trực tiếp. V2 read service reconstruct và runtime-validate persisted data trước khi tạo `PublicQuestion`.
+
+## Limitations and debt
+
+- V1 and V2 formats không interchangeable.
+- V1 manifest batch chưa transactional across all files.
+- V2 importer hiện không có manifest batch.
+- Image paths hiện là static paths/assets; không có upload pipeline.
+- Content versioning, immutable attempt snapshot và review-answer reveal policy chưa hoàn chỉnh.
+- Legacy public API vẫn có correct-answer leakage; V2 public read không có.
