@@ -5,6 +5,7 @@ import {
   mapExamRecordToSummaryDto,
   normalizeOptionImageUrls,
   requireLegacyCorrectAnswer,
+  requireLegacyCorrectOptionIndex,
 } from '../lib/examMapper';
 import type {
   ExamDifficulty,
@@ -598,7 +599,10 @@ export const getAttemptDetailById = async (
         ),
         subtopic: question.subtopic,
         selectedOptionIndex: answer.selectedOptionIndex,
-        correctOptionIndex: answer.correctOptionIndex,
+        correctOptionIndex: requireLegacyCorrectOptionIndex(
+          question.id,
+          answer.correctOptionIndex,
+        ),
         isCorrect: answer.isCorrect,
       };
     }),

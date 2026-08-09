@@ -8,7 +8,23 @@ import {
   getTopicFilters,
   submitExam,
 } from '../services/examService';
+import {
+  ExamContentIntegrityError,
+  ExamContentNotV2Error,
+  getPublicExamContentById,
+} from '../services/examContentReadService';
 import { examDifficulties, type ExamDifficulty } from '../types/exam';
+import {
+  ExamContentGradeRequestError,
+  gradeExamContent,
+} from '../services/examContentGradingService';
+import {
+  createExamContentAttempt,
+  ExamContentAttemptIntegrityError,
+  ExamContentAttemptNotV2Error,
+  ExamContentAttemptRequestError,
+  getExamContentAttemptReceiptById,
+} from '../services/examContentAttemptService';
 
 const parseOptionalInteger = (
   rawValue: unknown,
@@ -175,6 +191,159 @@ export const getExamDetail = async (
   } catch (error) {
     console.error('Failed to load exam detail:', error);
     res.status(500).json({ message: 'Khong the lay chi tiet de thi' });
+  }
+};
+
+export const getExamContentV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const examContent = await getPublicExamContentById(req.params.id);
+
+    if (examContent === null) {
+      res.status(404).json({ message: 'Khong tim thay de thi' });
+      return;
+    }
+
+    res.json(examContent);
+  } catch (error) {
+    if (error instanceof ExamContentNotV2Error) {
+      res.status(409).json({ message: 'De thi khong co noi dung V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 exam content integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to load V2 exam content:', error);
+    res.status(500).json({ message: 'Khong the lay noi dung de thi V2' });
+  }
+};
+
+export const gradeExamContentV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const result = await gradeExamContent(req.params.id, req.body);
+
+    if (result === null) {
+      res.status(404).json({ message: 'Khong tim thay de thi' });
+      return;
+    }
+
+    res.json(result);
+  } catch (error) {
+    if (error instanceof ExamContentGradeRequestError) {
+      res.status(400).json({
+        message: 'Du lieu nop bai V2 khong hop le',
+        issues: error.issues,
+      });
+      return;
+    }
+
+    if (error instanceof ExamContentNotV2Error) {
+      res.status(409).json({ message: 'De thi khong co noi dung V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 exam content integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to grade V2 exam content:', error);
+    res.status(500).json({ message: 'Khong the cham de thi V2' });
+  }
+};
+
+export const createExamContentAttemptV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const result = await createExamContentAttempt(
+      req.params.id,
+      req.body,
+      req.user?.userId,
+    );
+
+    if (result === null) {
+      res.status(404).json({ message: 'Khong tim thay de thi' });
+      return;
+    }
+
+    res.status(201).json(result);
+  } catch (error) {
+    if (
+      error instanceof ExamContentGradeRequestError ||
+      error instanceof ExamContentAttemptRequestError
+    ) {
+      res.status(400).json({
+        message: 'Du lieu nop bai V2 khong hop le',
+      });
+      return;
+    }
+
+    if (error instanceof ExamContentNotV2Error) {
+      res.status(409).json({ message: 'De thi khong co noi dung V2' });
+      return;
+    }
+
+    if (
+      error instanceof ExamContentIntegrityError ||
+      error instanceof ExamContentAttemptIntegrityError
+    ) {
+      console.error('V2 attempt integrity error:', error);
+      res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to create V2 exam attempt:', error);
+    res.status(500).json({ message: 'Khong the luu ket qua lam bai V2' });
+  }
+};
+
+export const getExamContentAttemptReceiptV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const receipt = await getExamContentAttemptReceiptById(
+      req.params.attemptId,
+      req.user.userId,
+    );
+
+    if (receipt === null) {
+      res.status(404).json({ message: 'Khong tim thay lan lam bai V2' });
+      return;
+    }
+
+    res.json(receipt);
+  } catch (error) {
+    if (error instanceof ExamContentAttemptNotV2Error) {
+      res.status(409).json({ message: 'Lan lam bai khong phai V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentAttemptIntegrityError) {
+      console.error('V2 attempt receipt integrity error:', error);
+      res.status(500).json({ message: 'Du lieu lan lam bai V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to load V2 attempt receipt:', error);
+    res.status(500).json({ message: 'Khong the lay ket qua lam bai V2' });
   }
 };
 

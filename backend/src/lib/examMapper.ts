@@ -121,3 +121,16 @@ export const requireLegacyCorrectAnswer = (
 
   return correctAnswer;
 };
+
+export const requireLegacyCorrectOptionIndex = (
+  questionId: number,
+  correctOptionIndex: number | null,
+): number => {
+  if (correctOptionIndex === null) {
+    throw new Error(
+      `Question ${questionId} cannot be returned by the legacy attempt reader`,
+    );
+  }
+
+  return correctOptionIndex;
+};
