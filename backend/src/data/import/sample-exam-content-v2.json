@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "exam": {
+    "id": "thpt-math-v2-sample",
+    "title": "Đề mẫu nội dung V2",
+    "description": "Fixture kiểm tra contract import V2.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "medium",
+    "source": null,
+    "year": 2025,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Hàm số",
+        "slug": "ham-so"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Đạo hàm",
+        "slug": "dao-ham",
+        "topicSlug": "ham-so"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-1",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Giá trị của f(0) là bao nhiêu?",
+      "topicSlug": "ham-so",
+      "subtopicSlug": "dao-ham",
+      "choices": [
+        { "id": "a", "content": "0" },
+        { "id": "b", "content": "1" },
+        { "id": "c", "content": "2" },
+        { "id": "d", "content": "3" }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "tf-1",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 2,
+      "content": "Xét các mệnh đề sau.",
+      "topicSlug": "ham-so",
+      "statements": [
+        { "id": "a", "content": "Mệnh đề a" },
+        { "id": "b", "content": "Mệnh đề b" },
+        { "id": "c", "content": "Mệnh đề c" },
+        { "id": "d", "content": "Mệnh đề d" }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "sa-1",
+      "type": "short_answer",
+      "section": 3,
+      "order": 3,
+      "content": "Tính giá trị biểu thức.",
+      "topicSlug": "ham-so",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1,5"
+      }
+    }
+  ]
+}

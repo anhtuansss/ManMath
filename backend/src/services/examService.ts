@@ -4,6 +4,7 @@ import {
   mapExamRecordToDetailDto,
   mapExamRecordToSummaryDto,
   normalizeOptionImageUrls,
+  requireLegacyCorrectAnswer,
 } from '../lib/examMapper';
 import type {
   ExamDifficulty,
@@ -337,7 +338,10 @@ export const getPracticeByTopicSlug = async (
         question.optionImageUrls,
       ),
       subtopic: question.subtopic,
-      correctAnswer: question.correctAnswer,
+      correctAnswer: requireLegacyCorrectAnswer(
+        question.id,
+        question.correctAnswer,
+      ),
     })),
   };
 };

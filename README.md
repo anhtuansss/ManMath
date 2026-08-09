@@ -84,13 +84,6 @@ npm run build
 - [Hướng dẫn phát triển](docs/DEVELOPMENT.md)
 - [Import JSON](docs/IMPORT_JSON.md)
 
-## Screenshot sản phẩm
-
-Các ảnh chụp từ UI thật được dùng cho landing:
-
-- `frontend/public/images/landing/exam-workspace.webp`
-- `frontend/public/images/landing/result-review.webp`
-
 ## Roadmap ngắn
 
 - Mở rộng analytics theo subtopic khi dữ liệu nội dung đủ tin cậy.

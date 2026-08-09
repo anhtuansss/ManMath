@@ -12,6 +12,12 @@ enum ExamDifficulty {
   hard
 }
 
+enum QuestionType {
+  single_choice
+  true_false_group
+  short_answer
+}
+
 enum AuthProvider {
   google
   password
@@ -73,7 +79,7 @@ model Exam {
 }
 
 model Question {
-  id            Int      @id 
+  id            Int      @id @default(autoincrement())
   examId        String
   exam          Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
   order         Int
@@ -84,14 +90,23 @@ model Question {
   question      String
   imageUrl      String?
   explanation   String?
-  options       String[]
+  options       String[] @default([])
   optionImageUrls String[] @default([])
-  correctAnswer String
+  correctAnswer String?
+  externalId    String?
+  type          QuestionType @default(single_choice)
+  section       Int?
+  assets        Json?
+  choices       Json?
+  statements    Json?
+  answerKey     Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@unique([examId, order])
+  @@unique([examId, externalId])
   @@index([examId])
+  @@index([examId, type])
   @@index([topicId])
   @@index([subtopicId])
 }
