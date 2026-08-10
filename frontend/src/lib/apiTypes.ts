@@ -46,6 +46,7 @@ export type RecommendationsResponse = {
 export type RecentAttempt = {
   attemptId: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;
@@ -77,6 +78,7 @@ export type ProgressResponse = {
 export type HistoryAttempt = {
   attemptId: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;

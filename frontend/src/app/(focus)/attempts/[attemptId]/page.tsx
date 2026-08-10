@@ -1,4 +1,4 @@
-import { AttemptDetailClient } from '../../../../components/exam/AttemptDetailClient';
+import { AttemptEntryClient } from '../../../../components/exam/AttemptEntryClient';
 
 type AttemptDetailPageProps = {
   params: Promise<{
@@ -11,5 +11,5 @@ export default async function AttemptDetailPage({
 }: AttemptDetailPageProps) {
   const { attemptId } = await params;
 
-  return <AttemptDetailClient attemptId={attemptId} />;
+  return <AttemptEntryClient attemptId={attemptId} />;
 }

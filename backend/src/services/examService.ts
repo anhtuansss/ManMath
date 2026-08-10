@@ -415,6 +415,7 @@ export const getExamAttemptsByExamId = async (
         select: {
           id: true,
           examId: true,
+          scoringPolicy: true,
           score: true,
           correctCount: true,
           totalQuestions: true,
@@ -433,6 +434,7 @@ export const getExamAttemptsByExamId = async (
   return examRecord.attempts.map((attempt) => ({
     id: attempt.id,
     examId: attempt.examId,
+    attemptFormat: attempt.scoringPolicy === null ? 'legacy' : 'v2',
     score: attempt.score,
     correctCount: attempt.correctCount,
     totalQuestions: attempt.totalQuestions,
@@ -455,6 +457,7 @@ export const getAttemptDetailById = async (
     select: {
       id: true,
       examId: true,
+      scoringPolicy: true,
       score: true,
       correctCount: true,
       totalQuestions: true,
@@ -568,6 +571,7 @@ export const getAttemptDetailById = async (
     attempt: {
       id: attemptRecord.id,
       examId: attemptRecord.examId,
+      attemptFormat: attemptRecord.scoringPolicy === null ? 'legacy' : 'v2',
       score: attemptRecord.score,
       correctCount: attemptRecord.correctCount,
       totalQuestions: attemptRecord.totalQuestions,

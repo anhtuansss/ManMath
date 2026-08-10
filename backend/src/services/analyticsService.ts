@@ -66,6 +66,7 @@ export type ProgressSummaryDto = {
 export type RecentAttemptDto = {
   attemptId: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;
@@ -90,6 +91,7 @@ export type UserProgressDto = {
 export type UserAttemptHistoryItemDto = {
   attemptId: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;
@@ -627,6 +629,7 @@ export const getUserProgress = async (
     select: {
       id: true,
       examId: true,
+      scoringPolicy: true,
       score: true,
       correctCount: true,
       totalQuestions: true,
@@ -666,6 +669,7 @@ export const getUserProgress = async (
     .map((attempt) => ({
       attemptId: attempt.id,
       examId: attempt.examId,
+      attemptFormat: attempt.scoringPolicy === null ? 'legacy' : 'v2',
       examTitle: attempt.exam.title,
       score: attempt.score,
       correctCount: attempt.correctCount,
@@ -735,6 +739,7 @@ export const getUserAttemptHistory = async (
     select: {
       id: true,
       examId: true,
+      scoringPolicy: true,
       score: true,
       correctCount: true,
       totalQuestions: true,
@@ -753,6 +758,7 @@ export const getUserAttemptHistory = async (
     items: attempts.map((attempt) => ({
       attemptId: attempt.id,
       examId: attempt.examId,
+      attemptFormat: attempt.scoringPolicy === null ? 'legacy' : 'v2',
       examTitle: attempt.exam.title,
       score: attempt.score,
       correctCount: attempt.correctCount,

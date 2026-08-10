@@ -74,6 +74,7 @@ export type ExamDetailDto = {
 export type ExamAttemptSummaryDto = {
   id: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   score: number;
   correctCount: number;
   totalQuestions: number;
