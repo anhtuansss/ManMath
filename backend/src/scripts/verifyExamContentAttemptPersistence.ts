@@ -1,6 +1,9 @@
 import assert from 'assert';
 import { disconnectPrisma, prisma } from '../lib/prisma';
 import { createExamContentAttempt } from '../services/examContentAttemptService';
+import {
+  validateExamContentSnapshotV1,
+} from '../types/examContentSnapshotValidation';
 
 const examId = 'thpt-math-v2-sample';
 const forbiddenAnswerKeyFields = new Set([
@@ -41,6 +44,8 @@ async function getAttemptOrThrow(attemptId: string) {
       scoringPolicy: true,
       scoreUnits: true,
       maxScoreUnits: true,
+      contentSnapshotVersion: true,
+      examContentSnapshot: true,
       answers: {
         select: {
           questionExternalId: true,
@@ -97,6 +102,30 @@ async function main(): Promise<void> {
 
   const persistedCompleteAttempt = await getAttemptOrThrow(
     completeAttempt.attemptId,
+  );
+  assert.equal(
+    persistedCompleteAttempt.contentSnapshotVersion,
+    1,
+  );
+
+  const snapshotResult = validateExamContentSnapshotV1(
+    persistedCompleteAttempt.examContentSnapshot,
+  );
+
+  assert.equal(snapshotResult.ok, true);
+
+  if (!snapshotResult.ok) {
+    throw new Error(snapshotResult.message);
+  }
+
+  assert.equal(snapshotResult.value.exam.id, examId);
+  assert.equal(snapshotResult.value.questions.length, 3);
+
+  assert.equal(
+    snapshotResult.value.questions.every(
+      (question) => 'answerKey' in question,
+    ),
+    true,
   );
   assert.equal(persistedCompleteAttempt.score, 1.75);
   assert.equal(

@@ -116,22 +116,24 @@ model Question {
 }
 
 model Attempt {
-  id              String          @id @default(cuid())
-  examId          String
-  exam            Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
-  userId          String?
-  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  score           Float
-  scoringPolicy   AttemptScoringPolicy?
-  scoreUnits      Int?
-  maxScoreUnits   Int?
-  correctCount    Int
-  totalQuestions  Int
-  unansweredCount Int
-  startedAt       DateTime?
-  submittedAt     DateTime        @default(now())
-  durationSeconds Int?
-  answers         AttemptAnswer[]
+  id                      String          @id @default(cuid())
+  examId                  String
+  exam                    Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
+  userId                  String?
+  user                    User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  score                   Float
+  scoringPolicy           AttemptScoringPolicy?
+  scoreUnits              Int?
+  contentSnapshotVersion  Int?
+  examContentSnapshot     Json?
+  maxScoreUnits           Int?
+  correctCount            Int
+  totalQuestions          Int
+  unansweredCount         Int
+  startedAt               DateTime?
+  submittedAt             DateTime        @default(now())
+  durationSeconds         Int?
+  answers                 AttemptAnswer[]
 
   @@index([examId])
   @@index([userId])

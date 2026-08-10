@@ -1,5 +1,8 @@
 import type { ExamDifficulty } from '@prisma/client';
 import type {
+  CanonicalShortAnswer,
+  CanonicalTolerance,
+  ChoiceId,
   PublicQuestion,
   GradingResult,
   QuestionInput,
@@ -7,6 +10,7 @@ import type {
   ScoreUnits,
   ScoringPolicyId,
   SubmittedResponse,
+  StatementId,
 } from './examContent';
 
 export type PublicExamContentDto = {
@@ -72,4 +76,41 @@ export type ExamContentAttemptReceiptDto = {
   readonly totalQuestions: number;
   readonly unansweredCount: number;
   readonly answers: readonly ExamContentAttemptAnswerReceiptDto[];
+};
+
+export type AttemptReviewCorrectAnswer =
+  | {
+      readonly type: 'single_choice';
+      readonly correctChoiceId: ChoiceId;
+    }
+  | {
+      readonly type: 'true_false_group';
+      readonly values: Readonly<Record<StatementId, boolean>>;
+    }
+  | {
+      readonly type: 'short_answer';
+      readonly mode: 'exact' | 'numeric' | 'numeric_with_tolerance';
+      readonly answer: CanonicalShortAnswer;
+      readonly tolerance?: CanonicalTolerance;
+    };
+
+export type ExamContentAttemptReviewQuestionDto = PublicQuestion & {
+  readonly studentResponse: SubmittedResponse | null;
+  readonly awardedScoreUnits: ScoreUnits;
+  readonly maxScoreUnits: ScoreUnits;
+  readonly isFullyCorrect: boolean;
+  readonly correctAnswer: AttemptReviewCorrectAnswer;
+};
+
+export type ExamContentAttemptReviewDto = {
+  readonly attemptId: string;
+  readonly examId: string;
+  readonly submittedAt: string;
+  readonly durationSeconds: number | null;
+  readonly scoringPolicyId: ScoringPolicyId;
+  readonly scoreUnits: ScoreUnits;
+  readonly maxScoreUnits: ScoreUnits;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number;
+  readonly questions: readonly ExamContentAttemptReviewQuestionDto[];
 };

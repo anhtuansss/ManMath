@@ -34,6 +34,15 @@ Legacy columns vẫn tồn tại: single-choice V2 import có thể materialize 
 
 V2 policy hiện tại là enum `vietnam_thpt_math_2025`. `score` được giữ như float compatibility value (`scoreUnits / 100`); V2 source of truth cho grading là policy và score units.
 
+V2 fields:
+
+- `scoringPolicy`, `scoreUnits`, `maxScoreUnits`: V2 scoring data; legacy
+  `score: Float` remains for compatibility.
+- `contentSnapshotVersion`, `examContentSnapshot`: an immutable-by-application-
+  convention snapshot of the validated V2 exam at submit time. The JSON snapshot
+  includes answer keys for server-side review only and must never be returned by
+  receipt/public endpoints.
+
 ### AttemptAnswer
 
 | Nhóm | Fields |
@@ -45,7 +54,16 @@ V2 policy hiện tại là enum `vietnam_thpt_math_2025`. `score` được giữ
 
 V2 persistence để option-index compatibility fields là `null`. Vì vậy legacy attempt-detail serializer chưa hoàn toàn compatible với V2 answers.
 
-## Quan hệ Prisma
+V2 fields:
+
+- `questionExternalId`, `questionType`, `response`
+- `awardedScoreUnits`, `maxScoreUnits`, `isFullyCorrect`
+
+`AttemptAnswer.questionId` is an `Int` identity field; it is not declared as a
+Prisma relation to `Question`. V2 review joins answers to the snapshot through
+`questionExternalId`, not the internal numeric ID.
+
+## Sơ đồ quan hệ
 
 ```text
 User 1 --- n Attempt
