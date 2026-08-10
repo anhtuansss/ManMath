@@ -5,6 +5,7 @@ import {
 } from './examContentGradingService';
 import {
   getValidatedExamContentById,
+  type ValidatedExamContent,
 } from './examContentReadService';
 import type {
   ChoiceId,
@@ -17,10 +18,19 @@ import type {
   CreateExamContentAttemptResponseDto,
   ExamContentAttemptAnswerReceiptDto,
   ExamContentAttemptReceiptDto,
+  ExamContentAttemptReviewDto,
+  ExamContentAttemptReviewQuestionDto,
 } from '../types/examContentApi';
 import {
   vietnamThptMath2025Scoring,
 } from './examGrading';
+import type {
+  ExamContentSnapshotV1,
+} from '../types/examContentSnapshot';
+import {
+  validateExamContentSnapshotV1,
+} from '../types/examContentSnapshotValidation';
+
 
 export class ExamContentAttemptRequestError extends Error {
   constructor(message: string) {
@@ -40,6 +50,13 @@ export class ExamContentAttemptNotV2Error extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'ExamContentAttemptNotV2Error';
+  }
+}
+
+export class ExamContentAttemptReviewUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ExamContentAttemptReviewUnavailableError';
   }
 }
 
@@ -154,6 +171,48 @@ function readPersistedResponse(
   }
 }
 
+function readPersistedExamContentSnapshot(
+  attemptExamId: string,
+  totalQuestions: number,
+  snapshotVersion: number | null,
+  rawSnapshot: unknown,
+): ExamContentSnapshotV1 | null {
+  if (snapshotVersion === null && rawSnapshot === null) {
+    // V2 attempt được tạo trước milestone snapshot.
+    return null;
+  }
+
+  if (snapshotVersion !== 1 || rawSnapshot === null) {
+    throw new ExamContentAttemptIntegrityError(
+      'Persisted V2 attempt snapshot is incomplete or unsupported',
+    );
+  }
+
+  const snapshotResult = validateExamContentSnapshotV1(rawSnapshot);
+
+  if (!snapshotResult.ok) {
+    throw new ExamContentAttemptIntegrityError(
+      `Persisted V2 attempt snapshot is invalid: ${snapshotResult.message}`,
+    );
+  }
+
+  const snapshot = snapshotResult.value;
+
+  if (snapshot.exam.id !== attemptExamId) {
+    throw new ExamContentAttemptIntegrityError(
+      'Persisted V2 attempt snapshot belongs to another exam',
+    );
+  }
+
+  if (snapshot.questions.length !== totalQuestions) {
+    throw new ExamContentAttemptIntegrityError(
+      'Persisted V2 attempt snapshot question count does not match attempt',
+    );
+  }
+
+  return snapshot;
+}
+
 function calculateMaximumScoreUnits(
   questions: readonly QuestionInput[],
 ): ScoreUnits {
@@ -177,6 +236,7 @@ export async function createExamContentAttempt(
 
   const grading = gradeValidatedExamContent(exam, rawPayload);
   const maximumScoreUnits = calculateMaximumScoreUnits(exam.questions);
+  const examContentSnapshot = buildExamContentSnapshotV1(exam);
   const gradingResultByQuestionId = new Map(
     grading.results.map((result) => [result.questionId, result]),
   );
@@ -217,6 +277,8 @@ export async function createExamContentAttempt(
         scoringPolicy: 'vietnam_thpt_math_2025',
         scoreUnits: grading.totalAwardedScore,
         maxScoreUnits: maximumScoreUnits,
+        contentSnapshotVersion: examContentSnapshot.version,
+        examContentSnapshot: toJsonValue(examContentSnapshot),
         correctCount: grading.results.filter((result) => result.isCorrect).length,
         totalQuestions: exam.questions.length,
         unansweredCount: grading.results.filter(
@@ -284,6 +346,32 @@ export async function createExamContentAttempt(
   });
 }
 
+function buildExamContentSnapshotV1(
+  exam: ValidatedExamContent,
+): ExamContentSnapshotV1 {
+  const candidate: ExamContentSnapshotV1 = {
+    version: 1,
+    exam: {
+      id: exam.id,
+      title: exam.title,
+      durationMinutes: exam.durationMinutes,
+      subject: exam.subject,
+      scoringPolicyId: vietnamThptMath2025Scoring.id,
+    },
+    questions: exam.questions,
+  };
+
+  const result = validateExamContentSnapshotV1(candidate);
+
+  if (!result.ok) {
+    throw new ExamContentAttemptIntegrityError(
+      `Cannot create valid exam content snapshot: ${result.message}`,
+    );
+  }
+
+  return result.value;
+}
+
 /**
  * Reads only an authenticated owner's V2 receipt. A missing result intentionally
  * covers absent attempts, another user's attempt, and anonymous attempts.
@@ -305,6 +393,8 @@ export async function getExamContentAttemptReceiptById(
       scoringPolicy: true,
       scoreUnits: true,
       maxScoreUnits: true,
+      contentSnapshotVersion: true,
+      examContentSnapshot: true,
       totalQuestions: true,
       unansweredCount: true,
       answers: {
@@ -333,6 +423,18 @@ export async function getExamContentAttemptReceiptById(
     throw new ExamContentAttemptNotV2Error('Attempt is not a V2 attempt');
   }
 
+  const snapshot = readPersistedExamContentSnapshot(
+    attempt.examId,
+    attempt.totalQuestions,
+    attempt.contentSnapshotVersion,
+    attempt.examContentSnapshot,
+  );
+  const snapshotQuestionByExternalId = snapshot === null
+    ? null
+    : new Map<string, QuestionInput>(
+      snapshot.questions.map((question) => [question.id, question]),
+    );
+
   const answers: ExamContentAttemptAnswerReceiptDto[] = attempt.answers.map(
     (answer) => {
       if (
@@ -345,6 +447,21 @@ export async function getExamContentAttemptReceiptById(
         throw new ExamContentAttemptIntegrityError(
           'Persisted V2 attempt answer is incomplete',
         );
+      }
+
+      if (snapshotQuestionByExternalId !== null) {
+        const snapshotQuestion = snapshotQuestionByExternalId.get(
+          answer.questionExternalId,
+        );
+
+        if (
+          snapshotQuestion === undefined ||
+          snapshotQuestion.type !== answer.questionType
+        ) {
+          throw new ExamContentAttemptIntegrityError(
+            'Persisted V2 attempt answer does not match its snapshot',
+          );
+        }
       }
 
       return {
@@ -378,5 +495,126 @@ export async function getExamContentAttemptReceiptById(
     totalQuestions: attempt.totalQuestions,
     unansweredCount: attempt.unansweredCount,
     answers,
+  };
+}
+
+function toAttemptReviewQuestion(
+  question: QuestionInput,
+  answer: ExamContentAttemptAnswerReceiptDto,
+): ExamContentAttemptReviewQuestionDto {
+  const outcome = {
+    studentResponse: answer.response,
+    awardedScoreUnits: answer.awardedScoreUnits,
+    maxScoreUnits: answer.maxScoreUnits,
+    isFullyCorrect: answer.isFullyCorrect,
+  };
+
+  switch (question.type) {
+    case 'single_choice': {
+      const { answerKey, ...publicQuestion } = question;
+      return {
+        ...publicQuestion,
+        ...outcome,
+        correctAnswer: {
+          type: 'single_choice',
+          correctChoiceId: answerKey.correctChoiceId,
+        },
+      };
+    }
+
+    case 'true_false_group': {
+      const { answerKey, ...publicQuestion } = question;
+      return {
+        ...publicQuestion,
+        ...outcome,
+        correctAnswer: {
+          type: 'true_false_group',
+          values: answerKey.values,
+        },
+      };
+    }
+
+    case 'short_answer': {
+      const { answerKey, ...publicQuestion } = question;
+      return {
+        ...publicQuestion,
+        ...outcome,
+        correctAnswer: {
+          type: 'short_answer',
+          mode: answerKey.mode,
+          answer: answerKey.answer,
+          ...(answerKey.mode === 'numeric_with_tolerance'
+            ? { tolerance: answerKey.tolerance }
+            : {}),
+        },
+      };
+    }
+  }
+}
+
+/** Owner-only review model. Correct answers come from the attempt snapshot. */
+export async function getExamContentAttemptReviewById(
+  attemptId: string,
+  userId: string,
+): Promise<ExamContentAttemptReviewDto | null> {
+  const receipt = await getExamContentAttemptReceiptById(attemptId, userId);
+
+  if (receipt === null) {
+    return null;
+  }
+
+  const snapshotRecord = await prisma.attempt.findFirst({
+    where: { id: attemptId, userId },
+    select: {
+      examId: true,
+      totalQuestions: true,
+      contentSnapshotVersion: true,
+      examContentSnapshot: true,
+    },
+  });
+
+  if (snapshotRecord === null) {
+    return null;
+  }
+
+  const snapshot = readPersistedExamContentSnapshot(
+    snapshotRecord.examId,
+    snapshotRecord.totalQuestions,
+    snapshotRecord.contentSnapshotVersion,
+    snapshotRecord.examContentSnapshot,
+  );
+
+  if (snapshot === null) {
+    throw new ExamContentAttemptReviewUnavailableError(
+      'Attempt was created before exam snapshots were available',
+    );
+  }
+
+  const answerByQuestionId = new Map(
+    receipt.answers.map((answer) => [answer.questionExternalId, answer]),
+  );
+  const questions = snapshot.questions.map((question) => {
+    const answer = answerByQuestionId.get(question.id);
+
+    if (answer === undefined || answer.questionType !== question.type) {
+      throw new ExamContentAttemptIntegrityError(
+        'Persisted V2 attempt review data does not match its snapshot',
+      );
+    }
+
+    return toAttemptReviewQuestion(question, answer);
+  });
+
+  return {
+    attemptId: receipt.attemptId,
+    examId: receipt.examId,
+    submittedAt: receipt.submittedAt,
+    durationSeconds: receipt.durationSeconds,
+    scoringPolicyId: receipt.scoringPolicyId,
+    scoreUnits: receipt.scoreUnits,
+    maxScoreUnits: receipt.maxScoreUnits,
+    totalQuestions: receipt.totalQuestions,
+    unansweredCount: receipt.unansweredCount,
+    questions,
   };
 }

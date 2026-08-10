@@ -10,6 +10,7 @@ import {
   getTopicList,
   createExamContentAttemptV2,
   getExamContentAttemptReceiptV2,
+  getExamContentAttemptReviewV2,
   submitExamController,
   gradeExamContentV2,
 } from '../controllers/examController';
@@ -51,4 +52,9 @@ examRouter.get(
   '/v2/attempts/:attemptId',
   authMiddleware,
   getExamContentAttemptReceiptV2,
+);
+examRouter.get(
+  '/v2/attempts/:attemptId/review',
+  authMiddleware,
+  getExamContentAttemptReviewV2,
 );

@@ -126,6 +126,15 @@ Field chính:
 - `submittedAt`
 - `durationSeconds`
 
+V2 fields:
+
+- `scoringPolicy`, `scoreUnits`, `maxScoreUnits`: V2 scoring data; legacy
+  `score: Float` remains for compatibility.
+- `contentSnapshotVersion`, `examContentSnapshot`: an immutable-by-application-
+  convention snapshot of the validated V2 exam at submit time. The JSON snapshot
+  includes answer keys for server-side review only and must never be returned by
+  receipt/public endpoints.
+
 ### AttemptAnswer
 
 Lưu từng câu trả lời của một lần làm bài.
@@ -138,6 +147,15 @@ Field chính:
 - `selectedOptionIndex`
 - `correctOptionIndex`
 - `isCorrect`
+
+V2 fields:
+
+- `questionExternalId`, `questionType`, `response`
+- `awardedScoreUnits`, `maxScoreUnits`, `isFullyCorrect`
+
+`AttemptAnswer.questionId` is an `Int` identity field; it is not declared as a
+Prisma relation to `Question`. V2 review joins answers to the snapshot through
+`questionExternalId`, not the internal numeric ID.
 
 ## Sơ đồ quan hệ
 

@@ -24,6 +24,8 @@ import {
   ExamContentAttemptNotV2Error,
   ExamContentAttemptRequestError,
   getExamContentAttemptReceiptById,
+  getExamContentAttemptReviewById,
+  ExamContentAttemptReviewUnavailableError,
 } from '../services/examContentAttemptService';
 
 const parseOptionalInteger = (
@@ -344,6 +346,49 @@ export const getExamContentAttemptReceiptV2 = async (
 
     console.error('Failed to load V2 attempt receipt:', error);
     res.status(500).json({ message: 'Khong the lay ket qua lam bai V2' });
+  }
+};
+
+export const getExamContentAttemptReviewV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const review = await getExamContentAttemptReviewById(
+      req.params.attemptId,
+      req.user.userId,
+    );
+
+    if (review === null) {
+      res.status(404).json({ message: 'Khong tim thay lan lam bai V2' });
+      return;
+    }
+
+    res.json(review);
+  } catch (error) {
+    if (error instanceof ExamContentAttemptReviewUnavailableError) {
+      res.status(409).json({ message: 'Lan lam bai chua co snapshot de review' });
+      return;
+    }
+
+    if (error instanceof ExamContentAttemptNotV2Error) {
+      res.status(409).json({ message: 'Lan lam bai khong phai V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentAttemptIntegrityError) {
+      console.error('V2 attempt review integrity error:', error);
+      res.status(500).json({ message: 'Du lieu review V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to load V2 attempt review:', error);
+    res.status(500).json({ message: 'Khong the lay review bai lam V2' });
   }
 };
 

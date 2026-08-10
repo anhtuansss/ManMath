@@ -142,6 +142,54 @@ export type V2AttemptReceiptDto = {
   readonly answers: readonly V2AttemptReceiptAnswerDto[];
 };
 
+type V2ReviewOutcome = {
+  readonly studentResponse: V2SubmittedResponse | null;
+  readonly awardedScoreUnits: number;
+  readonly maxScoreUnits: number;
+  readonly isFullyCorrect: boolean;
+};
+
+export type V2SingleChoiceReviewQuestionDto = V2SingleChoiceQuestionDto & V2ReviewOutcome & {
+  readonly correctAnswer: {
+    readonly type: 'single_choice';
+    readonly correctChoiceId: string;
+  };
+};
+
+export type V2TrueFalseGroupReviewQuestionDto = V2TrueFalseGroupQuestionDto & V2ReviewOutcome & {
+  readonly correctAnswer: {
+    readonly type: 'true_false_group';
+    readonly values: Readonly<Record<string, boolean>>;
+  };
+};
+
+export type V2ShortAnswerReviewQuestionDto = V2ShortAnswerQuestionDto & V2ReviewOutcome & {
+  readonly correctAnswer: {
+    readonly type: 'short_answer';
+    readonly mode: 'exact' | 'numeric' | 'numeric_with_tolerance';
+    readonly answer: string;
+    readonly tolerance?: string;
+  };
+};
+
+export type V2AttemptReviewQuestionDto =
+  | V2SingleChoiceReviewQuestionDto
+  | V2TrueFalseGroupReviewQuestionDto
+  | V2ShortAnswerReviewQuestionDto;
+
+export type V2AttemptReviewDto = {
+  readonly attemptId: string;
+  readonly examId: string;
+  readonly submittedAt: string;
+  readonly durationSeconds: number | null;
+  readonly scoringPolicyId: 'vietnam_thpt_math_2025';
+  readonly scoreUnits: number;
+  readonly maxScoreUnits: number;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number;
+  readonly questions: readonly V2AttemptReviewQuestionDto[];
+};
+
 export type V2ExamDraft = {
   readonly version: 1;
   readonly answers: V2AnswersByQuestionId;

@@ -3,6 +3,7 @@ import { disconnectPrisma, prisma } from '../lib/prisma';
 import {
   createExamContentAttempt,
   getExamContentAttemptReceiptById,
+  getExamContentAttemptReviewById,
 } from '../services/examContentAttemptService';
 
 const examId = 'thpt-math-v2-sample';
@@ -13,6 +14,8 @@ const forbiddenAnswerKeyFields = new Set([
   'answer',
   'tolerance',
   'explanation',
+  'contentSnapshotVersion',
+  'examContentSnapshot',
 ]);
 
 function assertNoAnswerKeyFields(value: unknown): void {
@@ -34,6 +37,27 @@ function assertNoAnswerKeyFields(value: unknown): void {
       `Attempt receipt must not contain ${key}`,
     );
     assertNoAnswerKeyFields(nestedValue);
+  }
+}
+
+function assertReviewDoesNotExposeSnapshot(value: unknown): void {
+  const forbiddenFields = new Set([
+    'answerKey',
+    'explanation',
+    'examContentSnapshot',
+    'contentSnapshotVersion',
+  ]);
+
+  if (Array.isArray(value)) {
+    value.forEach(assertReviewDoesNotExposeSnapshot);
+    return;
+  }
+
+  if (typeof value !== 'object' || value === null) return;
+
+  for (const [key, nestedValue] of Object.entries(value)) {
+    assert.equal(forbiddenFields.has(key), false, `Review must not contain ${key}`);
+    assertReviewDoesNotExposeSnapshot(nestedValue);
   }
 }
 
@@ -86,11 +110,35 @@ async function main(): Promise<void> {
   assert.equal(ownerReceipt?.maxScoreUnits, 175);
   assertNoAnswerKeyFields(JSON.parse(JSON.stringify(ownerReceipt)) as unknown);
 
+  const ownerReview = await getExamContentAttemptReviewById(
+    ownerAttempt.attemptId,
+    owner.id,
+  );
+  assert.notEqual(ownerReview, null);
+  assert.equal(ownerReview?.questions.length, 3);
+  assert.equal(
+    ownerReview?.questions.find((question) => question.type === 'single_choice')
+      ?.correctAnswer.type,
+    'single_choice',
+  );
+  assert.equal(
+    ownerReview?.questions.find((question) => question.type === 'short_answer')
+      ?.correctAnswer.type,
+    'short_answer',
+  );
+  assertReviewDoesNotExposeSnapshot(JSON.parse(JSON.stringify(ownerReview)) as unknown);
+
   const otherUserReceipt = await getExamContentAttemptReceiptById(
     ownerAttempt.attemptId,
     otherUser.id,
   );
   assert.equal(otherUserReceipt, null);
+
+  const otherUserReview = await getExamContentAttemptReviewById(
+    ownerAttempt.attemptId,
+    otherUser.id,
+  );
+  assert.equal(otherUserReview, null);
 
   const anonymousAttempt = await createExamContentAttempt(examId, payload);
   if (anonymousAttempt === null) {
@@ -102,6 +150,12 @@ async function main(): Promise<void> {
     owner.id,
   );
   assert.equal(anonymousReceipt, null);
+
+  const anonymousReview = await getExamContentAttemptReviewById(
+    anonymousAttempt.attemptId,
+    owner.id,
+  );
+  assert.equal(anonymousReview, null);
 
   console.log('Exam content attempt read verification passed');
 }

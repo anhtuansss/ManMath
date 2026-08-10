@@ -14,7 +14,7 @@ Frontend chịu trách nhiệm về presentation, local persistence cho flow là
 | --- | --- | --- |
 | `(public)` | Nội dung công khai, không phụ thuộc backend để render landing | `/`, `/about` |
 | `(workspace)` | App shell với sidebar/header; guest vẫn xem được các màn có state phù hợp | `/dashboard`, `/analytics`, `/history`, `/profile`, `/exams` |
-| `(focus)` | Flow cần tập trung, không có workspace sidebar/header | `/exam/[id]`, `/exam/[id]/result`, `/exam/[id]/attempts`, `/attempts/[attemptId]`, `/practice/topic/[topicSlug]` |
+| `(focus)` | Flow cần tập trung, không có workspace sidebar/header | `/exam/[id]`, `/exam/[id]/result`, `/exam-v2/[id]`, `/exam-v2/[id]/result`, `/exam/[id]/attempts`, `/attempts/[attemptId]`, `/practice/topic/[topicSlug]` |
 
 `/` là landing page. `/dashboard` là điểm vào workspace. `/exams` là compatibility route và redirect tới `/dashboard`.
 
@@ -48,6 +48,24 @@ Frontend chịu trách nhiệm về presentation, local persistence cho flow là
 ```
 
 Guest vẫn submit/làm đề được. Attempt chỉ được gắn user khi JWT hợp lệ. Result route đọc session result; nếu payload không kèm chi tiết exam, frontend lấy lại `GET /api/exams/:id` để review.
+
+### V2 exam attempt and review
+
+```text
+/exam-v2/[id]
+→ GET /api/v2/exams/:id
+→ stable-ID answers + versioned V2 draft storage
+→ POST /api/v2/exams/:id/attempts
+→ persisted Attempt + AttemptAnswer + exam content snapshot
+→ /exam-v2/[id]/result?attemptId=...
+→ owner-only receipt/review reads
+```
+
+The public exam and receipt endpoints never contain answer keys. An
+authenticated owner can explicitly request review after submission. The review
+is constructed from the attempt snapshot, so it remains tied to the content at
+submit time even if the current exam changes. Review data stays in React memory
+and is not persisted in browser storage.
 
 ### History và ownership
 

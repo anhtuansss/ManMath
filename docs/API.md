@@ -211,6 +211,23 @@ Array<{
 - `subtopic` là metadata bổ sung cho taxonomy MVP
 - `POST /api/exam/submit` giữ response cũ và bổ sung `topicStats` theo hướng additive
 
+## V2 exam content and attempts
+
+V2 keeps stable public string question IDs and does not expose answer keys from
+the public exam or attempt receipt endpoints.
+
+| Method | Endpoint | Auth | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/api/v2/exams/:id` | Public | Public V2 exam content for the three question types |
+| `POST` | `/api/v2/exams/:id/attempts` | Optional JWT | Validate, grade, and persist a V2 attempt |
+| `GET` | `/api/v2/attempts/:attemptId` | Protected owner | Safe V2 attempt receipt without correct answers |
+| `GET` | `/api/v2/attempts/:attemptId/review` | Protected owner | Snapshot-backed review with correct answers after submission |
+
+`GET /api/v2/attempts/:attemptId/review` is intentionally unavailable to
+anonymous attempts. It returns correct answers from the persisted snapshot, but
+never returns the raw snapshot or an explanation. A V2 attempt created before
+snapshots were introduced returns `409` from this endpoint.
+
 ## Auth APIs
 
 | Method | Endpoint | Auth | Mục đích |
