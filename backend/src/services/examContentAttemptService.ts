@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { createHash, randomBytes, timingSafeEqual } from 'crypto';
 import { prisma } from '../lib/prisma';
 import {
   gradeValidatedExamContent,
@@ -86,6 +87,42 @@ function readDurationSeconds(rawPayload: unknown): number | null {
   }
 
   return value;
+}
+
+const ANONYMOUS_RECEIPT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+function hashAnonymousReceiptToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
+}
+
+function createAnonymousReceiptCredential(): { token: string; hash: string; expiresAt: Date } {
+  const token = randomBytes(32).toString('base64url');
+  return {
+    token,
+    hash: hashAnonymousReceiptToken(token),
+    expiresAt: new Date(Date.now() + ANONYMOUS_RECEIPT_TTL_MS),
+  };
+}
+
+function hasMatchingAnonymousReceiptToken(expectedHash: string, rawToken: string): boolean {
+  const actualHash = hashAnonymousReceiptToken(rawToken);
+  return expectedHash.length === actualHash.length && timingSafeEqual(
+    Buffer.from(expectedHash, 'utf8'),
+    Buffer.from(actualHash, 'utf8'),
+  );
+}
+
+function readRequiredExamVersionId(rawPayload: unknown): string {
+  if (!isRecord(rawPayload)) {
+    throw new ExamContentAttemptRequestError('Attempt payload must be an object');
+  }
+
+  const examVersionId = rawPayload.examVersionId;
+  if (typeof examVersionId !== 'string' || examVersionId.trim().length === 0) {
+    throw new ExamContentAttemptRequestError('examVersionId must be a non-empty string');
+  }
+
+  return examVersionId.trim();
 }
 
 function getMaximumScoreUnits(
@@ -228,13 +265,17 @@ export async function createExamContentAttempt(
   userId?: string,
 ): Promise<CreateExamContentAttemptResponseDto | null> {
   const durationSeconds = readDurationSeconds(rawPayload);
-  const exam = await getValidatedExamContentById(examId);
+  const examVersionId = readRequiredExamVersionId(rawPayload);
+  const exam = await getValidatedExamContentById(examId, examVersionId);
 
   if (exam === null) {
     return null;
   }
 
   const grading = gradeValidatedExamContent(exam, rawPayload);
+  const anonymousCredential = userId === undefined
+    ? createAnonymousReceiptCredential()
+    : null;
   const maximumScoreUnits = calculateMaximumScoreUnits(exam.questions);
   const examContentSnapshot = buildExamContentSnapshotV1(exam);
   const gradingResultByQuestionId = new Map(
@@ -242,36 +283,10 @@ export async function createExamContentAttempt(
   );
 
   return prisma.$transaction(async (tx) => {
-    const persistedQuestions = await tx.question.findMany({
-      where: {
-        examId: exam.id,
-        externalId: {
-          in: exam.questions.map((question) => question.id),
-        },
-      },
-      select: {
-        id: true,
-        externalId: true,
-        type: true,
-      },
-    });
-    const persistedQuestionByExternalId = new Map(
-      persistedQuestions.flatMap((question) =>
-        question.externalId === null
-          ? []
-          : [[question.externalId, question] as const],
-      ),
-    );
-
-    if (persistedQuestionByExternalId.size !== exam.questions.length) {
-      throw new ExamContentAttemptIntegrityError(
-        'Persisted V2 questions do not match the validated exam content',
-      );
-    }
-
     const attempt = await tx.attempt.create({
       data: {
         examId: exam.id,
+        examVersionId: exam.versionId,
         userId: userId ?? null,
         score: toLegacyScore(grading.totalAwardedScore),
         scoringPolicy: 'vietnam_thpt_math_2025',
@@ -285,27 +300,22 @@ export async function createExamContentAttempt(
           (result) => result.response === undefined,
         ).length,
         durationSeconds,
+        anonymousReceiptTokenHash: anonymousCredential?.hash ?? null,
+        anonymousReceiptExpiresAt: anonymousCredential?.expiresAt ?? null,
         answers: {
           create: exam.questions.map((question) => {
-            const persistedQuestion = persistedQuestionByExternalId.get(
-              question.id,
-            );
             const gradingResult = gradingResultByQuestionId.get(question.id);
 
-            if (persistedQuestion === undefined || gradingResult === undefined) {
+            if (gradingResult === undefined) {
               throw new ExamContentAttemptIntegrityError(
                 `Question ${question.id} cannot be persisted for this attempt`,
               );
             }
 
-            if (persistedQuestion.type !== question.type) {
-              throw new ExamContentAttemptIntegrityError(
-                `Question ${question.id} changed type during attempt creation`,
-              );
-            }
-
             return {
-              questionId: persistedQuestion.id,
+              // Deprecated legacy scalar: it is not a foreign key. V2 source
+              // of truth is questionExternalId plus Attempt.examVersionId.
+              questionId: question.order,
               selectedOptionIndex: null,
               correctOptionIndex: null,
               isCorrect: gradingResult.isCorrect,
@@ -331,6 +341,7 @@ export async function createExamContentAttempt(
     return {
       attemptId: attempt.id,
       examId: exam.id,
+      examVersionId: exam.versionId,
       scoringPolicyId: grading.scoringPolicyId,
       scoreUnits: grading.totalAwardedScore,
       maxScoreUnits: maximumScoreUnits,
@@ -342,6 +353,7 @@ export async function createExamContentAttempt(
       durationSeconds,
       submittedAt: attempt.submittedAt.toISOString(),
       results: grading.results,
+      ...(anonymousCredential === null ? {} : { anonymousReceiptToken: anonymousCredential.token }),
     };
   });
 }
@@ -378,16 +390,20 @@ function buildExamContentSnapshotV1(
  */
 export async function getExamContentAttemptReceiptById(
   attemptId: string,
-  userId: string,
+  userId?: string,
+  anonymousReceiptToken?: string,
 ): Promise<ExamContentAttemptReceiptDto | null> {
   const attempt = await prisma.attempt.findFirst({
     where: {
       id: attemptId,
-      userId,
     },
     select: {
       id: true,
       examId: true,
+      examVersionId: true,
+      userId: true,
+      anonymousReceiptTokenHash: true,
+      anonymousReceiptExpiresAt: true,
       submittedAt: true,
       durationSeconds: true,
       scoringPolicy: true,
@@ -412,6 +428,19 @@ export async function getExamContentAttemptReceiptById(
   });
 
   if (attempt === null) {
+    return null;
+  }
+
+  if (userId !== undefined) {
+    if (attempt.userId !== userId) return null;
+  } else if (
+    attempt.userId !== null ||
+    anonymousReceiptToken === undefined ||
+    attempt.anonymousReceiptTokenHash === null ||
+    attempt.anonymousReceiptExpiresAt === null ||
+    attempt.anonymousReceiptExpiresAt <= new Date() ||
+    !hasMatchingAnonymousReceiptToken(attempt.anonymousReceiptTokenHash, anonymousReceiptToken)
+  ) {
     return null;
   }
 
@@ -487,6 +516,7 @@ export async function getExamContentAttemptReceiptById(
   return {
     attemptId: attempt.id,
     examId: attempt.examId,
+    examVersionId: attempt.examVersionId,
     submittedAt: attempt.submittedAt.toISOString(),
     durationSeconds: attempt.durationSeconds,
     scoringPolicyId: 'vietnam_thpt_math_2025',
@@ -496,6 +526,14 @@ export async function getExamContentAttemptReceiptById(
     unansweredCount: attempt.unansweredCount,
     answers,
   };
+}
+
+/** Anonymous access is limited to the same safe receipt, never review. */
+export async function getAnonymousExamContentAttemptReceiptById(
+  attemptId: string,
+  anonymousReceiptToken: string,
+): Promise<ExamContentAttemptReceiptDto | null> {
+  return getExamContentAttemptReceiptById(attemptId, undefined, anonymousReceiptToken);
 }
 
 function toAttemptReviewQuestion(

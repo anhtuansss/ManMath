@@ -3,8 +3,8 @@ import {
   getUserAttemptHistory,
   getUserProgress,
   getUserRecommendations,
-  getUserSubtopicStats,
-  getUserTopicStats,
+  getUserSubtopicAnalytics,
+  getUserTopicAnalytics,
 } from '../services/analyticsService';
 
 export const getMyTopicStats = async (
@@ -17,11 +17,7 @@ export const getMyTopicStats = async (
       return;
     }
 
-    const topicStats = await getUserTopicStats(req.user.userId);
-
-    res.json({
-      topicStats,
-    });
+    res.json(await getUserTopicAnalytics(req.user.userId));
   } catch (error) {
     console.error('Failed to load user topic stats:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -38,11 +34,7 @@ export const getMySubtopicStats = async (
       return;
     }
 
-    const subtopicStats = await getUserSubtopicStats(req.user.userId);
-
-    res.json({
-      subtopicStats,
-    });
+    res.json(await getUserSubtopicAnalytics(req.user.userId));
   } catch (error) {
     console.error('Failed to load user subtopic stats:', error);
     res.status(500).json({ message: 'Internal server error' });

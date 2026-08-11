@@ -9,6 +9,7 @@ import {
   type AuthUser,
 } from '../../lib/authApi';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
+import { getExamTakingHref } from '../../lib/examRoutes';
 import type { TopicStatDto } from '../exam/types';
 import type {
   ProgressAttemptPoint as ProgressByAttempt,
@@ -45,15 +46,18 @@ const formatSubmittedAt = (submittedAt: string): string =>
     year: 'numeric',
   });
 
+const getTopicPerformancePercentage = (topic: TopicStatDto): number =>
+  topic.masteryPercentage ?? topic.accuracy;
+
 const sortWeakTopics = (topicStats: TopicStatDto[]): TopicStatDto[] =>
   [...topicStats]
     .filter((topic) => topic.total > 0)
-    .sort((a, b) => a.accuracy - b.accuracy || b.total - a.total || a.topicName.localeCompare(b.topicName, 'vi'));
+    .sort((a, b) => getTopicPerformancePercentage(a) - getTopicPerformancePercentage(b) || b.total - a.total || a.topicName.localeCompare(b.topicName, 'vi'));
 
 const getTopicState = (topic: TopicStatDto): string => {
   if (topic.total < MINIMUM_TOPIC_SAMPLE) return 'Cần thêm dữ liệu';
-  if (topic.accuracy < 60) return 'Cần ôn';
-  if (topic.accuracy >= 80) return 'Ổn định';
+  if (getTopicPerformancePercentage(topic) < 60) return 'Cần ôn';
+  if (getTopicPerformancePercentage(topic) >= 80) return 'Ổn định';
   return 'Đang củng cố';
 };
 
@@ -207,7 +211,7 @@ export function AnalyticsClient() {
               <p className="workspace-page-description mt-2">Xem điểm mạnh, phần cần ôn và xu hướng từ các lần làm gần đây.</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {status === 'ready' && nextExam ? <Link href={`/exam/${nextExam.examId}`} className="workspace-button-text inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề được gợi ý</Link> : null}
+              {status === 'ready' && nextExam ? <Link href={getExamTakingHref(nextExam.examId, nextExam.contentEngine)} className="workspace-button-text inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề được gợi ý</Link> : null}
               <Link href="/history" className="workspace-button-text inline-flex h-10 items-center justify-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem lịch sử</Link>
             </div>
           </div>
@@ -240,19 +244,19 @@ export function AnalyticsClient() {
               <div className="p-5 lg:col-span-7 lg:border-r lg:border-border">
                 <p className="workspace-eyebrow">Phần cần ưu tiên</p>
                 <h2 className="workspace-section-title mt-1 text-text-primary">Ôn đúng phần trước lần làm tiếp theo.</h2>
-                {priorityTopics.length === 0 ? <p className="workspace-page-description mt-4">Chưa có chuyên đề đủ dữ liệu để ưu tiên. Hãy hoàn thành thêm đề để xem gợi ý sát hơn.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{priorityTopics.map((topic) => { const accuracy = clampAccuracy(topic.accuracy); return <div key={topic.topicId ?? topic.topicName} className="py-3 first:pt-3 last:pb-3"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><span className="workspace-badge-text shrink-0 text-text-secondary">{accuracy}%</span></div><p className="workspace-metadata mt-2">{topic.reason}</p>{topic.topicSlug ? <Link href={`/practice/topic/${topic.topicSlug}`} className="workspace-button-text mt-3 inline-flex h-9 items-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Luyện chuyên đề này</Link> : null}</div>; })}</div>}
+                {priorityTopics.length === 0 ? <p className="workspace-page-description mt-4">Chưa có chuyên đề đủ dữ liệu để ưu tiên. Hãy hoàn thành thêm đề để xem gợi ý sát hơn.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{priorityTopics.map((topic) => { const accuracy = clampAccuracy(getTopicPerformancePercentage(topic)); return <div key={topic.topicId ?? topic.topicName} className="py-3 first:pt-3 last:pb-3"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><span className="workspace-badge-text shrink-0 text-text-secondary">{accuracy}%</span></div><p className="workspace-metadata mt-2">{topic.reason}</p>{topic.topicSlug ? <Link href={`/practice/topic/${topic.topicSlug}`} className="workspace-button-text mt-3 inline-flex h-9 items-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Luyện chuyên đề này</Link> : null}</div>; })}</div>}
               </div>
               <div className="p-5 lg:col-span-5">
                 <p className="workspace-eyebrow">Bước tiếp theo</p>
                 <h2 className="workspace-section-title mt-1 text-text-primary">Một đề phù hợp để tiếp tục.</h2>
-                {nextExam ? <><div className="mt-5 border-y border-border py-4"><p className="workspace-item-title text-text-primary">{nextExam.title}</p><p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút</p><p className="workspace-metadata mt-3">{nextExam.reason}</p></div><Link href={`/exam/${nextExam.examId}`} className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề này</Link></> : <><p className="workspace-page-description mt-5">Chưa có đề gợi ý riêng. Bạn vẫn có thể chọn một đề trong kho để tiếp tục luyện tập.</p><Link href="/dashboard" className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-primary transition-colors hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem kho đề</Link></>}
+                {nextExam ? <><div className="mt-5 border-y border-border py-4"><p className="workspace-item-title text-text-primary">{nextExam.title}</p><p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút</p><p className="workspace-metadata mt-3">{nextExam.reason}</p></div><Link href={getExamTakingHref(nextExam.examId, nextExam.contentEngine)} className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề này</Link></> : <><p className="workspace-page-description mt-5">Chưa có đề gợi ý riêng. Bạn vẫn có thể chọn một đề trong kho để tiếp tục luyện tập.</p><Link href="/dashboard" className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-primary transition-colors hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem kho đề</Link></>}
                 {recommendedExams.length > 1 ? <Link href="/dashboard" className="workspace-button-text mt-4 inline-flex text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem thêm gợi ý</Link> : null}
               </div>
             </section>
 
             <section className="border-t border-border pt-6">
               <div><p className="workspace-eyebrow">Năng lực theo chuyên đề</p><h2 className="workspace-section-title mt-1 text-text-primary">Kết quả có dữ liệu thực.</h2></div>
-              {topicPerformance.length === 0 ? <p className="workspace-page-description mt-5">Chưa có dữ liệu theo chuyên đề. Hoàn thành thêm đề để xem kết quả tại đây.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{topicPerformance.map((topic) => { const accuracy = clampAccuracy(topic.accuracy); return <div key={topic.topicId ?? topic.topicName} className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_96px_72px] sm:items-center"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><div className="h-1.5 overflow-hidden rounded-full bg-background-alt"><div className="h-full rounded-full bg-primary" style={{ width: `${accuracy}%` }} /></div><div className="flex items-center justify-between gap-3 sm:justify-end"><span className="workspace-badge-text text-text-secondary">{accuracy}%</span><span className="workspace-badge-text text-text-secondary">{getTopicState(topic)}</span></div></div>; })}</div>}
+              {topicPerformance.length === 0 ? <p className="workspace-page-description mt-5">Chưa có dữ liệu theo chuyên đề. Hoàn thành thêm đề để xem kết quả tại đây.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{topicPerformance.map((topic) => { const accuracy = clampAccuracy(getTopicPerformancePercentage(topic)); return <div key={topic.topicId ?? topic.topicName} className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_96px_72px] sm:items-center"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><div className="h-1.5 overflow-hidden rounded-full bg-background-alt"><div className="h-full rounded-full bg-primary" style={{ width: `${accuracy}%` }} /></div><div className="flex items-center justify-between gap-3 sm:justify-end"><span className="workspace-badge-text text-text-secondary">{accuracy}%</span><span className="workspace-badge-text text-text-secondary">{getTopicState(topic)}</span></div></div>; })}</div>}
             </section>
 
             <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-12">

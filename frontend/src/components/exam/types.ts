@@ -65,6 +65,8 @@ export type SubmitResult = SubmitExamResultDto;
 
 export type ExamDifficulty = 'easy' | 'medium' | 'hard';
 
+export type ExamContentEngine = 'legacy' | 'v2';
+
 export type ExamDurationFilter =
   | 'all'
   | 'short'
@@ -83,6 +85,7 @@ export type ExamSummaryDto = {
   source: string | null;
   type?: string;
   statusLabel: string;
+  contentEngine: ExamContentEngine;
 };
 
 export type TopicFilterDto = {
@@ -123,6 +126,7 @@ export type ExamListItem = {
   source: string | null;
   type?: string;
   statusLabel: string;
+  contentEngine: ExamContentEngine;
   href: string;
 };
 
@@ -137,12 +141,17 @@ export type TopicStatDto = {
   correct: number;
   total: number;
   accuracy: number;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  masteryPercentage: number | null;
+  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
 };
 
 // Dữ liệu API của danh sách số lần làm
 export type ExamAttemptSummaryDto = {
   id: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   score: number;
   correctCount: number;
   totalQuestions: number;

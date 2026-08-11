@@ -5,7 +5,8 @@ import type {
   V2ExamResultSession,
 } from '../components/exam-v2/types';
 
-const draftKey = (examId: string): string => `manmath:v2:exam-draft:${examId}`;
+const draftKey = (examId: string, examVersionId: string): string =>
+  `manmath:v2:exam-draft:v2:${examId}:${examVersionId}`;
 const resultKey = (examId: string): string => `manmath:v2:exam-result:${examId}`;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -43,11 +44,13 @@ const readJson = (storage: Storage, key: string): unknown | null => {
 export const readV2ExamDraft = (
   storage: Storage,
   examId: string,
+  examVersionId: string,
 ): V2ExamDraft | null => {
-  const value = readJson(storage, draftKey(examId));
+  const value = readJson(storage, draftKey(examId, examVersionId));
   if (
     !isRecord(value) ||
-    value.version !== 1 ||
+    value.version !== 2 ||
+    value.examVersionId !== examVersionId ||
     !isRecord(value.answers) ||
     typeof value.remainingSeconds !== 'number' ||
     !Number.isInteger(value.remainingSeconds) ||
@@ -64,7 +67,8 @@ export const readV2ExamDraft = (
   }
 
   return {
-    version: 1,
+    version: 2,
+    examVersionId,
     answers: answers as V2AnswersByQuestionId,
     remainingSeconds: value.remainingSeconds,
     updatedAt: value.updatedAt,
@@ -74,13 +78,14 @@ export const readV2ExamDraft = (
 export const writeV2ExamDraft = (
   storage: Storage,
   examId: string,
+  examVersionId: string,
   draft: V2ExamDraft,
 ): void => {
-  storage.setItem(draftKey(examId), JSON.stringify(draft));
+  storage.setItem(draftKey(examId, examVersionId), JSON.stringify(draft));
 };
 
-export const clearV2ExamDraft = (storage: Storage, examId: string): void => {
-  storage.removeItem(draftKey(examId));
+export const clearV2ExamDraft = (storage: Storage, examId: string, examVersionId: string): void => {
+  storage.removeItem(draftKey(examId, examVersionId));
 };
 
 export const readV2ExamResult = (

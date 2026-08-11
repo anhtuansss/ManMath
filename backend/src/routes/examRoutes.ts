@@ -6,9 +6,11 @@ import {
   getExamDetail,
   getExamList,
   getHealth,
+  getReadiness,
   getTopicPractice,
   getTopicList,
   createExamContentAttemptV2,
+  getAnonymousExamContentAttemptReceiptV2,
   getExamContentAttemptReceiptV2,
   getExamContentAttemptReviewV2,
   submitExamController,
@@ -23,6 +25,7 @@ export const examRouter = Router();
 
 // Endpoint kiểm tra sức khỏe của API
 examRouter.get('/health', getHealth);
+examRouter.get('/ready', getReadiness);
 
 // Lấy danh sách đề thi (không bao gồm câu hỏi và đáp án)
 examRouter.get('/exams', getExamList);
@@ -52,6 +55,10 @@ examRouter.get(
   '/v2/attempts/:attemptId',
   authMiddleware,
   getExamContentAttemptReceiptV2,
+);
+examRouter.get(
+  '/v2/attempts/:attemptId/anonymous-receipt',
+  getAnonymousExamContentAttemptReceiptV2,
 );
 examRouter.get(
   '/v2/attempts/:attemptId/review',

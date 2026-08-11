@@ -1,130 +1,38 @@
 # Database và Prisma
 
-## Công nghệ
+## Công nghệ và nguyên tắc
 
-- PostgreSQL
-- Prisma ORM
+Runtime source of truth là PostgreSQL qua Prisma. JSON import chỉ là transport format. JSON columns trong `Question` và `AttemptAnswer` là persistence storage, không phải trusted domain object; V2 runtime validator chịu trách nhiệm xác nhận invariant trước khi content được read/graded.
 
-## Các model chính
+## Models chính
 
-### User
+### User, Topic, Subtopic và Exam
 
-Lưu tài khoản người dùng.
-
-Field chính:
-
-- `id`
-- `email`
-- `fullName`
-- `avatarUrl`
-- `googleId`
-- `passwordHash`
-- `authProvider`
-
-### Exam
-
-Lưu thông tin đề thi.
-
-Field chính:
-
-- `id`
-- `title`
-- `description`
-- `durationMinutes`
-- `subject`
-- `difficulty`
-- `source`
-- `year`
-- `statusLabel`
-
-Ghi chú:
-
-- `difficulty` hiện dùng enum `easy | medium | hard`
-- `source` là metadata string optional cho nguồn đề
-- `year` là metadata number optional cho năm thi
-- metadata này được expose ra exam list, exam detail và exam filter
-
-### Topic
-
-Lưu nhóm kiến thức lớn.
-
-Field chính:
-
-- `id`
-- `name`
-- `slug`
-- `description`
-- `order`
-
-Topic hiện là nền cho:
-
-- topic stats
-- recommendation MVP
-- analytics dashboard
-
-### Subtopic
-
-Lưu nhóm kiến thức nhỏ hơn, nằm trong một `Topic`.
-
-Field chính:
-
-- `id`
-- `name`
-- `slug`
-- `topicId`
-
-Ghi chú:
-
-- `Subtopic` thuộc đúng một `Topic`
-- `Question.subtopicId` là optional
-- MVP dùng `Subtopic` để tăng độ chi tiết cho taxonomy, DTO và analytics
-- Analytics hiện có API riêng theo subtopic: `GET /api/me/subtopic-stats`
+- `User`: Google/user identity, auth provider và attempts.
+- `Topic`/`Subtopic`: taxonomy dùng cho content mapping và analytics. `Subtopic` thuộc một `Topic`.
+- `Exam`: metadata, questions và attempts. `Exam.id` là stable string ID.
 
 ### Question
 
-Lưu từng câu hỏi trong đề.
+`Question.id: Int` là internal auto-increment database ID. Nó không phải V2 public identity.
 
-Field chính:
+| Nhóm | Fields |
+| --- | --- |
+| Common/legacy | `examId`, `order`, `topicId`, `subtopicId`, `question`, `imageUrl`, `explanation`, `options`, `optionImageUrls`, `correctAnswer` |
+| V2 | `externalId`, `type`, `section`, `assets`, `choices`, `statements`, `answerKey` |
 
-- `id`
-- `examId`
-- `order`
-- `topicId`
-- `subtopicId`
-- `question`
-- `imageUrl`
-- `explanation`
-- `options`
-- `optionImageUrls`
-- `correctAnswer`
+`externalId` là stable V2 domain/public ID và unique trong `examId`. V2 type là Prisma enum `single_choice`, `true_false_group` hoặc `short_answer`.
 
-Ghi chú:
-
-- `imageUrl` là field optional cho Question Image Support
-- `explanation` là field optional cho Explanation MVP, lưu lời giải tĩnh có thể chứa KaTeX
-- `optionImageUrls` là mảng string map theo index với `options`
-- `subtopicId` là field optional cho Subtopic Mapping MVP
-- Ảnh hiện tại được lưu dạng static public path, ví dụ `/images/questions/sample-parabola.svg`
-- MVP vẫn giữ `options: string[]`, chưa đổi sang object option model
-- Explanation hiện chỉ được render ở result review và attempt detail, không hiển thị trong lúc đang làm bài
-- Question DTO / practice payload / attempt detail hiện đều có thể expose `imageUrl`, `optionImageUrls`, `explanation` và `subtopic`
+Legacy columns vẫn tồn tại: single-choice V2 import có thể materialize `options` và `correctAnswer` để compatibility, còn true/false/short-answer có `correctAnswer = null`. Không mô tả `Question.id` như stable external ID.
 
 ### Attempt
 
-Lưu một lần làm bài.
+| Nhóm | Fields |
+| --- | --- |
+| Common | `examId`, nullable `userId`, `score`, counts, start/submission time, duration |
+| V2 | nullable `scoringPolicy`, `scoreUnits`, `maxScoreUnits` |
 
-Field chính:
-
-- `id`
-- `examId`
-- `userId`
-- `score`
-- `correctCount`
-- `totalQuestions`
-- `unansweredCount`
-- `startedAt`
-- `submittedAt`
-- `durationSeconds`
+V2 policy hiện tại là enum `vietnam_thpt_math_2025`. `score` được giữ như float compatibility value (`scoreUnits / 100`); V2 source of truth cho grading là policy và score units.
 
 V2 fields:
 
@@ -137,16 +45,14 @@ V2 fields:
 
 ### AttemptAnswer
 
-Lưu từng câu trả lời của một lần làm bài.
+| Nhóm | Fields |
+| --- | --- |
+| Legacy | `questionId`, `selectedOptionIndex`, `correctOptionIndex`, `isCorrect` |
+| V2 | `questionExternalId`, `questionType`, JSON `response`, `awardedScoreUnits`, `maxScoreUnits`, `isFullyCorrect` |
 
-Field chính:
+`questionId` là scalar indexed field. Schema hiện không khai báo relation/FK từ `AttemptAnswer` tới `Question`, nên docs không gọi nó là foreign key.
 
-- `id`
-- `attemptId`
-- `questionId`
-- `selectedOptionIndex`
-- `correctOptionIndex`
-- `isCorrect`
+V2 persistence để option-index compatibility fields là `null`. Vì vậy legacy attempt-detail serializer chưa hoàn toàn compatible với V2 answers.
 
 V2 fields:
 
@@ -169,60 +75,40 @@ Subtopic 1 --- n Question
 Attempt 1 --- n AttemptAnswer
 ```
 
-## Ghi chú thiết kế
+`Exam → Attempt` và `Attempt → AttemptAnswer` dùng cascade delete. Attempt hiện không là immutable snapshot đầy đủ: nó không lưu toàn bộ question content, answer key hoặc explicit content version.
 
-- `Attempt.userId` là nullable để vẫn hỗ trợ anonymous submit
-- `AttemptAnswer.questionId` hiện là scalar field, chưa khai báo relation trực tiếp tới `Question`
-- Topic và Subtopic được giữ độc lập với attempt data; analytics tính từ `AttemptAnswer` kết hợp `Question`
+## V2 persistence flow
 
-## Vì sao cần Topic và Subtopic
+```text
+Validated QuestionInput
+→ Question V2 fields + JSON storage
 
-### Topic
+Validated/graded attempt
+→ transaction
+→ Attempt scoring metadata
+→ AttemptAnswer normalized response + per-question result
+```
 
-Dùng cho:
+V2 read reconstruct raw objects từ persisted fields, validate lại rồi mới tạo public DTO. `answerKey` không được copy vào public response hoặc safe receipt.
 
-- thống kê theo nhóm lớn
-- recommendation MVP
-- dashboard tổng quan
+## Legacy compatibility và debt
 
-### Subtopic
+- `correctAnswer`, options và option indexes còn cần cho legacy endpoints/frontend.
+- V1/V2 attempts cùng dùng tables chung để history/analytics hoạt động trong migration.
+- Analytics hiện đọc `isCorrect`; partial true/false awarded units chưa có representation riêng.
+- Exam versioning và immutable snapshot chưa hoàn chỉnh.
+- Chỉ dùng một Question row per current content; future content edits có thể làm legacy review/read khác với thời điểm nộp attempt.
 
-Dùng cho:
+## Current V2 versioning and history guarantees
 
-- phân loại câu hỏi chi tiết hơn
-- cải thiện quality của seed/import
-- mở đường cho recommendation và analytics sau này
+`Exam` is a logical container. `ExamVersion` is the numbered content version (`draft`, `published`, `archived`) with profile `practice` or `official_full_exam`. `ExamVersionQuestion` is the complete trusted V2 payload, including its server-only answer key.
 
-MVP hiện tại chưa chuyển hệ thống sang subtopic-first. Topic vẫn là lớp phân tích chính.
-Subtopic analytics là lớp bổ sung để chỉ ra nhóm kiến thức nhỏ cần ôn lại, không thay thế topic stats.
+- Import only creates or mutates a draft version; public V2 read uses a published version only.
+- `Attempt.examVersionId` pins the exact published version; `examContentSnapshot` records validated submit-time content for server review.
+- PostgreSQL triggers block update/delete of published or archived versions and their questions, plus updates to submitted attempt and attempt-answer grading facts.
+- `Exam → Attempt` is `RESTRICT`, preventing accidental exam deletion from cascading into history. `User → Attempt` remains `SET NULL`; this project deliberately does not make an account-deletion/privacy policy decision.
+- Legacy `Question` rows are compatibility storage only. V2 discovery uses published version questions and does not require a legacy row.
 
-## Topic taxonomy hiện tại
+## Taxonomy
 
-Slug topic chính đang dùng gồm:
-
-- `ham-so`
-- `nguyen-ham-tich-phan`
-- `gioi-han`
-- `mu-logarit`
-- `xac-suat-to-hop`
-- `vector-toa-do`
-- `ma-tran`
-- `hinh-hoc-khong-gian`
-
-Ví dụ subtopic hiện tại:
-
-- `dao-ham`
-- `cuc-tri`
-- `do-thi-ham-so`
-- `logarit-co-ban`
-- `phuong-trinh-logarit`
-- `tich-phan-co-ban`
-- `dinh-thuc-ma-tran`
-- `goc-va-khoang-cach`
-
-Slug topic/subtopic cần được giữ nhất quán giữa:
-
-- `mockExams`
-- seed
-- JSON import
-- recommendation / analytics services
+Topic/subtopic slug phải nhất quán giữa import, persistence và analytics. V2 importer kiểm tra question topic/subtopic reference và đảm bảo subtopic thuộc topic khai báo.

@@ -15,6 +15,8 @@ import type {
 
 export type PublicExamContentDto = {
   readonly id: string;
+  readonly examVersionId: string;
+  readonly versionNumber: number;
   readonly title: string;
   readonly durationMinutes: number;
   readonly subject: string;
@@ -37,6 +39,7 @@ export type GradeExamContentResponseDto = {
 };
 
 export type CreateExamContentAttemptRequestDto = {
+  readonly examVersionId: string;
   readonly responses: readonly RawSubmittedResponse[];
   readonly durationSeconds?: number;
 };
@@ -44,6 +47,7 @@ export type CreateExamContentAttemptRequestDto = {
 export type CreateExamContentAttemptResponseDto = {
   readonly attemptId: string;
   readonly examId: string;
+  readonly examVersionId: string;
   readonly scoringPolicyId: ScoringPolicyId;
   readonly scoreUnits: ScoreUnits;
   readonly maxScoreUnits: ScoreUnits;
@@ -53,6 +57,8 @@ export type CreateExamContentAttemptResponseDto = {
   readonly durationSeconds: number | null;
   readonly submittedAt: string;
   readonly results: readonly GradingResult[];
+  /** Present only once for anonymous attempts; never persisted as raw data. */
+  readonly anonymousReceiptToken?: string;
 };
 
 /** Safe V2 attempt receipt. It deliberately excludes answer keys and explanations. */
@@ -68,6 +74,7 @@ export type ExamContentAttemptAnswerReceiptDto = {
 export type ExamContentAttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
+  readonly examVersionId: string | null;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: ScoringPolicyId;

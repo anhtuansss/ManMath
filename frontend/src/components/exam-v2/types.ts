@@ -51,6 +51,8 @@ export type V2PublicQuestionDto =
 
 export type V2PublicExamDto = {
   readonly id: string;
+  readonly examVersionId: string;
+  readonly versionNumber: number;
   readonly title: string;
   readonly durationMinutes: number;
   readonly subject: string;
@@ -109,6 +111,7 @@ export type V2GradingResultDto = {
 export type V2CreateAttemptResponseDto = {
   readonly attemptId: string;
   readonly examId: string;
+  readonly examVersionId: string;
   readonly scoringPolicyId: 'vietnam_thpt_math_2025';
   readonly scoreUnits: number;
   readonly maxScoreUnits: number;
@@ -118,6 +121,8 @@ export type V2CreateAttemptResponseDto = {
   readonly durationSeconds: number | null;
   readonly submittedAt: string;
   readonly results: readonly V2GradingResultDto[];
+  /** Returned once for anonymous attempts; never place this token in a URL. */
+  readonly anonymousReceiptToken?: string;
 };
 
 export type V2AttemptReceiptAnswerDto = {
@@ -132,6 +137,7 @@ export type V2AttemptReceiptAnswerDto = {
 export type V2AttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
+  readonly examVersionId: string | null;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: 'vietnam_thpt_math_2025';
@@ -191,7 +197,8 @@ export type V2AttemptReviewDto = {
 };
 
 export type V2ExamDraft = {
-  readonly version: 1;
+  readonly version: 2;
+  readonly examVersionId: string;
   readonly answers: V2AnswersByQuestionId;
   readonly remainingSeconds: number;
   readonly updatedAt: number;

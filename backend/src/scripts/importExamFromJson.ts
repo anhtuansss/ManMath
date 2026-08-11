@@ -292,6 +292,17 @@ export const importNormalizedExam = async (
   exam: NormalizedExamInput,
 ): Promise<void> => {
   await prisma.$transaction(async (tx) => {
+    const existingExam = await tx.exam.findUnique({
+      where: { id: exam.id },
+      select: { contentEngine: true },
+    });
+
+    if (existingExam?.contentEngine === 'v2') {
+      throw new Error(
+        `Exam ${exam.id} is managed by the V2 content importer and cannot be overwritten by the legacy importer`,
+      );
+    }
+
     const incomingQuestionIds = exam.questions.map((question) => question.id);
     const existingQuestions = await tx.question.findMany({
       where: {
@@ -326,6 +337,7 @@ export const importNormalizedExam = async (
         source: exam.source,
         year: exam.year,
         statusLabel: exam.statusLabel,
+        contentEngine: 'legacy',
       },
       create: {
         id: exam.id,
@@ -337,6 +349,7 @@ export const importNormalizedExam = async (
         source: exam.source,
         year: exam.year,
         statusLabel: exam.statusLabel,
+        contentEngine: 'legacy',
       },
     });
 

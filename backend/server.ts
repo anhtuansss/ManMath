@@ -11,20 +11,9 @@
  * backend/src/controllers/examController.ts
  * backend/src/services/examService.ts
  */
-import express from 'express';
-import cors from 'cors';
-import { examRouter } from './src/routes/examRoutes';
-import { authRouter } from './src/routes/authRoutes';
-import { meRouter } from './src/routes/meRoutes';
+import { createApp } from './src/app';
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/auth', authRouter);
-app.use('/api/me', meRouter);
-app.use('/api', examRouter);
+const app = createApp();
 
 const PORT = process.env.PORT || 5000;
 

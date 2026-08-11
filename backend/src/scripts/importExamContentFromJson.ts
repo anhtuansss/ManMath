@@ -5,6 +5,7 @@ import {
   validateExamContentImportPayload,
 } from './importExamContentValidator';
 import { importExamContent } from '../services/examContentImportService';
+import { validateExamPublishReadiness } from '../services/examPublishReadinessService';
 
 type ImportCliOptions = {
   readonly inputPath: string;
@@ -77,6 +78,7 @@ const printSummary = (
 
   console.log(`[${mode}] Exam ID: ${envelope.exam.id}`);
   console.log(`[${mode}] Title: ${envelope.exam.title}`);
+  console.log(`[${mode}] Publish profile: ${envelope.publishProfile}`);
   console.log(`[${mode}] Topics: ${envelope.taxonomy.topics.length}`);
   console.log(`[${mode}] Subtopics: ${envelope.taxonomy.subtopics.length}`);
   console.log(`[${mode}] Questions: ${envelope.questions.length}`);
@@ -92,6 +94,16 @@ export async function importExamContentFile(
   const resolvedPath = path.resolve(process.cwd(), inputPath);
   const rawValue = await readJsonFile(resolvedPath);
   const envelope = validateExamContentImportPayload(rawValue);
+  const readiness = validateExamPublishReadiness({
+    publishProfile: envelope.publishProfile,
+    durationMinutes: envelope.exam.durationMinutes,
+    scoringPolicyId: 'vietnam_thpt_math_2025',
+    questions: envelope.questions,
+  });
+
+  if (!readiness.ok) {
+    throw new Error(`Publish readiness validation failed: ${readiness.issues.join('; ')}`);
+  }
 
   if (!options?.write) {
     printSummary(envelope, 'DRY RUN');

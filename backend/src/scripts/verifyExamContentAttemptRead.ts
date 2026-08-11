@@ -81,6 +81,11 @@ async function main(): Promise<void> {
   });
 
   const payload = {
+    examVersionId: (await prisma.examVersion.findFirst({
+      where: { examId, status: 'published' },
+      orderBy: { versionNumber: 'desc' },
+      select: { id: true },
+    }))?.id,
     durationSeconds: 90,
     responses: [
       { questionId: 'sc-1', type: 'single_choice', choiceId: 'a' },
@@ -92,6 +97,8 @@ async function main(): Promise<void> {
       { questionId: 'sa-1', type: 'short_answer', value: '1,5' },
     ],
   };
+
+  if (payload.examVersionId === undefined) throw new Error('Published fixture version must exist');
 
   const ownerAttempt = await createExamContentAttempt(examId, payload, owner.id);
   if (ownerAttempt === null) {

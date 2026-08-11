@@ -1,5 +1,7 @@
 export type ExamDifficulty = 'easy' | 'medium' | 'hard';
 
+export type ExamContentEngine = 'legacy' | 'v2';
+
 export const examDifficulties: ExamDifficulty[] = ['easy', 'medium', 'hard'];
 
 export type SubtopicDto = {
@@ -44,6 +46,10 @@ export type TopicStatDto = {
   correct: number;
   total: number;
   accuracy: number;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  masteryPercentage: number | null;
+  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
 };
 
 export type ExamSummaryDto = {
@@ -57,6 +63,7 @@ export type ExamSummaryDto = {
   source: string | null;
   year?: number;
   statusLabel: string;
+  contentEngine: ExamContentEngine;
 };
 
 export type ExamDetailDto = {
@@ -74,6 +81,7 @@ export type ExamDetailDto = {
 export type ExamAttemptSummaryDto = {
   id: string;
   examId: string;
+  attemptFormat: 'legacy' | 'v2';
   score: number;
   correctCount: number;
   totalQuestions: number;

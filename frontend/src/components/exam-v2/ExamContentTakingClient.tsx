@@ -179,7 +179,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
         if (!response.ok) throw new Error(response.status === 404 ? 'Không tìm thấy đề thi V2.' : 'Không thể tải đề thi V2.');
         const data = await response.json() as V2PublicExamDto;
         if (!active) return;
-        const draft = readV2ExamDraft(localStorage, examId);
+        const draft = readV2ExamDraft(localStorage, examId, data.examVersionId);
         setExam(data);
         setAnswers(draft?.answers ?? {});
         setRemainingSeconds(draft?.remainingSeconds ?? data.durationMinutes * 60);
@@ -197,7 +197,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
 
   useEffect(() => {
     if (!exam || !isReady) return;
-    writeV2ExamDraft(localStorage, examId, { version: 1, answers, remainingSeconds, updatedAt: Date.now() });
+    writeV2ExamDraft(localStorage, examId, exam.examVersionId, { version: 2, examVersionId: exam.examVersionId, answers, remainingSeconds, updatedAt: Date.now() });
   }, [answers, exam, examId, isReady, remainingSeconds]);
 
   useEffect(() => {
@@ -230,7 +230,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       if (token) headers.Authorization = `Bearer ${token}`;
       const response = await fetch(`${API_BASE_URL}/api/v2/exams/${examId}/attempts`, {
         method: 'POST', headers,
-        body: JSON.stringify({ responses: submission.responses, durationSeconds: Math.max(exam.durationMinutes * 60 - remainingSeconds, 0) }),
+        body: JSON.stringify({ examVersionId: exam.examVersionId, responses: submission.responses, durationSeconds: Math.max(exam.durationMinutes * 60 - remainingSeconds, 0) }),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { message?: string } | null;
@@ -238,7 +238,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       }
       const result = await response.json() as V2CreateAttemptResponseDto;
       writeV2ExamResult(sessionStorage, examId, { version: 1, examId, examTitle: exam.title, wasAuthenticated: token !== null, result });
-      clearV2ExamDraft(localStorage, examId);
+      clearV2ExamDraft(localStorage, examId, exam.examVersionId);
       router.push(`/exam-v2/${examId}/result?attemptId=${encodeURIComponent(result.attemptId)}`);
     } catch (submissionError) {
       setSubmitError(submissionError instanceof Error ? submissionError.message : 'Không thể nộp bài V2.');
