@@ -12,10 +12,11 @@ import type {
 } from './types';
 import { API_BASE_URL } from '../../config/api';
 import { getAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
+import { getExamTakingHref } from '../../lib/examRoutes';
 
 const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
   ...exam,
-  href: `/exam/${exam.id}`,
+  href: getExamTakingHref(exam.id, exam.contentEngine),
 });
 
 function ExamListSkeleton() {
@@ -377,6 +378,11 @@ export function ExamListClient() {
         const key = localStorage.key(i);
         if (key?.startsWith('manmath:exam-draft:')) {
           setDraftExamId(key.split(':')[2]);
+          break;
+        }
+        if (key?.startsWith('manmath:v2:exam-draft:v2:')) {
+          const examIdFromV2Draft = key.split(':')[4];
+          if (examIdFromV2Draft) setDraftExamId(examIdFromV2Draft);
           break;
         }
       }

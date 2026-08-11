@@ -100,15 +100,22 @@ export function ExamContentResultClient({ examId }: ExamContentResultClientProps
       if (active) setSession(stored);
 
       const token = getAuthToken();
-      if (!attemptId || !token) {
+      const anonymousReceiptToken = stored?.wasAuthenticated
+        ? undefined
+        : stored?.result.anonymousReceiptToken;
+      if (!attemptId || (!token && !anonymousReceiptToken)) {
         if (active) setLoading(false);
         return;
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/v2/attempts/${encodeURIComponent(attemptId)}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = token
+          ? await fetch(`${API_BASE_URL}/api/v2/attempts/${encodeURIComponent(attemptId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          : await fetch(`${API_BASE_URL}/api/v2/attempts/${encodeURIComponent(attemptId)}/anonymous-receipt`, {
+            headers: { 'X-Attempt-Receipt-Token': anonymousReceiptToken! },
+          });
         if (!response.ok) throw new Error('Không thể tải lại biên nhận bài làm.');
         const data = await response.json() as V2AttemptReceiptDto;
         if (data.examId !== examId) throw new Error('Biên nhận không thuộc đề thi này.');

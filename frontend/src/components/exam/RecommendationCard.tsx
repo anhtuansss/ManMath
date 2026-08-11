@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { fetchProtectedJson, isUnauthorizedError } from '../../lib/authApi';
 import { getAuthToken, subscribeAuthTokenChange } from '../../lib/authStorage';
+import { getExamTakingHref } from '../../lib/examRoutes';
 
 type WeakTopicRecommendation = {
   topicId: string | null;
@@ -12,6 +13,7 @@ type WeakTopicRecommendation = {
   correct: number;
   total: number;
   accuracy: number;
+  masteryPercentage: number | null;
   reason: string;
 };
 
@@ -22,6 +24,7 @@ type RecommendedExam = {
   matchedWeakTopicCount: number;
   matchedWeakQuestionCount: number;
   reason: string;
+  contentEngine: 'legacy' | 'v2';
 };
 
 type RecommendationsResponse = {
@@ -127,7 +130,7 @@ export function RecommendationCard() {
               <h3 className="workspace-sidebar-label">Chuyên đề cần ôn</h3>
               <div className="mt-3 divide-y divide-border border-y border-border">
                 {visibleTopics.map((topic) => {
-                  const accuracy = clampAccuracy(topic.accuracy);
+                  const accuracy = clampAccuracy(topic.masteryPercentage ?? topic.accuracy);
                   return (
                     <div key={topic.topicId ?? topic.topicName} className="py-3">
                       <div className="flex items-center justify-between gap-3">
@@ -145,7 +148,7 @@ export function RecommendationCard() {
           {nextExam && (
             <div>
               <h3 className="workspace-sidebar-label">Đề nên làm tiếp</h3>
-              <Link href={`/exam/${nextExam.examId}`} className="mt-3 block rounded-lg border border-border bg-background px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary-light/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+              <Link href={getExamTakingHref(nextExam.examId, nextExam.contentEngine)} className="mt-3 block rounded-lg border border-border bg-background px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary-light/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <p className="workspace-item-title text-text-primary">{nextExam.title}</p>
                 <p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút{nextExam.matchedWeakQuestionCount > 0 ? ` · ${nextExam.matchedWeakQuestionCount} câu thuộc phần cần ôn` : ''}</p>
               </Link>

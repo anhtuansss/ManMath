@@ -211,7 +211,7 @@ export function ExamList({
                     </p>
                   </div>
                   <Link
-                    href={`/exam/${draftExam.id}`}
+                    href={draftExam.href}
                     className="workspace-button-text inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-warning px-5 text-white transition-colors duration-200 hover:bg-warning/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2"
                   >
                     Tiếp tục làm bài
