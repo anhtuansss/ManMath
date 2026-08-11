@@ -73,6 +73,18 @@ V2 importer lưu `externalId`, `type`, `section`, assets/choices/statements/answ
 
 JSON fields không được public API tin cậy trực tiếp. V2 read service reconstruct và runtime-validate persisted data trước khi tạo `PublicQuestion`.
 
+## Current draft → publish workflow
+
+V2 import validates the whole envelope and readiness profile, upserts logical exam/taxonomy, then writes only a draft `ExamVersion` and its `ExamVersionQuestion` records. It does not mutate an existing published version and does not need to materialize legacy `Question` rows.
+
+```bash
+npm run import:exam-content -- ./path/to/exam.json       # dry-run
+npm run import:exam-content -- ./path/to/exam.json --write
+npm run publish:exam-content -- your-exam-id
+```
+
+Publish runs readiness again. A published version is database-immutable; make a new draft for later content changes. Public V2 reads and grading select only a published version.
+
 ## Limitations and debt
 
 - V1 and V2 formats không interchangeable.

@@ -107,3 +107,12 @@ Analytics remains rule-based. It reads shared `Attempt` data during V1/V2 coexis
 ## Import APIs
 
 Import is not an HTTP API. Use backend CLI scripts documented in [IMPORT_JSON.md](IMPORT_JSON.md).
+
+## Current V2 security and versioning contract
+
+- `GET /api/ready` is the database readiness endpoint; `/api/health` is process liveness.
+- A V2 create-attempt request is `{ examVersionId, responses, durationSeconds? }`. The version must be published and is pinned to the attempt.
+- `GET /api/v2/attempts/:attemptId/anonymous-receipt` accepts only `X-Attempt-Receipt-Token`. The raw token is returned once by anonymous create-attempt, is hashed in PostgreSQL, expires in seven days, and must never occur in a URL or log.
+- Anonymous recovery is safe receipt only. It cannot request `/review`.
+- Legacy APIs refuse V2 exams with `409`; legacy topic-practice excludes V2 compatibility rows. No legacy endpoint falls back to V2 `Question` data.
+- V2 public exam and safe receipt responses exclude answer keys, correct choice IDs, true/false keys, expected short answers/tolerance, solution and explanation. Owner-only snapshot review is the explicit answer-key reveal boundary.

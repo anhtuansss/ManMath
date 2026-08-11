@@ -35,6 +35,7 @@ export type ImportTaxonomyInput = {
 
 export type ExamContentImportEnvelope = {
   readonly schemaVersion: 2;
+  readonly publishProfile: 'official_full_exam' | 'practice';
   readonly exam: ImportExamMetadata;
   readonly taxonomy: ImportTaxonomyInput;
   readonly questions: readonly QuestionInput[];
@@ -84,6 +85,7 @@ export function validateExamContentImportPayload(
         'questions',
         issues,
     );
+    const publishProfile = normalizePublishProfile(rawValue.publishProfile, issues);
 
     if (
         issues.length > 0 ||
@@ -106,6 +108,7 @@ export function validateExamContentImportPayload(
 
     return {
         schemaVersion: 2,
+        publishProfile,
         exam,
         taxonomy,
         questions,
@@ -510,4 +513,15 @@ function validateTaxonomyReferences(
             );
         }
     }
+}
+
+function normalizePublishProfile(
+  value: unknown,
+  issues: string[],
+): 'official_full_exam' | 'practice' {
+  // Schema V2 fixtures from before versioning are explicitly practice/draft.
+  if (value === undefined) return 'practice';
+  if (value === 'official_full_exam' || value === 'practice') return value;
+  issues.push('publishProfile must be official_full_exam or practice');
+  return 'practice';
 }

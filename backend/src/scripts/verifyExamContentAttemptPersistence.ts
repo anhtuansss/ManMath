@@ -69,7 +69,14 @@ async function getAttemptOrThrow(attemptId: string) {
 }
 
 async function main(): Promise<void> {
+  const publishedVersion = await prisma.examVersion.findFirst({
+    where: { examId, status: 'published' },
+    orderBy: { versionNumber: 'desc' },
+    select: { id: true },
+  });
+  if (publishedVersion === null) throw new Error('Published fixture version must exist');
   const completeAttempt = await createExamContentAttempt(examId, {
+    examVersionId: publishedVersion.id,
     durationSeconds: 90,
     responses: [
       {
@@ -152,6 +159,7 @@ async function main(): Promise<void> {
   }
 
   const partialAttempt = await createExamContentAttempt(examId, {
+    examVersionId: publishedVersion.id,
     responses: [
       {
         questionId: 'sc-1',

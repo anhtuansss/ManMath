@@ -99,6 +99,16 @@ V2 read reconstruct raw objects từ persisted fields, validate lại rồi mớ
 - Exam versioning và immutable snapshot chưa hoàn chỉnh.
 - Chỉ dùng một Question row per current content; future content edits có thể làm legacy review/read khác với thời điểm nộp attempt.
 
+## Current V2 versioning and history guarantees
+
+`Exam` is a logical container. `ExamVersion` is the numbered content version (`draft`, `published`, `archived`) with profile `practice` or `official_full_exam`. `ExamVersionQuestion` is the complete trusted V2 payload, including its server-only answer key.
+
+- Import only creates or mutates a draft version; public V2 read uses a published version only.
+- `Attempt.examVersionId` pins the exact published version; `examContentSnapshot` records validated submit-time content for server review.
+- PostgreSQL triggers block update/delete of published or archived versions and their questions, plus updates to submitted attempt and attempt-answer grading facts.
+- `Exam → Attempt` is `RESTRICT`, preventing accidental exam deletion from cascading into history. `User → Attempt` remains `SET NULL`; this project deliberately does not make an account-deletion/privacy policy decision.
+- Legacy `Question` rows are compatibility storage only. V2 discovery uses published version questions and does not require a legacy row.
+
 ## Taxonomy
 
 Topic/subtopic slug phải nhất quán giữa import, persistence và analytics. V2 importer kiểm tra question topic/subtopic reference và đảm bảo subtopic thuộc topic khai báo.

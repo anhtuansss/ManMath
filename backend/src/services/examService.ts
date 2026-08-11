@@ -48,7 +48,13 @@ type ValidationResult =
 
 export type SubmitExamServiceResult =
   | { ok: true; data: SubmitExamResultDto }
-  | { ok: false; statusCode: 400 | 404; message: string };
+  | { ok: false; statusCode: 400 | 404 | 409; message: string };
+
+export class LegacyExamReadNotSupportedError extends Error {
+  constructor(examId: string) {
+    super(`Exam ${examId} is V2 content and cannot be read by the legacy API`);
+  }
+}
 
 type SubmittedQuestionResult = {
   questionId: number;
@@ -148,64 +154,7 @@ export const getExamSummaries = async (
   const difficulty = filters?.difficulty;
   const source = filters?.source?.trim();
   const year = filters?.year;
-  const whereConditions: Prisma.ExamWhereInput[] = [];
-
-  if (normalizedTopic) {
-    whereConditions.push({
-      questions: {
-        some: {
-          topic: {
-            slug: normalizedTopic,
-          },
-        },
-      },
-    });
-  }
-
-  if (normalizedSubtopic) {
-    whereConditions.push({
-      questions: {
-        some: {
-          subtopic: {
-            slug: normalizedSubtopic,
-          },
-        },
-      },
-    });
-  }
-
-  if (typeof durationMin === 'number' || typeof durationMax === 'number') {
-    whereConditions.push({
-      durationMinutes: {
-        gte: durationMin,
-        lte: durationMax,
-      },
-    });
-  }
-
-  if (difficulty) {
-    whereConditions.push({
-      difficulty,
-    });
-  }
-
-  if (source) {
-    whereConditions.push({
-      source: {
-        contains: source,
-        mode: 'insensitive',
-      },
-    });
-  }
-
-  if (typeof year === 'number') {
-    whereConditions.push({
-      year,
-    });
-  }
-
   const exams = await prisma.exam.findMany({
-    where: whereConditions.length > 0 ? { AND: whereConditions } : undefined,
     orderBy: {
       createdAt: 'desc',
     },
@@ -219,26 +168,58 @@ export const getExamSummaries = async (
       source: true,
       year: true,
       statusLabel: true,
+      contentEngine: true,
       _count: {
         select: {
           questions: true,
+        },
+      },
+      questions: {
+        select: {
+          topic: { select: { slug: true } },
+          subtopic: { select: { slug: true } },
+        },
+      },
+      versions: {
+        where: { status: 'published' },
+        orderBy: { versionNumber: 'desc' },
+        take: 1,
+        select: {
+          title: true,
+          description: true,
+          durationMinutes: true,
+          subject: true,
+          difficulty: true,
+          source: true,
+          year: true,
+          statusLabel: true,
+          _count: { select: { questions: true } },
+          questions: { select: { topicSlug: true, subtopicSlug: true } },
         },
       },
     },
   });
 
   const searchKeyword = normalizedSearch ? normalizeSearchText(normalizedSearch) : null;
-  const filteredExams = searchKeyword
-    ? exams.filter((exam) => {
-        const searchableText = normalizeSearchText(
-          `${exam.title} ${exam.description ?? ''}`,
-        );
-
-        return searchableText.includes(searchKeyword);
-      })
-    : exams;
-
-  return filteredExams.map((exam) => mapExamRecordToSummaryDto(exam));
+  return exams
+    .filter((exam) => exam.contentEngine !== 'v2' || exam.versions.length === 1)
+    .map((exam) => ({
+      summary: mapExamRecordToSummaryDto(exam),
+      taxonomy: exam.contentEngine === 'v2'
+        ? exam.versions[0]?.questions.map((question) => ({ topicSlug: question.topicSlug, subtopicSlug: question.subtopicSlug })) ?? []
+        : exam.questions.map((question) => ({ topicSlug: question.topic?.slug ?? null, subtopicSlug: question.subtopic?.slug ?? null })),
+    }))
+    .filter(({ summary, taxonomy }) => {
+      if (searchKeyword && !normalizeSearchText(`${summary.title} ${summary.description}`).includes(searchKeyword)) return false;
+      if (normalizedTopic && !taxonomy.some((question) => question.topicSlug === normalizedTopic)) return false;
+      if (normalizedSubtopic && !taxonomy.some((question) => question.subtopicSlug === normalizedSubtopic)) return false;
+      if (typeof durationMin === 'number' && summary.durationMinutes < durationMin) return false;
+      if (typeof durationMax === 'number' && summary.durationMinutes > durationMax) return false;
+      if (difficulty && summary.difficulty !== difficulty) return false;
+      if (source && !(summary.source ?? '').toLocaleLowerCase('vi').includes(source.toLocaleLowerCase('vi'))) return false;
+      return !(typeof year === 'number' && summary.year !== year);
+    })
+    .map(({ summary }) => summary);
 };
 
 export const getTopicFilters = async (): Promise<TopicFilterDto[]> => {
@@ -290,6 +271,9 @@ export const getPracticeByTopicSlug = async (
       name: true,
       slug: true,
       questions: {
+        where: {
+          exam: { contentEngine: { not: 'v2' } },
+        },
         take: safeLimit,
         orderBy: [{ exam: { createdAt: 'desc' } }, { order: 'asc' }],
         select: {
@@ -364,6 +348,7 @@ export const getExamDetailById = async (
       source: true,
       year: true,
       statusLabel: true,
+      contentEngine: true,
       questions: {
         orderBy: {
           order: 'asc',
@@ -392,6 +377,10 @@ export const getExamDetailById = async (
     return null;
   }
 
+  if (examRecord.contentEngine === 'v2') {
+    throw new LegacyExamReadNotSupportedError(examId);
+  }
+
   return mapExamRecordToDetailDto(examRecord);
 };
 
@@ -405,6 +394,7 @@ export const getExamAttemptsByExamId = async (
       id: examId,
     },
     select: {
+      contentEngine: true,
       attempts: {
         where: {
           userId,
@@ -429,6 +419,10 @@ export const getExamAttemptsByExamId = async (
 
   if (!examRecord) {
     return null;
+  }
+
+  if (examRecord.contentEngine === 'v2') {
+    throw new LegacyExamReadNotSupportedError(examId);
   }
 
   return examRecord.attempts.map((attempt) => ({
@@ -467,6 +461,7 @@ export const getAttemptDetailById = async (
       exam: {
         select: {
           id: true,
+          contentEngine: true,
           title: true,
           durationMinutes: true,
           questions: {
@@ -511,6 +506,10 @@ export const getAttemptDetailById = async (
 
   if (!attemptRecord) {
     return null;
+  }
+
+  if (attemptRecord.exam.contentEngine === 'v2') {
+    throw new LegacyExamReadNotSupportedError(attemptRecord.examId);
   }
 
   const answerMap = new Map(
@@ -564,6 +563,10 @@ export const getAttemptDetailById = async (
         topicStat.total > 0
           ? Math.round((topicStat.correct / topicStat.total) * 100)
           : 0,
+      awardedScoreUnits: 0,
+      maxScoreUnits: 0,
+      masteryPercentage: null,
+      analyticsConfidence: 'legacy_best_effort' as const,
     }),
   );
 
@@ -676,6 +679,10 @@ const buildTopicStatsForSubmittedQuestions = async (
         topicStat.total > 0
           ? Math.round((topicStat.correct / topicStat.total) * 100)
           : 0,
+      awardedScoreUnits: 0,
+      maxScoreUnits: 0,
+      masteryPercentage: null,
+      analyticsConfidence: 'legacy_best_effort' as const,
     }))
     .sort((a, b) => {
       if (a.accuracy !== b.accuracy) {
@@ -723,7 +730,19 @@ export const submitExam = async (
     };
   }
 
-  const exam = await getExamDetailById(examId.trim());
+  let exam: ExamDetailDto | null;
+  try {
+    exam = await getExamDetailById(examId.trim());
+  } catch (error) {
+    if (error instanceof LegacyExamReadNotSupportedError) {
+      return {
+        ok: false,
+        statusCode: 409,
+        message: 'De thi chi ho tro API V2',
+      };
+    }
+    throw error;
+  }
 
   if (!exam) {
     return {

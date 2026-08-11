@@ -22,6 +22,24 @@ enum AttemptScoringPolicy {
   vietnam_thpt_math_2025
 }
 
+// Nullable while the coexistence audit classifies existing records. New V2
+// imports set this explicitly; null is handled as legacy compatibility data.
+enum ExamContentEngine {
+  legacy
+  v2
+}
+
+enum ExamVersionStatus {
+  draft
+  published
+  archived
+}
+
+enum ExamPublishProfile {
+  official_full_exam
+  practice
+}
+
 enum AuthProvider {
   google
   password
@@ -76,10 +94,14 @@ model Exam {
   source           String?
   year             Int?
   statusLabel      String
+  contentEngine    ExamContentEngine?
   questions        Question[]
   attempts         Attempt[]
+  versions         ExamVersion[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt 
+
+  @@index([contentEngine])
 }
 
 model Question {
@@ -118,7 +140,11 @@ model Question {
 model Attempt {
   id                      String          @id @default(cuid())
   examId                  String
-  exam                    Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
+  // An exam with attempt history cannot be removed implicitly. User deletion
+  // remains independent: `userId` is still set to null by its own relation.
+  exam                    Exam            @relation(fields: [examId], references: [id], onDelete: Restrict)
+  examVersionId           String?
+  examVersion             ExamVersion?    @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
   userId                  String?
   user                    User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   score                   Float
@@ -133,11 +159,71 @@ model Attempt {
   startedAt               DateTime?
   submittedAt             DateTime        @default(now())
   durationSeconds         Int?
+  anonymousReceiptTokenHash String?
+  anonymousReceiptExpiresAt DateTime?
   answers                 AttemptAnswer[]
 
   @@index([examId])
+  @@index([examVersionId])
   @@index([userId])
   @@index([submittedAt])
+  @@index([anonymousReceiptExpiresAt])
+}
+
+// Immutable content container once status is published. Legacy `Question`
+// remains for coexistence and is deliberately not reused as a version table.
+model ExamVersion {
+  id             String             @id @default(cuid())
+  examId         String
+  exam           Exam               @relation(fields: [examId], references: [id], onDelete: Cascade)
+  versionNumber  Int
+  status         ExamVersionStatus  @default(draft)
+  publishProfile ExamPublishProfile @default(practice)
+  title          String
+  description    String
+  durationMinutes Int
+  subject        String
+  difficulty     ExamDifficulty
+  source         String?
+  year           Int?
+  statusLabel    String
+  scoringPolicy  AttemptScoringPolicy @default(vietnam_thpt_math_2025)
+  contentChecksum String
+  publishedAt    DateTime?
+  questions      ExamVersionQuestion[]
+  attempts       Attempt[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([examId, versionNumber])
+  @@index([examId, status])
+}
+
+model ExamVersionQuestion {
+  id            String       @id @default(cuid())
+  examVersionId String
+  examVersion   ExamVersion  @relation(fields: [examVersionId], references: [id], onDelete: Cascade)
+  externalId    String
+  order         Int
+  type          QuestionType
+  section       Int
+  content       String
+  topicSlug     String
+  topicName     String
+  subtopicSlug  String?
+  subtopicName  String?
+  assets        Json?
+  choices       Json?
+  statements    Json?
+  answerKey     Json
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([examVersionId, externalId])
+  @@unique([examVersionId, order])
+  @@index([examVersionId, type])
+  @@index([topicSlug])
+  @@index([subtopicSlug])
 }
 
 model AttemptAnswer {

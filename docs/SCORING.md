@@ -40,6 +40,10 @@ Raw submitted response
 
 `GradingResult` gồm question external ID, optional normalized response, `isCorrect` và `awardedScore`. Nó không chứa answer key.
 
+## Publish profiles
+
+`official_full_exam` is exactly 12 `single_choice`, 4 `true_false_group`, and 6 `short_answer` containers, ordered 1..22, duration 90 minutes, policy `vietnam_thpt_math_2025`, and maximum 1000 units. `practice` need not have the 12/4/6 format, but must pass every runtime/domain/taxonomy validation and must never be advertised as an official full exam.
+
 ## Compatibility note
 
 Legacy score được persist từ V2 units bằng `scoreUnits / 100` để các surfaces cũ có thể tiếp tục đọc trường `Attempt.score`. Đây là compatibility representation, không thay thế `scoreUnits`, `maxScoreUnits` hoặc `scoringPolicy` của V2.

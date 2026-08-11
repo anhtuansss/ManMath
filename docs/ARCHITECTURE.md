@@ -1,5 +1,11 @@
 # Kiến trúc ManMath
 
+## Current V2 boundary
+
+Logical `Exam` owns immutable published `ExamVersion` records; legacy `Question` is not V2 source of truth. Import mutates drafts, readiness publishes, public read/grade/attempt use only the exact published version, and attempts persist that `examVersionId` plus a validated snapshot.
+
+Public V2 DTOs and safe receipts strip answer keys. Owner-only review reads answer material from the immutable attempt snapshot. Anonymous recovery uses a seven-day hash-backed token for safe receipt only, never review. Legacy readers refuse V2 exams with `409`; legacy practice excludes V2 rows; V2 discovery reads published version questions.
+
 ## System Overview
 
 ```text

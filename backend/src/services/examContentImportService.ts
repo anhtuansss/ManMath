@@ -1,7 +1,9 @@
 import { Prisma } from '@prisma/client';
+import { createHash } from 'crypto';
 import { prisma } from '../lib/prisma';
 import type { ExamContentImportEnvelope } from '../scripts/importExamContentValidator';
 import type { QuestionInput } from '../types/examContent';
+import { validateExamPublishReadiness } from './examPublishReadinessService';
 
 
 type QuestionStorageData = {
@@ -88,24 +90,23 @@ function toQuestionStorageData(
 export async function importExamContent(
     envelope: ExamContentImportEnvelope,
 ): Promise<void> {
+    const readiness = validateExamPublishReadiness({
+        publishProfile: envelope.publishProfile,
+        durationMinutes: envelope.exam.durationMinutes,
+        scoringPolicyId: 'vietnam_thpt_math_2025',
+        questions: envelope.questions,
+    });
+
+    if (!readiness.ok) {
+        throw new Error(`Import content is not publish-ready: ${readiness.issues.join('; ')}`);
+    }
+
     await prisma.$transaction(async (tx) => {
         await upsertExam(tx, envelope);
 
         const topicIdsBySlug = await upsertTopics(tx, envelope);
-        const subtopicIdsBySlug = await upsertSubtopics(
-            tx,
-            envelope,
-            topicIdsBySlug,
-        );
-
-        await prepareQuestionOrders(tx, envelope);
-
-        await upsertQuestions(
-            tx,
-            envelope,
-            topicIdsBySlug,
-            subtopicIdsBySlug,
-        );
+        await upsertSubtopics(tx, envelope, topicIdsBySlug);
+        await upsertDraftExamVersion(tx, envelope);
     });
 }
 
@@ -119,14 +120,7 @@ async function upsertExam(
             id: exam.id,
         },
         update: {
-            title: exam.title,
-            description: exam.description,
-            durationMinutes: exam.durationMinutes,
-            subject: exam.subject,
-            difficulty: exam.difficulty,
-            source: exam.source,
-            year: exam.year,
-            statusLabel: exam.statusLabel,
+            contentEngine: 'v2',
         },
         create: {
             id: exam.id,
@@ -138,6 +132,133 @@ async function upsertExam(
             source: exam.source,
             year: exam.year,
             statusLabel: exam.statusLabel,
+            contentEngine: 'v2',
+        },
+    });
+}
+
+function buildContentChecksum(envelope: ExamContentImportEnvelope): string {
+    return createHash('sha256')
+        .update(JSON.stringify({
+            publishProfile: envelope.publishProfile,
+            exam: envelope.exam,
+            taxonomy: envelope.taxonomy,
+            questions: envelope.questions,
+        }))
+        .digest('hex');
+}
+
+function toExamVersionQuestionData(
+    question: QuestionInput,
+    topicNamesBySlug: ReadonlyMap<string, string>,
+    subtopicNamesBySlug: ReadonlyMap<string, string>,
+): Prisma.ExamVersionQuestionCreateWithoutExamVersionInput {
+    const topicName = topicNamesBySlug.get(question.topicSlug);
+    if (topicName === undefined) {
+        throw new Error(`Validated question ${question.id} references missing topic ${question.topicSlug}`);
+    }
+
+    const subtopicName = question.subtopicSlug === undefined
+        ? null
+        : subtopicNamesBySlug.get(question.subtopicSlug);
+    if (question.subtopicSlug !== undefined && subtopicName === undefined) {
+        throw new Error(`Validated question ${question.id} references missing subtopic ${question.subtopicSlug}`);
+    }
+
+    const base = {
+        externalId: question.id as string,
+        order: question.order,
+        type: question.type,
+        section: question.section,
+        content: question.content,
+        topicSlug: question.topicSlug,
+        topicName,
+        subtopicSlug: question.subtopicSlug ?? null,
+        subtopicName: subtopicName ?? null,
+        assets: question.assets === undefined ? Prisma.DbNull : toJsonValue(question.assets),
+        answerKey: toJsonValue(question.answerKey),
+    };
+
+    switch (question.type) {
+        case 'single_choice':
+            return {
+                ...base,
+                choices: toJsonValue(question.choices),
+                statements: Prisma.DbNull,
+            };
+        case 'true_false_group':
+            return {
+                ...base,
+                choices: Prisma.DbNull,
+                statements: toJsonValue(question.statements),
+            };
+        case 'short_answer':
+            return {
+                ...base,
+                choices: Prisma.DbNull,
+                statements: Prisma.DbNull,
+            };
+    }
+}
+
+async function upsertDraftExamVersion(
+    tx: Prisma.TransactionClient,
+    envelope: ExamContentImportEnvelope,
+): Promise<void> {
+    const draft = await tx.examVersion.findFirst({
+        where: { examId: envelope.exam.id, status: 'draft' },
+        orderBy: { versionNumber: 'desc' },
+        select: { id: true },
+    });
+    const versionNumber = draft === null
+        ? ((await tx.examVersion.aggregate({
+            where: { examId: envelope.exam.id },
+            _max: { versionNumber: true },
+        }))._max.versionNumber ?? 0) + 1
+        : undefined;
+    const topicNamesBySlug = new Map(
+        envelope.taxonomy.topics.map((topic) => [topic.slug, topic.name]),
+    );
+    const subtopicNamesBySlug = new Map(
+        envelope.taxonomy.subtopics.map((subtopic) => [subtopic.slug, subtopic.name]),
+    );
+    const questions = envelope.questions.map((question) =>
+        toExamVersionQuestionData(question, topicNamesBySlug, subtopicNamesBySlug),
+    );
+    const versionData = {
+        publishProfile: envelope.publishProfile,
+        title: envelope.exam.title,
+        description: envelope.exam.description,
+        durationMinutes: envelope.exam.durationMinutes,
+        subject: envelope.exam.subject,
+        difficulty: envelope.exam.difficulty,
+        source: envelope.exam.source,
+        year: envelope.exam.year,
+        statusLabel: envelope.exam.statusLabel,
+        scoringPolicy: 'vietnam_thpt_math_2025' as const,
+        contentChecksum: buildContentChecksum(envelope),
+    };
+
+    if (draft !== null) {
+        await tx.examVersion.update({
+            where: { id: draft.id },
+            data: {
+                ...versionData,
+                questions: {
+                    deleteMany: {},
+                    create: questions,
+                },
+            },
+        });
+        return;
+    }
+
+    await tx.examVersion.create({
+        data: {
+            ...versionData,
+            examId: envelope.exam.id,
+            versionNumber: versionNumber as number,
+            questions: { create: questions },
         },
     });
 }

@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { prisma } from '../lib/prisma';
 import {
   getAttemptDetailById,
   getExamAttemptsByExamId,
@@ -6,6 +7,7 @@ import {
   getExamSummaries,
   getPracticeByTopicSlug,
   getTopicFilters,
+  LegacyExamReadNotSupportedError,
   submitExam,
 } from '../services/examService';
 import {
@@ -24,6 +26,7 @@ import {
   ExamContentAttemptNotV2Error,
   ExamContentAttemptRequestError,
   getExamContentAttemptReceiptById,
+  getAnonymousExamContentAttemptReceiptById,
   getExamContentAttemptReviewById,
   ExamContentAttemptReviewUnavailableError,
 } from '../services/examContentAttemptService';
@@ -71,6 +74,17 @@ const parseOptionalDifficulty = (
 // Endpoint kiểm tra sức khỏe của API
 export const getHealth = (req: Request, res: Response): void => {
   res.json({ status: 'ok', message: 'ManMath API is running' });
+};
+
+/** Liveness is process-only; readiness additionally proves PostgreSQL works. */
+export const getReadiness = async (req: Request, res: Response): Promise<void> => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ready' });
+  } catch (error) {
+    console.error('Readiness database check failed:', error);
+    res.status(503).json({ status: 'not_ready' });
+  }
 };
 
 // Lấy danh sách đề thi (không bao gồm câu hỏi và đáp án)
@@ -191,6 +205,10 @@ export const getExamDetail = async (
 
     res.json(examDetail);
   } catch (error) {
+    if (error instanceof LegacyExamReadNotSupportedError) {
+      res.status(409).json({ message: 'De thi chi ho tro API V2' });
+      return;
+    }
     console.error('Failed to load exam detail:', error);
     res.status(500).json({ message: 'Khong the lay chi tiet de thi' });
   }
@@ -349,6 +367,51 @@ export const getExamContentAttemptReceiptV2 = async (
   }
 };
 
+/**
+ * Anonymous recovery is deliberately receipt-only. The token is supplied in a
+ * header rather than a URL, so it cannot be copied into history or referrers.
+ */
+export const getAnonymousExamContentAttemptReceiptV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const rawToken = req.header('x-attempt-receipt-token');
+
+    if (rawToken === undefined || rawToken.trim().length === 0) {
+      // Do not reveal whether an attempt exists or is anonymous.
+      res.status(404).json({ message: 'Khong tim thay lan lam bai V2' });
+      return;
+    }
+
+    const receipt = await getAnonymousExamContentAttemptReceiptById(
+      req.params.attemptId,
+      rawToken,
+    );
+
+    if (receipt === null) {
+      res.status(404).json({ message: 'Khong tim thay lan lam bai V2' });
+      return;
+    }
+
+    res.json(receipt);
+  } catch (error) {
+    if (error instanceof ExamContentAttemptNotV2Error) {
+      res.status(404).json({ message: 'Khong tim thay lan lam bai V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentAttemptIntegrityError) {
+      console.error('Anonymous V2 attempt receipt integrity error:', error);
+      res.status(500).json({ message: 'Du lieu lan lam bai V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to load anonymous V2 attempt receipt:', error);
+    res.status(500).json({ message: 'Khong the lay ket qua lam bai V2' });
+  }
+};
+
 export const getExamContentAttemptReviewV2 = async (
   req: Request,
   res: Response,
@@ -412,6 +475,10 @@ export const getExamAttempts = async (
 
     res.json(attempts);
   } catch (error) {
+    if (error instanceof LegacyExamReadNotSupportedError) {
+      res.status(409).json({ message: 'De thi chi ho tro API V2' });
+      return;
+    }
     console.error('Failed to load exam attempts:', error);
     res.status(500).json({ message: 'Khong the lay lich su lam bai' });
   }
@@ -438,6 +505,10 @@ export const getAttemptDetail = async (
 
     res.json(attemptDetail);
   } catch (error) {
+    if (error instanceof LegacyExamReadNotSupportedError) {
+      res.status(409).json({ message: 'Lan lam bai chi ho tro API V2' });
+      return;
+    }
     console.error('Failed to load attempt detail:', error);
     res.status(500).json({ message: 'Khong the lay chi tiet lan lam bai' });
   }

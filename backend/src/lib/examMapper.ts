@@ -1,5 +1,6 @@
 import type {
   ExamDetailDto,
+  ExamContentEngine,
   ExamDifficulty,
   ExamSummaryDto,
 } from '../types/exam';
@@ -14,9 +15,21 @@ type ExamSummaryDbRecord = {
   source: string | null;
   year: number | null;
   statusLabel: string;
+  contentEngine: ExamContentEngine | null;
   _count: {
     questions: number;
   };
+  versions: Array<{
+    title: string;
+    description: string;
+    durationMinutes: number;
+    subject: string;
+    difficulty: ExamDifficulty;
+    source: string | null;
+    year: number | null;
+    statusLabel: string;
+    _count: { questions: number };
+  }>;
 };
 
 type QuestionDbRecord = {
@@ -64,17 +77,25 @@ export const normalizeOptionImageUrls = (
 export const mapExamRecordToSummaryDto = (
   examRecord: ExamSummaryDbRecord,
 ): ExamSummaryDto => {
+  const publishedV2Version = examRecord.contentEngine === 'v2'
+    ? examRecord.versions[0]
+    : undefined;
+  const source = publishedV2Version ?? examRecord;
+
   return {
     id: examRecord.id,
-    title: examRecord.title,
-    description: examRecord.description,
-    durationMinutes: examRecord.durationMinutes,
-    totalQuestions: examRecord._count.questions,
-    subject: examRecord.subject,
-    difficulty: examRecord.difficulty,
-    source: examRecord.source,
-    year: examRecord.year ?? undefined,
-    statusLabel: examRecord.statusLabel,
+    title: source.title,
+    description: source.description,
+    durationMinutes: source.durationMinutes,
+    totalQuestions: source._count.questions,
+    subject: source.subject,
+    difficulty: source.difficulty,
+    source: source.source,
+    year: source.year ?? undefined,
+    statusLabel: source.statusLabel,
+    // Null is intentionally rendered as legacy during the coexistence audit.
+    // It prevents an unclassified historical record from being sent to V2.
+    contentEngine: examRecord.contentEngine ?? 'legacy',
   };
 };
 

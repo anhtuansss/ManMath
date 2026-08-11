@@ -1,10 +1,10 @@
 import { prisma } from '../lib/prisma';
 import type { TopicStatDto } from '../types/exam';
-
-type AnswerTopicRecord = {
-  questionId: number;
-  isCorrect: boolean;
-};
+import {
+  getAnalyticsConfidence,
+  getUserAnalyticsFacts,
+  type AnalyticsCoverageDto,
+} from './analyticsFactsService';
 
 type TopicStatAccumulator = {
   topicId: string | null;
@@ -12,6 +12,10 @@ type TopicStatAccumulator = {
   topicSlug: string | null;
   correct: number;
   total: number;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  scoreFactCount: number;
+  legacyFactCount: number;
 };
 
 type RankedWeakTopic = WeakTopicRecommendationDto & {
@@ -25,6 +29,10 @@ type SubtopicStatAccumulator = {
   topicName: string;
   totalAnswers: number;
   correctAnswers: number;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  scoreFactCount: number;
+  legacyFactCount: number;
 };
 
 export type WeakTopicRecommendationDto = TopicStatDto & {
@@ -40,6 +48,10 @@ export type SubtopicStatDto = {
   correctAnswers: number;
   accuracy: number;
   weak: boolean;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  masteryPercentage: number | null;
+  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
 };
 
 export type RecommendedExamDto = {
@@ -49,6 +61,17 @@ export type RecommendedExamDto = {
   matchedWeakTopicCount: number;
   matchedWeakQuestionCount: number;
   reason: string;
+  contentEngine: 'legacy' | 'v2';
+};
+
+export type TopicAnalyticsDto = {
+  topicStats: TopicStatDto[];
+  coverage: AnalyticsCoverageDto;
+};
+
+export type SubtopicAnalyticsDto = {
+  subtopicStats: SubtopicStatDto[];
+  coverage: AnalyticsCoverageDto;
 };
 
 export type UserRecommendationsDto = {
@@ -131,20 +154,25 @@ const WEAK_TOPIC_ACCURACY_THRESHOLD = 85;
 const WEAK_SUBTOPIC_ACCURACY_THRESHOLD = 70;
 const DEFAULT_ATTEMPT_HISTORY_LIMIT = 10;
 
+const performancePercentage = (topicStat: TopicStatDto): number =>
+  topicStat.masteryPercentage ?? topicStat.accuracy;
+
 const buildWeakTopicReason = (topicStat: TopicStatDto): string => {
-  if (topicStat.accuracy < 40) {
-    return `Do chinh xac hien tai la ${topicStat.accuracy}% sau ${topicStat.total} cau, nen uu tien on lai chuyen de nay.`;
+  const performance = performancePercentage(topicStat);
+  const metricLabel = topicStat.masteryPercentage === null ? 'Do chinh xac' : 'Muc do thanh thao theo diem';
+  if (performance < 40) {
+    return `${metricLabel} hien tai la ${performance}% sau ${topicStat.total} cau, nen uu tien on lai chuyen de nay.`;
   }
 
-  if (topicStat.accuracy < 70) {
-    return `Chuyen de nay chua on dinh, do chinh xac hien tai la ${topicStat.accuracy}% sau ${topicStat.total} cau da lam.`;
+  if (performance < 70) {
+    return `Chuyen de nay chua on dinh, ${metricLabel.toLowerCase()} hien tai la ${performance}% sau ${topicStat.total} cau da lam.`;
   }
 
-  return `Do chinh xac hien tai la ${topicStat.accuracy}%, nen tiep tuc giu nhip luyen tap de giu do on dinh.`;
+  return `${metricLabel} hien tai la ${performance}%, nen tiep tuc giu nhip luyen tap de giu do on dinh.`;
 };
 
 const buildWeaknessScore = (topicStat: TopicStatDto): number => {
-  const errorRate = 100 - topicStat.accuracy;
+  const errorRate = 100 - performancePercentage(topicStat);
   const reliabilityWeight = Math.min(topicStat.total, 5);
 
   return errorRate * reliabilityWeight;
@@ -163,8 +191,8 @@ const rankWeakTopics = (topicStats: TopicStatDto[]): RankedWeakTopic[] => {
         return b.weaknessScore - a.weaknessScore;
       }
 
-      if (a.accuracy !== b.accuracy) {
-        return a.accuracy - b.accuracy;
+      if (performancePercentage(a) !== performancePercentage(b)) {
+        return performancePercentage(a) - performancePercentage(b);
       }
 
       if (a.total !== b.total) {
@@ -192,7 +220,7 @@ const buildRecommendationReason = (params: {
   } = params;
 
   const baseReason = primaryWeakTopic
-    ? `De nay co ${matchedWeakQuestionCount} cau thuoc chuyen de ${primaryWeakTopic.topicName}, do chinh xac hien tai cua ban la ${primaryWeakTopic.accuracy}%.`
+    ? `De nay co ${matchedWeakQuestionCount} cau thuoc chuyen de ${primaryWeakTopic.topicName}, muc do thanh thao hien tai cua ban la ${performancePercentage(primaryWeakTopic)}%.`
     : `De nay co ${matchedWeakQuestionCount} cau thuoc ${matchedWeakTopicCount} chuyen de ban dang yeu.`;
 
   const subtopicNote = primaryMatchedSubtopicName
@@ -210,229 +238,152 @@ const buildRecommendationReason = (params: {
   return `${baseReason}${subtopicNote}`;
 };
 
-export const getUserTopicStats = async (
-  userId: string,
-): Promise<TopicStatDto[]> => {
-  const attempts = await prisma.attempt.findMany({
-    where: {
-      userId,
-    },
-    select: {
-      answers: {
-        select: {
-          questionId: true,
-          isCorrect: true,
-        },
-      },
-    },
+const percentage = (numerator: number, denominator: number): number =>
+  denominator > 0 ? Math.round((numerator / denominator) * 100) : 0;
+
+const masteryPercentage = (awardedScoreUnits: number, maxScoreUnits: number): number | null =>
+  maxScoreUnits > 0 ? percentage(awardedScoreUnits, maxScoreUnits) : null;
+
+export const getUserTopicAnalytics = async (userId: string): Promise<TopicAnalyticsDto> => {
+  const { facts, coverage } = await getUserAnalyticsFacts(userId);
+  const topicSlugs = Array.from(new Set(
+    facts.flatMap((fact) => fact.topicSlug === null ? [] : [fact.topicSlug]),
+  ));
+  const topics = topicSlugs.length === 0 ? [] : await prisma.topic.findMany({
+    where: { slug: { in: topicSlugs } },
+    select: { id: true, name: true, slug: true },
   });
+  const topicBySlug = new Map(topics.map((topic) => [topic.slug, topic]));
+  const accumulators = new Map<string, TopicStatAccumulator>();
 
-  const answerRecords: AnswerTopicRecord[] = attempts.flatMap(
-    (attempt) => attempt.answers,
-  );
-
-  if (answerRecords.length === 0) {
-    return [];
-  }
-
-  const questionIds = Array.from(
-    new Set(answerRecords.map((answer) => answer.questionId)),
-  );
-
-  const questions = await prisma.question.findMany({
-    where: {
-      id: {
-        in: questionIds,
-      },
-    },
-    select: {
-      id: true,
-      topic: {
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-      },
-    },
-  });
-
-  const topicByQuestionId = new Map(
-    questions.map((question) => [question.id, question.topic]),
-  );
-
-  const topicStatMap = new Map<string, TopicStatAccumulator>();
-
-  for (const answer of answerRecords) {
-    const topic = topicByQuestionId.get(answer.questionId);
-    const topicKey = topic?.id ?? 'uncategorized';
-    const existingStat = topicStatMap.get(topicKey);
-
-    if (existingStat) {
-      existingStat.total += 1;
-
-      if (answer.isCorrect) {
-        existingStat.correct += 1;
-      }
-
-      continue;
-    }
-
-    topicStatMap.set(topicKey, {
+  for (const fact of facts) {
+    const topic = fact.topicSlug === null ? undefined : topicBySlug.get(fact.topicSlug);
+    const key = fact.topicSlug ?? 'uncategorized';
+    const stat = accumulators.get(key) ?? {
       topicId: topic?.id ?? null,
       topicName: topic?.name ?? 'Chua phan loai',
-      topicSlug: topic?.slug ?? null,
-      correct: answer.isCorrect ? 1 : 0,
-      total: 1,
-    });
+      topicSlug: fact.topicSlug,
+      correct: 0,
+      total: 0,
+      awardedScoreUnits: 0,
+      maxScoreUnits: 0,
+      scoreFactCount: 0,
+      legacyFactCount: 0,
+    };
+    stat.total += 1;
+    if (fact.isFullyCorrect) stat.correct += 1;
+    if (fact.source === 'score_units') {
+      stat.scoreFactCount += 1;
+      stat.awardedScoreUnits += fact.awardedScoreUnits ?? 0;
+      stat.maxScoreUnits += fact.maxScoreUnits ?? 0;
+    } else {
+      stat.legacyFactCount += 1;
+    }
+    accumulators.set(key, stat);
   }
 
-  return Array.from(topicStatMap.values())
-    .map((topicStat) => ({
-      ...topicStat,
-      accuracy:
-        topicStat.total > 0
-          ? Math.round((topicStat.correct / topicStat.total) * 100)
-          : 0,
+  const topicStats = Array.from(accumulators.values())
+    .map((stat): TopicStatDto => ({
+      topicId: stat.topicId,
+      topicName: stat.topicName,
+      topicSlug: stat.topicSlug,
+      correct: stat.correct,
+      total: stat.total,
+      accuracy: percentage(stat.correct, stat.total),
+      awardedScoreUnits: stat.awardedScoreUnits,
+      maxScoreUnits: stat.maxScoreUnits,
+      masteryPercentage: masteryPercentage(stat.awardedScoreUnits, stat.maxScoreUnits),
+      analyticsConfidence: getAnalyticsConfidence(stat.scoreFactCount, stat.legacyFactCount),
     }))
     .sort((a, b) => {
-      if (a.accuracy !== b.accuracy) {
-        return a.accuracy - b.accuracy;
-      }
-
-      if (a.total !== b.total) {
-        return b.total - a.total;
-      }
-
-      return a.topicName.localeCompare(b.topicName, 'vi');
+      const aMetric = a.masteryPercentage ?? a.accuracy;
+      const bMetric = b.masteryPercentage ?? b.accuracy;
+      return aMetric - bMetric || b.total - a.total || a.topicName.localeCompare(b.topicName, 'vi');
     });
+
+  return { topicStats, coverage };
 };
 
-export const getUserSubtopicStats = async (
-  userId: string,
-): Promise<SubtopicStatDto[]> => {
-  const attempts = await prisma.attempt.findMany({
-    where: {
-      userId,
-    },
-    select: {
-      answers: {
-        select: {
-          questionId: true,
-          isCorrect: true,
-        },
-      },
-    },
+export const getUserTopicStats = async (userId: string): Promise<TopicStatDto[]> =>
+  (await getUserTopicAnalytics(userId)).topicStats;
+
+export const getUserSubtopicAnalytics = async (userId: string): Promise<SubtopicAnalyticsDto> => {
+  const { facts, coverage } = await getUserAnalyticsFacts(userId);
+  const subtopicSlugs = Array.from(new Set(
+    facts.flatMap((fact) => fact.subtopicSlug === null ? [] : [fact.subtopicSlug]),
+  ));
+  const subtopics = subtopicSlugs.length === 0 ? [] : await prisma.subtopic.findMany({
+    where: { slug: { in: subtopicSlugs } },
+    select: { name: true, slug: true, topic: { select: { name: true, slug: true } } },
   });
+  const subtopicBySlug = new Map(subtopics.map((subtopic) => [subtopic.slug, subtopic]));
+  const accumulators = new Map<string, SubtopicStatAccumulator>();
 
-  const answerRecords: AnswerTopicRecord[] = attempts.flatMap(
-    (attempt) => attempt.answers,
-  );
-
-  if (answerRecords.length === 0) {
-    return [];
-  }
-
-  const questionIds = Array.from(
-    new Set(answerRecords.map((answer) => answer.questionId)),
-  );
-
-  const questions = await prisma.question.findMany({
-    where: {
-      id: {
-        in: questionIds,
-      },
-    },
-    select: {
-      id: true,
-      subtopic: {
-        select: {
-          name: true,
-          slug: true,
-          topic: {
-            select: {
-              name: true,
-              slug: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const subtopicByQuestionId = new Map(
-    questions.map((question) => [question.id, question.subtopic]),
-  );
-
-  const subtopicStatMap = new Map<string, SubtopicStatAccumulator>();
-
-  for (const answer of answerRecords) {
-    const subtopic = subtopicByQuestionId.get(answer.questionId);
-
-    if (!subtopic) {
-      continue;
-    }
-
-    const existingStat = subtopicStatMap.get(subtopic.slug);
-
-    if (existingStat) {
-      existingStat.totalAnswers += 1;
-
-      if (answer.isCorrect) {
-        existingStat.correctAnswers += 1;
-      }
-
-      continue;
-    }
-
-    subtopicStatMap.set(subtopic.slug, {
+  for (const fact of facts) {
+    if (fact.subtopicSlug === null) continue;
+    const subtopic = subtopicBySlug.get(fact.subtopicSlug);
+    if (subtopic === undefined) continue;
+    const stat = accumulators.get(fact.subtopicSlug) ?? {
       subtopicSlug: subtopic.slug,
       subtopicName: subtopic.name,
       topicSlug: subtopic.topic.slug,
       topicName: subtopic.topic.name,
-      totalAnswers: 1,
-      correctAnswers: answer.isCorrect ? 1 : 0,
-    });
+      totalAnswers: 0,
+      correctAnswers: 0,
+      awardedScoreUnits: 0,
+      maxScoreUnits: 0,
+      scoreFactCount: 0,
+      legacyFactCount: 0,
+    };
+    stat.totalAnswers += 1;
+    if (fact.isFullyCorrect) stat.correctAnswers += 1;
+    if (fact.source === 'score_units') {
+      stat.scoreFactCount += 1;
+      stat.awardedScoreUnits += fact.awardedScoreUnits ?? 0;
+      stat.maxScoreUnits += fact.maxScoreUnits ?? 0;
+    } else {
+      stat.legacyFactCount += 1;
+    }
+    accumulators.set(fact.subtopicSlug, stat);
   }
 
-  return Array.from(subtopicStatMap.values())
-    .map((subtopicStat) => {
-      const accuracy =
-        subtopicStat.totalAnswers > 0
-          ? Math.round(
-              (subtopicStat.correctAnswers / subtopicStat.totalAnswers) * 100,
-            )
-          : 0;
-
+  const subtopicStats = Array.from(accumulators.values())
+    .map((stat): SubtopicStatDto => {
+      const mastery = masteryPercentage(stat.awardedScoreUnits, stat.maxScoreUnits);
+      const accuracy = percentage(stat.correctAnswers, stat.totalAnswers);
       return {
-        ...subtopicStat,
+        subtopicSlug: stat.subtopicSlug,
+        subtopicName: stat.subtopicName,
+        topicSlug: stat.topicSlug,
+        topicName: stat.topicName,
+        totalAnswers: stat.totalAnswers,
+        correctAnswers: stat.correctAnswers,
         accuracy,
-        weak: accuracy < WEAK_SUBTOPIC_ACCURACY_THRESHOLD,
+        weak: (mastery ?? accuracy) < WEAK_SUBTOPIC_ACCURACY_THRESHOLD,
+        awardedScoreUnits: stat.awardedScoreUnits,
+        maxScoreUnits: stat.maxScoreUnits,
+        masteryPercentage: mastery,
+        analyticsConfidence: getAnalyticsConfidence(stat.scoreFactCount, stat.legacyFactCount),
       };
     })
     .sort((a, b) => {
-      if (a.weak !== b.weak) {
-        return a.weak ? -1 : 1;
-      }
-
-      if (a.accuracy !== b.accuracy) {
-        return a.accuracy - b.accuracy;
-      }
-
-      if (a.totalAnswers !== b.totalAnswers) {
-        return b.totalAnswers - a.totalAnswers;
-      }
-
-      return a.subtopicName.localeCompare(b.subtopicName, 'vi');
+      const aMetric = a.masteryPercentage ?? a.accuracy;
+      const bMetric = b.masteryPercentage ?? b.accuracy;
+      return Number(b.weak) - Number(a.weak) || aMetric - bMetric || b.totalAnswers - a.totalAnswers || a.subtopicName.localeCompare(b.subtopicName, 'vi');
     });
+
+  return { subtopicStats, coverage };
 };
+
+export const getUserSubtopicStats = async (userId: string): Promise<SubtopicStatDto[]> =>
+  (await getUserSubtopicAnalytics(userId)).subtopicStats;
 
 export const getUserRecommendations = async (
   userId: string,
 ): Promise<UserRecommendationsDto> => {
   const topicStats = await getUserTopicStats(userId);
   const weakTopics = rankWeakTopics(topicStats).filter(
-    (topic) => topic.accuracy < WEAK_TOPIC_ACCURACY_THRESHOLD,
+    (topic) => performancePercentage(topic) < WEAK_TOPIC_ACCURACY_THRESHOLD,
   );
 
   const exams = await prisma.exam.findMany({
@@ -443,6 +394,7 @@ export const getUserRecommendations = async (
       id: true,
       title: true,
       durationMinutes: true,
+      contentEngine: true,
       questions: {
         select: {
           topicId: true,
@@ -453,19 +405,39 @@ export const getUserRecommendations = async (
           },
         },
       },
+      versions: {
+        where: { status: 'published' },
+        orderBy: { versionNumber: 'desc' },
+        take: 1,
+        select: {
+          title: true,
+          durationMinutes: true,
+          questions: {
+            select: {
+              topicSlug: true,
+              subtopicName: true,
+            },
+          },
+        },
+      },
     },
   });
+
+  const discoverableExams = exams.filter(
+    (exam) => exam.contentEngine !== 'v2' || exam.versions.length === 1,
+  );
 
   if (weakTopics.length === 0) {
     return {
       weakTopics: [],
-      recommendedExams: exams.slice(0, MAX_RECOMMENDED_EXAMS).map((exam) => ({
+      recommendedExams: discoverableExams.slice(0, MAX_RECOMMENDED_EXAMS).map((exam) => ({
         examId: exam.id,
-        title: exam.title,
-        durationMinutes: exam.durationMinutes,
+        title: exam.contentEngine === 'v2' ? exam.versions[0]!.title : exam.title,
+        durationMinutes: exam.contentEngine === 'v2' ? exam.versions[0]!.durationMinutes : exam.durationMinutes,
         matchedWeakTopicCount: 0,
         matchedWeakQuestionCount: 0,
         reason: 'Ban chua co du lieu luyen tap, hay bat dau voi de nay.',
+        contentEngine: exam.contentEngine ?? 'legacy',
       })),
     };
   }
@@ -492,15 +464,30 @@ export const getUserRecommendations = async (
       .filter((topic): topic is RankedWeakTopic & { topicId: string } => topic.topicId !== null)
       .map((topic) => [topic.topicId, topic]),
   );
+  const weakTopicBySlug = new Map(
+    weakTopics
+      .filter((topic): topic is RankedWeakTopic & { topicSlug: string } => topic.topicSlug !== null)
+      .map((topic) => [topic.topicSlug, topic]),
+  );
 
-  const rankedExams = exams
+  const rankedExams = discoverableExams
     .map((exam) => {
       const matchedTopicIds = new Set<string>();
       const matchedSubtopicCount = new Map<string, number>();
       let matchedWeakQuestionCount = 0;
       let primaryWeakTopic: RankedWeakTopic | null = null;
 
-      for (const question of exam.questions) {
+      const sourceQuestions = exam.contentEngine === 'v2'
+        ? exam.versions[0]!.questions.map((question) => ({
+          topicId: weakTopicBySlug.get(question.topicSlug)?.topicId ?? null,
+          subtopicName: question.subtopicName,
+        }))
+        : exam.questions.map((question) => ({
+          topicId: question.topicId,
+          subtopicName: question.subtopic?.name ?? null,
+        }));
+
+      for (const question of sourceQuestions) {
         if (!question.topicId) {
           continue;
         }
@@ -514,10 +501,10 @@ export const getUserRecommendations = async (
         matchedWeakQuestionCount += 1;
         matchedTopicIds.add(question.topicId);
 
-        if (question.subtopic?.name) {
+        if (question.subtopicName) {
           matchedSubtopicCount.set(
-            question.subtopic.name,
-            (matchedSubtopicCount.get(question.subtopic.name) ?? 0) + 1,
+            question.subtopicName,
+            (matchedSubtopicCount.get(question.subtopicName) ?? 0) + 1,
           );
         }
 
@@ -545,14 +532,15 @@ export const getUserRecommendations = async (
 
       return {
         examId: exam.id,
-        title: exam.title,
-        durationMinutes: exam.durationMinutes,
+        title: exam.contentEngine === 'v2' ? exam.versions[0]!.title : exam.title,
+        durationMinutes: exam.contentEngine === 'v2' ? exam.versions[0]!.durationMinutes : exam.durationMinutes,
         matchedWeakTopicCount: matchedTopicIds.size,
         matchedWeakQuestionCount,
         recommendationScore,
         wasAttemptedRecently,
         primaryWeakTopic,
         primaryMatchedSubtopicName,
+        contentEngine: exam.contentEngine ?? 'legacy',
       };
     })
     .filter((exam) => exam.matchedWeakQuestionCount > 0)
@@ -593,6 +581,7 @@ export const getUserRecommendations = async (
         matchedWeakTopicCount: exam.matchedWeakTopicCount,
         wasAttemptedRecently: exam.wasAttemptedRecently,
       }),
+      contentEngine: exam.contentEngine,
     }));
 
   if (rankedExams.length > 0) {
@@ -604,14 +593,15 @@ export const getUserRecommendations = async (
 
   return {
     weakTopics: weakTopics.map(({ weaknessScore, ...topic }) => topic),
-    recommendedExams: exams.slice(0, MAX_RECOMMENDED_EXAMS).map((exam) => ({
+    recommendedExams: discoverableExams.slice(0, MAX_RECOMMENDED_EXAMS).map((exam) => ({
       examId: exam.id,
-      title: exam.title,
-      durationMinutes: exam.durationMinutes,
+      title: exam.contentEngine === 'v2' ? exam.versions[0]!.title : exam.title,
+      durationMinutes: exam.contentEngine === 'v2' ? exam.versions[0]!.durationMinutes : exam.durationMinutes,
       matchedWeakTopicCount: 0,
       matchedWeakQuestionCount: 0,
       reason:
         'Chua tim thay de khop ro chuyen de yeu, hay bat dau voi de nay de tao them du lieu luyen tap.',
+      contentEngine: exam.contentEngine ?? 'legacy',
     })),
   };
 };

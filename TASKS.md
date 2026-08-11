@@ -18,6 +18,19 @@ Tài liệu này phản ánh trạng thái được xác minh từ code hiện t
 - [x] 3E - V2 result session và authenticated owner receipt.
 - [x] Documentation synchronization cho V1/V2 coexist, persistence, API, import và scoring.
 
+- [x] 5B - Coexistence engine classification: additive `legacy`/`v2` metadata and validator-backed audit.
+- [x] 5C - V2 analytics aggregates persisted score-unit facts; legacy analytics is explicitly best-effort.
+- [x] 5D - HTTP integration verification covers discovery metadata, public answer-key safety, grading, and receipt ownership.
+
+## Core completion status
+
+- [x] 5B–5D: engine classification, score-unit analytics and HTTP security integration.
+- [x] 6A–6D: draft/published versioning, readiness profiles, publish flow and version-pinned V2 attempts.
+- [x] 7A–7B: explicit owner-only answer-key review and seven-day anonymous safe receipt recovery.
+- [x] 8A–8B: database immutability, legacy/V2 containment and read-only historical coverage audit.
+- [x] 9: Playwright suite committed; browser execution is pending the Chromium artifact download in this environment.
+- [x] 10: production configuration guard, liveness/readiness endpoints and deployment/testing/import documentation.
+
 ## Current
 
 - [ ] Manual QA desktop/tablet/mobile cho cả legacy và V2 routes.

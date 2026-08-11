@@ -1,5 +1,7 @@
 # ManMath
 
+> Core V2 note: published immutable `ExamVersion` content, version-pinned score-unit attempts, authenticated owner review and seven-day anonymous safe receipt recovery are implemented. Legacy APIs refuse V2 content with `409`; legacy practice excludes V2 rows. See [Testing](docs/TESTING.md), [Deployment runbook](docs/DEPLOYMENT.md), and [Tự thêm đề Toán hoàn chỉnh](docs/ADD_OFFICIAL_MATH_EXAM.md).
+
 ManMath là ứng dụng web luyện đề Toán THPT bằng tiếng Việt. MVP hỗ trợ chọn đề, làm bài có bấm giờ, nộp bài, xem kết quả và theo dõi lịch sử học tập.
 
 ## Trạng thái dự án
