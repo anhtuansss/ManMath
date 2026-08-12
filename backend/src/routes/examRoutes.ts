@@ -3,6 +3,7 @@ import {
   getAttemptDetail,
   getExamAttempts,
   getExamContentV2,
+  getExamContentDraftPreviewV2,
   getExamDetail,
   getExamList,
   getHealth,
@@ -18,6 +19,7 @@ import {
 } from '../controllers/examController';
 import { 
   authMiddleware, 
+  draftPreviewAuthorizationMiddleware,
   optionalAuthMiddleware 
 } from '../middleware/authMiddleware';
 
@@ -32,6 +34,12 @@ examRouter.get('/exams', getExamList);
 examRouter.get('/topics', getTopicList);
 examRouter.get('/practice/topic/:topicSlug', getTopicPractice);
 examRouter.get('/v2/exams/:id', getExamContentV2);
+examRouter.get(
+  '/v2/internal/exam-previews/:id',
+  authMiddleware,
+  draftPreviewAuthorizationMiddleware,
+  getExamContentDraftPreviewV2,
+);
 
 // Lấy danh sách các lần thi đã nộp cho một đề thi cụ thể
 examRouter.get('/exams/:id/attempts', authMiddleware, getExamAttempts);

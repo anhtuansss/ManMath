@@ -85,7 +85,7 @@ function buildSubmission(
   return { responses, error: null };
 }
 
-function V2QuestionCard({
+export function V2QuestionCard({
   question,
   index,
   answer,

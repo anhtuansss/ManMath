@@ -5,6 +5,7 @@ import { importExamContent } from '../services/examContentImportService';
 import { publishDraftExamVersion } from '../services/examVersionPublishService';
 import { createExamContentAttempt } from '../services/examContentAttemptService';
 import { ExamContentNotV2Error, getPublicExamContentById } from '../services/examContentReadService';
+import { assertVerificationDatabase } from '../config/verificationDatabase';
 
 const fixture = require('../data/import/sample-exam-content-v2.json') as Record<string, unknown>;
 
@@ -19,6 +20,7 @@ async function submit(examId: string, examVersionId: string) {
 }
 
 async function main(): Promise<void> {
+  assertVerificationDatabase();
   const examId = `verify-version-pinning-${Date.now()}`;
   await importExamContent(validateExamContentImportPayload(makeFixture(examId, 'draft v1')));
   await assert.rejects(() => getPublicExamContentById(examId), ExamContentNotV2Error);
