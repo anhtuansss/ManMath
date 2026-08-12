@@ -4,11 +4,6 @@ export function FinalCtaSection() {
   return (
     <section className="border-t border-border px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
       <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-2xl border border-primary/20 bg-primary-light px-6 py-10 sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:py-11">
-        <svg aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 z-0 hidden h-full w-56 text-primary/15 sm:block sm:w-64" viewBox="0 0 256 160" fill="none" preserveAspectRatio="xMaxYMid slice">
-          <path d="M20 132H244M54 150V16" stroke="currentColor" strokeWidth="1" />
-          <path d="M30 118C72 72 108 42 142 68C178 96 194 36 236 24" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M134 16L236 146" stroke="currentColor" strokeDasharray="5 7" />
-        </svg>
         <div className="relative z-10 max-w-xl">
           <h2 className="text-2xl font-bold tracking-[-0.025em] sm:text-3xl">Sẵn sàng bắt đầu một đề Toán?</h2>
           <p className="mt-3 leading-7 text-text-secondary">Chọn một đề phù hợp và bắt đầu lượt luyện tập của bạn.</p>

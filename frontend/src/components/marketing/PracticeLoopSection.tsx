@@ -11,7 +11,7 @@ export function PracticeLoopSection() {
         <h2 className="sr-only">Cách ManMath hỗ trợ mỗi lượt luyện đề</h2>
         <ol className="grid gap-7 md:grid-cols-3 md:gap-0">
           {benefits.map(([index, title, description]) => (
-            <li key={index} className="max-w-sm md:px-8 md:first:pl-0 md:not-last:border-l md:not-last:border-border">
+            <li key={index} className="max-w-sm md:px-8 md:first:pl-0 md:not-first:border-l md:not-last:border-border">
               <p className="text-xs font-semibold tabular-nums text-primary">{index}</p>
               <h3 className="mt-2 text-base font-bold tracking-[-0.015em]">{title}</h3>
               <p className="mt-1.5 text-sm leading-6 text-text-secondary">{description}</p>

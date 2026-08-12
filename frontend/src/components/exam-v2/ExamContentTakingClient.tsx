@@ -136,13 +136,37 @@ export function V2QuestionCard({
         ) : null}
 
         {question.type === 'true_false_group' ? (
-          <div className="mt-7 space-y-4">
-            <p className="text-sm text-text-secondary">Chọn Đúng hoặc Sai cho từng mệnh đề.</p>
-            {question.statements.map((statement, statementIndex) => {
-              const selectedValue = answer?.type === 'true_false_group' ? answer.values[statement.id] : undefined;
-              const values = answer?.type === 'true_false_group' ? answer.values : {};
-              return <div key={statement.id} className="rounded-xl border border-border bg-background p-4"><div className="flex gap-3"><span className="font-semibold text-primary">{String.fromCharCode(97 + statementIndex)})</span><MathText as="div" text={statement.content} className="min-w-0 text-sm leading-6 text-text-primary" /></div><div className="mt-3 flex gap-2 pl-6"><button type="button" disabled={disabled} onClick={() => onAnswerChange({ type: 'true_false_group', values: { ...values, [statement.id]: true } })} className={`h-9 rounded-lg border px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${selectedValue === true ? 'border-primary bg-primary text-white' : 'border-border bg-surface text-text-primary hover:bg-primary-light/40'}`}>Đúng</button><button type="button" disabled={disabled} onClick={() => onAnswerChange({ type: 'true_false_group', values: { ...values, [statement.id]: false } })} className={`h-9 rounded-lg border px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${selectedValue === false ? 'border-primary bg-primary text-white' : 'border-border bg-surface text-text-primary hover:bg-primary-light/40'}`}>Sai</button></div></div>;
-            })}
+          <div className="mt-7">
+            <p className="mb-3 text-sm text-text-secondary">Chọn Đúng hoặc Sai cho từng mệnh đề.</p>
+            <div className="overflow-hidden rounded-xl border border-border">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[620px] border-collapse text-left">
+                  <thead className="bg-background-alt text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    <tr>
+                      <th scope="col" className="px-4 py-3">Phát biểu</th>
+                      <th scope="col" className="w-28 border-l border-border px-3 py-3 text-center">Đúng</th>
+                      <th scope="col" className="w-28 border-l border-border px-3 py-3 text-center">Sai</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {question.statements.map((statement, statementIndex) => {
+                      const selectedValue = answer?.type === 'true_false_group'
+                        ? answer.values[statement.id]
+                        : undefined;
+                      const values = answer?.type === 'true_false_group' ? answer.values : {};
+                      const cellButtonClass = (value: boolean): string => selectedValue === value
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-border bg-surface text-text-primary hover:border-primary hover:bg-primary-light/40';
+                      return <tr key={statement.id} className="bg-surface align-top">
+                        <td className="px-4 py-4"><div className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-light text-xs font-bold text-primary">{String.fromCharCode(97 + statementIndex)}</span><MathText as="div" text={statement.content} className="min-w-0 text-sm leading-6 text-text-primary" /></div></td>
+                        <td className="border-l border-border px-3 py-4 text-center"><button type="button" aria-label={`Mệnh đề ${String.fromCharCode(97 + statementIndex)}: Đúng`} aria-pressed={selectedValue === true} disabled={disabled} onClick={() => onAnswerChange({ type: 'true_false_group', values: { ...values, [statement.id]: true } })} className={`inline-flex h-9 min-w-16 items-center justify-center rounded-lg border px-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${cellButtonClass(true)}`}>Đúng</button></td>
+                        <td className="border-l border-border px-3 py-4 text-center"><button type="button" aria-label={`Mệnh đề ${String.fromCharCode(97 + statementIndex)}: Sai`} aria-pressed={selectedValue === false} disabled={disabled} onClick={() => onAnswerChange({ type: 'true_false_group', values: { ...values, [statement.id]: false } })} className={`inline-flex h-9 min-w-16 items-center justify-center rounded-lg border px-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${cellButtonClass(false)}`}>Sai</button></td>
+                      </tr>;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         ) : null}
 
