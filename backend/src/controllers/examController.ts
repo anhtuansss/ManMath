@@ -13,6 +13,7 @@ import {
 import {
   ExamContentIntegrityError,
   ExamContentNotV2Error,
+  getDraftPreviewExamContentById,
   getPublicExamContentById,
 } from '../services/examContentReadService';
 import { examDifficulties, type ExamDifficulty } from '../types/exam';
@@ -364,6 +365,37 @@ export const getExamContentAttemptReceiptV2 = async (
 
     console.error('Failed to load V2 attempt receipt:', error);
     res.status(500).json({ message: 'Khong the lay ket qua lam bai V2' });
+  }
+};
+
+/** Returns a safe, answer-key-free DTO for an authorized author's draft only. */
+export const getExamContentDraftPreviewV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const examContent = await getDraftPreviewExamContentById(req.params.id);
+
+    if (examContent === null) {
+      res.status(404).json({ message: 'Khong tim thay ban nhap de thi V2' });
+      return;
+    }
+
+    res.json(examContent);
+  } catch (error) {
+    if (error instanceof ExamContentNotV2Error) {
+      res.status(409).json({ message: 'De thi khong co noi dung V2' });
+      return;
+    }
+
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 draft preview integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung ban nhap de thi V2 khong hop le' });
+      return;
+    }
+
+    console.error('Failed to load V2 draft preview:', error);
+    res.status(500).json({ message: 'Khong the tai ban nhap de thi V2' });
   }
 };
 

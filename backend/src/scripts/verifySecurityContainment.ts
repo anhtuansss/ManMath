@@ -5,6 +5,7 @@ import { disconnectPrisma, prisma } from '../lib/prisma';
 import { validateExamContentImportPayload } from './importExamContentValidator';
 import { importExamContent } from '../services/examContentImportService';
 import { publishDraftExamVersion } from '../services/examVersionPublishService';
+import { assertVerificationDatabase } from '../config/verificationDatabase';
 
 const forbiddenV2PublicFields = new Set([
   'answerKey',
@@ -27,6 +28,7 @@ function assertNoForbiddenV2PublicFields(value: unknown): void {
 }
 
 async function main(): Promise<void> {
+  assertVerificationDatabase();
   const server = createApp().listen(0);
   await new Promise<void>((resolve, reject) => {
     server.once('listening', resolve);

@@ -22,12 +22,14 @@
     "verify:v2-analytics": "ts-node src/scripts/verifyV2Analytics.ts",
     "verify:v2-http": "ts-node src/scripts/verifyV2HttpIntegration.ts",
     "verify:exam-publish-readiness": "ts-node src/scripts/verifyExamPublishReadiness.ts",
+    "verify:exam-draft-preview": "ts-node src/scripts/runIsolatedVerification.ts draft-preview",
     "verify:exam-version-pinning": "ts-node src/scripts/verifyExamVersionPinning.ts",
     "verify:security-containment": "ts-node src/scripts/verifySecurityContainment.ts",
     "verify:anonymous-attempt-receipt": "ts-node src/scripts/verifyAnonymousAttemptReceipt.ts",
     "verify:history-immutability": "ts-node src/scripts/verifyHistoryImmutability.ts",
     "verify:legacy-history-containment": "ts-node src/scripts/verifyLegacyHistoryContainment.ts",
-    "verify:operational-readiness": "ts-node src/scripts/verifyOperationalReadiness.ts"
+    "verify:operational-readiness": "ts-node src/scripts/verifyOperationalReadiness.ts",
+    "verify:isolated": "ts-node src/scripts/runIsolatedVerification.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",

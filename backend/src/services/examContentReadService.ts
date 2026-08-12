@@ -1,4 +1,4 @@
-import type { Prisma, QuestionType } from '@prisma/client';
+import type { ExamVersionStatus, Prisma, QuestionType } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import type { PublicQuestion, QuestionInput } from '../types/examContent';
 import type { PublicExamContentDto } from '../types/examContentApi';
@@ -96,14 +96,15 @@ export function validateV2ExamQuestionSet(questions: readonly QuestionInput[], i
   }
 }
 
-export async function getValidatedExamContentById(
+async function getValidatedExamContentByStatus(
   examId: string,
+  status: ExamVersionStatus,
   requestedVersionId?: string,
 ): Promise<ValidatedExamContent | null> {
   const version = await prisma.examVersion.findFirst({
     where: {
       examId,
-      status: 'published',
+      status,
       ...(requestedVersionId === undefined ? {} : { id: requestedVersionId }),
     },
     orderBy: { versionNumber: 'desc' },
@@ -172,14 +173,32 @@ export async function getValidatedExamContentById(
   };
 }
 
+export async function getValidatedExamContentById(
+  examId: string,
+  requestedVersionId?: string,
+): Promise<ValidatedExamContent | null> {
+  return getValidatedExamContentByStatus(examId, 'published', requestedVersionId);
+}
+
+async function getValidatedDraftExamContentById(
+  examId: string,
+): Promise<ValidatedExamContent | null> {
+  try {
+    return await getValidatedExamContentByStatus(examId, 'draft');
+  } catch (error) {
+    // A published-only exam has no draft to preview; do not treat it as a
+    // public V2 read error or disclose a separate version state to the client.
+    if (error instanceof ExamContentNotV2Error) return null;
+    throw error;
+  }
+}
+
 function toPublicQuestion(question: QuestionInput): PublicQuestion {
   const { answerKey: _answerKey, ...publicQuestion } = question;
   return publicQuestion;
 }
 
-export async function getPublicExamContentById(examId: string): Promise<PublicExamContentDto | null> {
-  const validatedExam = await getValidatedExamContentById(examId);
-  if (validatedExam === null) return null;
+function toPublicExamContentDto(validatedExam: ValidatedExamContent): PublicExamContentDto {
   return {
     id: validatedExam.id,
     examVersionId: validatedExam.versionId,
@@ -193,4 +212,18 @@ export async function getPublicExamContentById(examId: string): Promise<PublicEx
     statusLabel: validatedExam.statusLabel,
     questions: validatedExam.questions.map(toPublicQuestion),
   };
+}
+
+export async function getPublicExamContentById(examId: string): Promise<PublicExamContentDto | null> {
+  const validatedExam = await getValidatedExamContentById(examId);
+  if (validatedExam === null) return null;
+  return toPublicExamContentDto(validatedExam);
+}
+
+/** Internal-only safe DTO for the latest draft; it never exposes answer keys. */
+export async function getDraftPreviewExamContentById(
+  examId: string,
+): Promise<PublicExamContentDto | null> {
+  const validatedExam = await getValidatedDraftExamContentById(examId);
+  return validatedExam === null ? null : toPublicExamContentDto(validatedExam);
 }
