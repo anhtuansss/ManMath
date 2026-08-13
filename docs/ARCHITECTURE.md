@@ -36,7 +36,7 @@ Dashboard, recommendation, history và profile vẫn điều hướng đến `/e
 
 `/exam-v2/[id]` tải public V2 content. Answer state được key bằng stable string `question.id`; single choice dùng `choiceId`, true/false dùng `StatementId → boolean`, short answer dùng raw string. Draft và thời gian còn lại được autosave trong `localStorage`.
 
-Submit V2 gọi create-attempt API. Result tạm thời nằm trong `sessionStorage`; nếu người dùng đã đăng nhập, result page có thể tải lại owner receipt từ backend. V2 result hiện chỉ hiển thị điểm/receipt, chưa reveal answer key hoặc explanation.
+Submit V2 gọi create-attempt API. Result tạm thời nằm trong `sessionStorage`; nếu người dùng đã đăng nhập, result page có thể tải lại owner receipt từ backend và chủ động mở review từ immutable attempt snapshot. Public/anonymous receipt không reveal answer key hoặc explanation.
 
 ## Backend Architecture
 
@@ -162,7 +162,7 @@ Policy hiện tại là `vietnam_thpt_math_2025`. Chi tiết score units, true/f
 - Attempt không giữ immutable snapshot của toàn bộ question/content/answer key.
 - V2 attempt xuất hiện trong shared history/analytics, nhưng legacy attempt detail cần option-index fields và chưa compatible hoàn chỉnh với V2 null fields.
 - Analytics hiện dùng `isCorrect`/`isFullyCorrect`; partial score true/false chưa được diễn giải riêng.
-- V2 review/reveal policy, explanation reveal và long-term receipt UX chưa hoàn thiện.
+- Explanation reveal policy và long-term receipt UX vẫn chưa hoàn thiện.
 
 ## Deferred Architecture
 

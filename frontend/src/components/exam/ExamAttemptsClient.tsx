@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from './Logo';
 import {
   fetchProtectedJson,
-  isUnauthorizedError,
 } from '../../lib/authApi';
 import { useFetch } from '../../lib/useFetch';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';

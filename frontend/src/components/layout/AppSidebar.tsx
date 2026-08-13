@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '../exam/Logo';
-import { AuthButton } from '../auth/AuthButton';
 
 function HomeIcon(props: React.SVGProps<SVGSVGElement>) {
   return (

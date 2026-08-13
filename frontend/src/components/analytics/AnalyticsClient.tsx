@@ -6,7 +6,6 @@ import {
   fetchProtectedJson,
   getCurrentUser,
   isUnauthorizedError,
-  type AuthUser,
 } from '../../lib/authApi';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
 import { getExamTakingHref } from '../../lib/examRoutes';
@@ -99,7 +98,6 @@ function TrendChart({ attempts, averageScore }: { attempts: ProgressByAttempt[];
 
 export function AnalyticsClient() {
   const [status, setStatus] = useState<AnalyticsStatus>('loading');
-  const [user, setUser] = useState<AuthUser | null>(null);
   const [topicStats, setTopicStats] = useState<TopicStatDto[]>([]);
   const [subtopicStats, setSubtopicStats] = useState<SubtopicStat[]>([]);
   const [progressSummary, setProgressSummary] = useState<ProgressSummary>(EMPTY_PROGRESS_SUMMARY);
@@ -128,12 +126,10 @@ export function AnalyticsClient() {
         const currentUser = await getCurrentUser();
         if (!isMounted) return;
         if (!currentUser) {
-          setUser(null);
           resetAnalytics();
           setStatus('unauthorized');
           return;
         }
-        setUser(currentUser);
         const [topicStatsResult, subtopicStatsResult, progressResult, recommendationResult] = await Promise.allSettled([
           fetchProtectedJson<TopicStatsResponse>('/api/me/topic-stats'),
           fetchProtectedJson<SubtopicStatsResponse>('/api/me/subtopic-stats'),
@@ -144,7 +140,6 @@ export function AnalyticsClient() {
         const hasUnauthorized = [topicStatsResult, subtopicStatsResult, progressResult, recommendationResult]
           .some((result) => result.status === 'rejected' && isUnauthorizedError(result.reason));
         if (hasUnauthorized) {
-          setUser(null);
           resetAnalytics();
           setStatus('unauthorized');
           return;
@@ -168,7 +163,6 @@ export function AnalyticsClient() {
       } catch (error: unknown) {
         if (!isMounted) return;
         if (isUnauthorizedError(error)) {
-          setUser(null);
           resetAnalytics();
           setStatus('unauthorized');
           setErrorMessage(null);

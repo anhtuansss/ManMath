@@ -5,13 +5,9 @@ import Link from 'next/link';
 import { API_BASE_URL } from '../../config/api';
 import { ExamSidebar } from '../exam/ExamSidebar';
 import { Logo } from '../exam/Logo';
-import { OptionImage } from '../exam/OptionImage';
-import { QuestionImage } from '../exam/QuestionImage';
 import { QuestionList } from '../exam/QuestionList';
-import { MathText } from '../exam/MathText';
 import { TimerDisplay } from '../exam/TimerDisplay';
 import { PracticeReviewItem } from './PracticeReviewItem';
-import { Button, Modal } from '../ui';
 import type {
   Answers,
   PracticeTopicDto,

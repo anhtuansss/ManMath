@@ -65,11 +65,11 @@ V2 envelope có dạng khái quát:
 - `true_false_group`: exactly four statements với stable statement IDs và boolean answer values.
 - `short_answer`: answer key exact/numeric/numeric-with-tolerance.
 
-Validator kiểm tra metadata, taxonomy slug, duplicate question ID/order, question type/shape và việc question subtopic thuộc topic đã khai báo. V2 import upsert Exam, Topic, Subtopic và Question trong một Prisma transaction.
+Validator kiểm tra metadata, taxonomy slug, duplicate question ID/order, question type/shape và việc question subtopic thuộc topic đã khai báo. V2 import upsert logical `Exam`, `Topic`, `Subtopic`, rồi ghi draft `ExamVersion` và `ExamVersionQuestion` trong một Prisma transaction.
 
 ## Persistence rules
 
-V2 importer lưu `externalId`, `type`, `section`, assets/choices/statements/answerKey JSON fields. Với single choice, importer cũng materialize legacy `options` và `correctAnswer` để coexist; true/false/short-answer không có legacy correct answer.
+V2 importer lưu `externalId`, `type`, `section`, assets/choices/statements/answerKey JSON fields trên `ExamVersionQuestion`; nó không materialize legacy `Question` rows.
 
 JSON fields không được public API tin cậy trực tiếp. V2 read service reconstruct và runtime-validate persisted data trước khi tạo `PublicQuestion`.
 

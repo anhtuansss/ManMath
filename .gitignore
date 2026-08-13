@@ -1,5 +1,6 @@
 # Logs
 /.tmp-playwright-trace-inspect-*/
+/frontend/test-results/
 logs
 *.log
 npm-debug.log*

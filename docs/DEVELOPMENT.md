@@ -84,7 +84,7 @@ npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json
 npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json --write
 ```
 
-V2 import validate toàn bộ payload rồi upsert exam/taxonomy/questions trong một Prisma transaction. Nó không có manifest batch mode hiện tại.
+V2 import validate toàn bộ payload rồi upsert logical exam/taxonomy và draft version questions trong một Prisma transaction. Nó không có manifest batch mode hiện tại.
 
 Xem [IMPORT_JSON.md](IMPORT_JSON.md) để biết hai format và giới hạn pipeline.
 
@@ -106,7 +106,7 @@ Xem [IMPORT_JSON.md](IMPORT_JSON.md) để biết hai format và giới hạn pi
 - `/exam-v2/[id]`: public V2 content, stable-ID answers, single choice/true-false/short-answer UI, autosave và timer.
 - Submit V2 with and without JWT: attempt persistence, session result và anonymous limitation.
 - `/exam-v2/[id]/result?attemptId=...`: owner receipt reload after login; anonymous result only from the immediate browser session.
-- Confirm that V2 result does not reveal answer key/explanation.
+- Confirm public/anonymous V2 result does not reveal answer key/explanation; owner review only reveals it after an authenticated review request.
 - Confirm existing V2 attempts in global history do not claim full legacy review compatibility.
 
 ## Troubleshooting
