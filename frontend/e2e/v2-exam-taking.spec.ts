@@ -37,8 +37,8 @@ test('anonymous learner can answer all three V2 types, restore draft, submit, an
   await expect(page.getByLabel('Câu trả lời')).toBeVisible();
 
   await page.getByRole('radio').first().click();
-  const trueButtons = page.getByRole('button', { name: 'Đúng', exact: true });
-  const falseButtons = page.getByRole('button', { name: 'Sai', exact: true });
+  const trueButtons = page.getByRole('button', { name: /^Mệnh đề [a-d]: Đúng$/ });
+  const falseButtons = page.getByRole('button', { name: /^Mệnh đề [a-d]: Sai$/ });
   await trueButtons.nth(0).click();
   await falseButtons.nth(1).click();
   await trueButtons.nth(2).click();
@@ -55,12 +55,12 @@ test('anonymous learner can answer all three V2 types, restore draft, submit, an
   await page.getByRole('button', { name: 'Nộp bài', exact: true }).click();
   await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/exam-v2/${examId}/result\\?attemptId=`));
-  await expect(page.getByText('Kết quả theo từng câu')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Danh sách câu' })).toBeVisible();
 
   // Anonymous recovery uses the token only in a request header from
   // sessionStorage. A page reload must not expose a review capability.
   await page.reload();
-  await expect(page.getByText('Kết quả theo từng câu')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Danh sách câu' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Xem đáp án đúng', exact: true })).toHaveCount(0);
 });
 

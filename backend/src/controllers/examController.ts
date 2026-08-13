@@ -73,12 +73,12 @@ const parseOptionalDifficulty = (
 };
 
 // Endpoint kiểm tra sức khỏe của API
-export const getHealth = (req: Request, res: Response): void => {
+export const getHealth = (_req: Request, res: Response): void => {
   res.json({ status: 'ok', message: 'ManMath API is running' });
 };
 
 /** Liveness is process-only; readiness additionally proves PostgreSQL works. */
-export const getReadiness = async (req: Request, res: Response): Promise<void> => {
+export const getReadiness = async (_req: Request, res: Response): Promise<void> => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ready' });
@@ -149,7 +149,7 @@ export const getExamList = async (
 };
 
 export const getTopicList = async (
-  req: Request,
+  _req: Request,
   res: Response,
 ): Promise<void> => {
   try {

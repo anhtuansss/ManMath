@@ -1,4 +1,3 @@
-import React from 'react';
 import { MathText } from '../exam/MathText';
 import { OptionImage } from '../exam/OptionImage';
 import { QuestionImage } from '../exam/QuestionImage';

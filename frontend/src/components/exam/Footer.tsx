@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Logo } from './Logo';
 export function Footer() {
   return (
