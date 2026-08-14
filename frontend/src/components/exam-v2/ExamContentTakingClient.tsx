@@ -7,9 +7,12 @@ import { API_BASE_URL } from '../../config/api';
 import { getAuthToken } from '../../lib/authStorage';
 import {
   clearV2ExamDraft,
+  readV2ExamViewMode,
   writeV2ExamDraft,
   writeV2ExamResult,
+  writeV2ExamViewMode,
   readV2ExamDraft,
+  type V2ExamViewMode,
 } from '../../lib/examContentV2Storage';
 import { ExamHeader } from '../exam/ExamHeader';
 import { MathText } from '../exam/MathText';
@@ -27,6 +30,54 @@ import type {
 type ExamContentTakingClientProps = {
   examId: string;
 };
+
+function ExamViewModeToggle({
+  value,
+  onChange,
+}: {
+  value: V2ExamViewMode;
+  onChange: (viewMode: V2ExamViewMode) => void;
+}) {
+  const options: ReadonlyArray<{ readonly value: V2ExamViewMode; readonly label: string }> = [
+    { value: 'all', label: 'Tất cả câu' },
+    { value: 'single', label: 'Từng câu' },
+  ];
+
+  return <div className="inline-flex rounded-md border border-border bg-background-alt p-0.5" role="group" aria-label="Chế độ hiển thị câu hỏi">
+    {options.map((option) => <button key={option.value} type="button" aria-pressed={value === option.value} onClick={() => onChange(option.value)} className={`h-8 rounded px-2.5 text-xs font-semibold transition-colors ${value === option.value ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}>{option.label}</button>)}
+  </div>;
+}
+
+function CompactExamViewModeControl({
+  value,
+  onChange,
+}: {
+  value: V2ExamViewMode;
+  onChange: (viewMode: V2ExamViewMode) => void;
+}) {
+  return <div className="mt-4 border-t border-border pt-4">
+    <p className="mb-2 text-xs font-medium text-text-secondary">Chế độ làm bài</p>
+    <ExamViewModeToggle value={value} onChange={onChange} />
+  </div>;
+}
+
+function QuestionPager({
+  currentQuestionIndex,
+  questionCount,
+  onPrevious,
+  onNext,
+}: {
+  currentQuestionIndex: number;
+  questionCount: number;
+  onPrevious: () => void;
+  onNext: () => void;
+}) {
+  return <nav className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 shadow-card" aria-label="Điều hướng câu hỏi">
+    <Button variant="outline" onClick={onPrevious} disabled={currentQuestionIndex === 0}>Câu trước</Button>
+    <p className="text-sm font-semibold tabular-nums text-text-primary">Câu {currentQuestionIndex + 1} / {questionCount}</p>
+    <Button variant="outline" onClick={onNext} disabled={currentQuestionIndex === questionCount - 1}>Câu tiếp theo</Button>
+  </nav>;
+}
 
 const isAnswered = (
   question: V2PublicQuestionDto,
@@ -104,6 +155,7 @@ export function V2QuestionCard({
   return (
     <article
       id={`v2-question-${question.id}`}
+      tabIndex={-1}
       className="scroll-mt-28 rounded-xl border border-border bg-surface shadow-card"
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-7">
@@ -184,6 +236,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const [answers, setAnswers] = useState<V2AnswersByQuestionId>({});
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [currentQuestionId, setCurrentQuestionId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<V2ExamViewMode>('all');
   const [isReady, setIsReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -208,6 +261,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
         setAnswers(draft?.answers ?? {});
         setRemainingSeconds(draft?.remainingSeconds ?? data.durationMinutes * 60);
         setCurrentQuestionId(data.questions[0]?.id ?? null);
+        setViewMode(readV2ExamViewMode(localStorage, examId, data.examVersionId));
         setIsReady(true);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : 'Không thể tải đề thi V2.');
@@ -225,10 +279,22 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   }, [answers, exam, examId, isReady, remainingSeconds]);
 
   useEffect(() => {
+    if (!exam || !isReady) return;
+    writeV2ExamViewMode(localStorage, examId, exam.examVersionId, viewMode);
+  }, [exam, examId, isReady, viewMode]);
+
+  useEffect(() => {
     if (!isReady || remainingSeconds === 0) return;
     const timer = window.setInterval(() => setRemainingSeconds((seconds) => Math.max(seconds - 1, 0)), 1000);
     return () => window.clearInterval(timer);
   }, [isReady, remainingSeconds]);
+
+  useEffect(() => {
+    if (viewMode !== 'single' || currentQuestionId === null) return;
+    const questionElement = document.getElementById(`v2-question-${currentQuestionId}`);
+    questionElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    questionElement?.focus({ preventScroll: true });
+  }, [currentQuestionId, viewMode]);
 
   const answeredCount = useMemo(() => exam?.questions.filter((question) => isAnswered(question, answers[question.id])).length ?? 0, [answers, exam]);
 
@@ -274,19 +340,41 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
 
   const navigate = (questionId: string): void => {
     setCurrentQuestionId(questionId);
-    document.getElementById(`v2-question-${questionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (viewMode === 'all') {
+      document.getElementById(`v2-question-${questionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   if (loading) return <main className="min-h-[100dvh] bg-background px-4 py-8 text-text-primary"><div className="mx-auto max-w-7xl animate-pulse space-y-5"><div className="h-16 rounded-xl bg-background-alt" /><div className="h-80 rounded-xl border border-border bg-surface" /></div></main>;
   if (error || !exam) return <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4"><section className="w-full max-w-md rounded-xl border border-border bg-surface p-8 text-center shadow-card"><h1 className="text-xl font-bold text-text-primary">Không thể mở đề V2</h1><p className="mt-3 text-sm text-error">{error ?? 'Dữ liệu đề không hợp lệ.'}</p><Link href="/dashboard" className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white">Về kho đề</Link></section></main>;
 
+  const currentQuestionIndex = Math.max(
+    exam.questions.findIndex((question) => question.id === currentQuestionId),
+    0,
+  );
+  const currentQuestion = exam.questions[currentQuestionIndex];
+
   return <div className="min-h-[100dvh] bg-background text-text-primary">
     <Modal isOpen={showSubmitConfirm} onClose={() => setShowSubmitConfirm(false)} title="Xác nhận nộp bài" footer={<><Button variant="primary" onClick={() => void handleSubmit()} disabled={isSubmitting}>{isSubmitting ? 'Đang nộp...' : 'Nộp bài ngay'}</Button><Button variant="outline" onClick={() => setShowSubmitConfirm(false)} disabled={isSubmitting}>Tiếp tục làm bài</Button></>}><p>Bạn đã hoàn thành <span className="font-semibold text-text-primary">{answeredCount}/{exam.questions.length}</span> câu. Những câu chưa làm vẫn có thể nộp.</p></Modal>
     <ExamHeader examTitle={exam.title} questionCount={exam.questions.length} remainingSeconds={remainingSeconds} isTimeUp={false} onSubmit={() => setShowSubmitConfirm(true)} />
     <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      {viewMode === 'all' ? <>
       {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
       {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"><div className="space-y-7">{exam.questions.map((question, index) => <V2QuestionCard key={question.id} question={question} index={index} answer={answers[question.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(question.id, nextAnswer)} />)}</div><aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div></div></aside></div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"><div className="space-y-7">{exam.questions.map((question, index) => <V2QuestionCard key={question.id} question={question} index={index} answer={answers[question.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(question.id, nextAnswer)} />)}</div><aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={setViewMode} /></div></aside></div>
+      </> : <>
+        {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
+        {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <div className="space-y-5">
+            {currentQuestion ? <>
+              <V2QuestionCard question={currentQuestion} index={currentQuestionIndex} answer={answers[currentQuestion.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(currentQuestion.id, nextAnswer)} />
+              <QuestionPager currentQuestionIndex={currentQuestionIndex} questionCount={exam.questions.length} onPrevious={() => navigate(exam.questions[currentQuestionIndex - 1]!.id)} onNext={() => navigate(exam.questions[currentQuestionIndex + 1]!.id)} />
+            </> : null}
+          </div>
+          <aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={setViewMode} /></div></aside>
+        </div>
+      </>}
     </main>
   </div>;
 }
