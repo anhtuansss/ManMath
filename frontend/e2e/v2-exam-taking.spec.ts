@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const examId = 'thpt-math-v2-sample';
+const examId = 'thpt-math-2026-001';
 const apiBaseUrl = 'http://127.0.0.1:5000';
 
 const forbiddenPublicKeys = new Set([
@@ -33,8 +33,9 @@ test('V2 public read never exposes grading secrets', async ({ request }) => {
 
 test('anonymous learner can answer all three V2 types, restore draft, submit, and recover a safe receipt', async ({ page }) => {
   await page.goto(`/exam-v2/${examId}`);
-  await expect(page.getByRole('radio')).toHaveCount(4);
-  await expect(page.getByLabel('Câu trả lời')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tất cả câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('radio').first()).toBeVisible();
+  await expect(page.getByLabel('Câu trả lời').first()).toBeVisible();
 
   await page.getByRole('radio').first().click();
   const trueButtons = page.getByRole('button', { name: /^Mệnh đề [a-d]: Đúng$/ });
@@ -43,14 +44,14 @@ test('anonymous learner can answer all three V2 types, restore draft, submit, an
   await falseButtons.nth(1).click();
   await trueButtons.nth(2).click();
   await falseButtons.nth(3).click();
-  await page.getByLabel('Câu trả lời').fill('1,5');
+  await page.getByLabel('Câu trả lời').first().fill('1,5');
 
   // The draft uses the versioned V2 local-storage key. Reload proves that the
   // three discriminated response shapes restore without client-side grading.
   await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
   await page.reload();
   await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
-  await expect(page.getByLabel('Câu trả lời')).toHaveValue('1,5');
+  await expect(page.getByLabel('Câu trả lời').first()).toHaveValue('1,5');
 
   await page.getByRole('button', { name: 'Nộp bài', exact: true }).click();
   await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
@@ -62,6 +63,23 @@ test('anonymous learner can answer all three V2 types, restore draft, submit, an
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Danh sách câu' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Xem đáp án đúng', exact: true })).toHaveCount(0);
+});
+
+test('learner can switch between all-question and single-question modes without losing answers', async ({ page }) => {
+  await page.goto(`/exam-v2/${examId}`);
+  await page.getByRole('button', { name: 'Từng câu', exact: true }).click();
+
+  await expect(page.getByRole('button', { name: 'Từng câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(1);
+  await page.getByRole('radio').first().click();
+  await page.getByRole('button', { name: 'Câu tiếp theo', exact: true }).click();
+  await expect(page.getByText('Câu 2 / 22', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Câu trước', exact: true }).click();
+  await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
+
+  await page.getByRole('button', { name: 'Tất cả câu', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Tất cả câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(22);
 });
 
 test('internal draft preview renders safe V2 content without a taking flow', async ({ page }) => {

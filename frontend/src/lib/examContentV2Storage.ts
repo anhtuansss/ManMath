@@ -5,9 +5,13 @@ import type {
   V2ExamResultSession,
 } from '../components/exam-v2/types';
 
+export type V2ExamViewMode = 'all' | 'single';
+
 const draftKey = (examId: string, examVersionId: string): string =>
   `manmath:v2:exam-draft:v2:${examId}:${examVersionId}`;
 const resultKey = (examId: string): string => `manmath:v2:exam-result:${examId}`;
+const viewModeKey = (examId: string, examVersionId: string): string =>
+  `manmath:v2:exam-view-mode:v1:${examId}:${examVersionId}`;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -86,6 +90,22 @@ export const writeV2ExamDraft = (
 
 export const clearV2ExamDraft = (storage: Storage, examId: string, examVersionId: string): void => {
   storage.removeItem(draftKey(examId, examVersionId));
+};
+
+export const readV2ExamViewMode = (
+  storage: Storage,
+  examId: string,
+  examVersionId: string,
+): V2ExamViewMode =>
+  storage.getItem(viewModeKey(examId, examVersionId)) === 'single' ? 'single' : 'all';
+
+export const writeV2ExamViewMode = (
+  storage: Storage,
+  examId: string,
+  examVersionId: string,
+  viewMode: V2ExamViewMode,
+): void => {
+  storage.setItem(viewModeKey(examId, examVersionId), viewMode);
 };
 
 export const readV2ExamResult = (
