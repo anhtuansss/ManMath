@@ -382,3 +382,15 @@ export function gradeQuestion(
       );
   }
 }
+
+/** Returns the policy maximum for one V2 question without duplicating scoring constants. */
+export function maximumQuestionScore(question: QuestionInput): ScoreUnits {
+  switch (question.type) {
+    case 'single_choice':
+      return vietnamThptMath2025Scoring.singleChoiceCorrect;
+    case 'true_false_group':
+      return vietnamThptMath2025Scoring.trueFalseByCorrectStatementCount[4];
+    case 'short_answer':
+      return vietnamThptMath2025Scoring.shortAnswerCorrect;
+  }
+}

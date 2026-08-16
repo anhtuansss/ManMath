@@ -6,7 +6,7 @@ import {
   getExamContentAttemptReviewById,
 } from '../services/examContentAttemptService';
 
-const examId = 'thpt-math-v2-sample';
+const examId = 'verify-v2-minimal-exam';
 const forbiddenAnswerKeyFields = new Set([
   'answerKey',
   'correctAnswer',

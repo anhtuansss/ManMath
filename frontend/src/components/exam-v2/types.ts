@@ -49,6 +49,23 @@ export type V2PublicQuestionDto =
   | V2TrueFalseGroupQuestionDto
   | V2ShortAnswerQuestionDto;
 
+export type V2PracticeQuestionReference = {
+  readonly examVersionId: string;
+  readonly questionId: string;
+};
+
+export type V2PublicPracticeQuestionDto = V2PublicQuestionDto & {
+  readonly reference: V2PracticeQuestionReference;
+};
+
+export type V2PublicPracticeTopicDto = {
+  readonly topic: {
+    readonly slug: string;
+    readonly name: string;
+  };
+  readonly questions: readonly V2PublicPracticeQuestionDto[];
+};
+
 export type V2PublicExamDto = {
   readonly id: string;
   readonly examVersionId: string;
@@ -123,6 +140,24 @@ export type V2CreateAttemptResponseDto = {
   readonly results: readonly V2GradingResultDto[];
   /** Returned once for anonymous attempts; never place this token in a URL. */
   readonly anonymousReceiptToken?: string;
+};
+
+export type V2PracticeGradingResultDto = {
+  readonly questionId: string;
+  readonly response: V2SubmittedResponse | null;
+  readonly isCorrect: boolean;
+  readonly awardedScoreUnits: number;
+  readonly maxScoreUnits: number;
+};
+
+export type V2PracticeGradeResponseDto = {
+  readonly scoringPolicyId: 'vietnam_thpt_math_2025';
+  readonly scoreUnits: number;
+  readonly maxScoreUnits: number;
+  readonly correctCount: number;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number;
+  readonly results: readonly V2PracticeGradingResultDto[];
 };
 
 export type V2AttemptReceiptAnswerDto = {

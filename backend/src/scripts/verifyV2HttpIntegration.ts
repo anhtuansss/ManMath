@@ -40,16 +40,16 @@ async function main(): Promise<void> {
     const baseUrl = `http://127.0.0.1:${address.port}`;
     const listResponse = await fetch(`${baseUrl}/api/exams`);
     assert.equal(listResponse.status, 200);
-    const list = await readJson(listResponse) as Array<{ id: string; contentEngine: string }>;
-    assert.equal(list.find((exam) => exam.id === 'thpt-math-v2-sample')?.contentEngine, 'v2');
+    const list = await readJson(listResponse) as Array<{ id: string }>;
+    assert.notEqual(list.find((exam) => exam.id === 'verify-v2-minimal-exam'), undefined);
 
-    const examResponse = await fetch(`${baseUrl}/api/v2/exams/thpt-math-v2-sample`);
+    const examResponse = await fetch(`${baseUrl}/api/v2/exams/verify-v2-minimal-exam`);
     assert.equal(examResponse.status, 200);
     const publicExam = await readJson(examResponse) as { examVersionId: string };
     assert.equal(typeof publicExam.examVersionId, 'string');
     assertNoAnswerKey(publicExam);
 
-    const gradeResponse = await fetch(`${baseUrl}/api/v2/exams/thpt-math-v2-sample/grade`, {
+    const gradeResponse = await fetch(`${baseUrl}/api/v2/exams/verify-v2-minimal-exam/grade`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ examVersionId: publicExam.examVersionId, responses: [] }),
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
     const ownerToken = signAuthToken({ userId: owner.id, email: owner.email });
     const otherToken = signAuthToken({ userId: other.id, email: other.email });
 
-    const createResponse = await fetch(`${baseUrl}/api/v2/exams/thpt-math-v2-sample/attempts`, {
+    const createResponse = await fetch(`${baseUrl}/api/v2/exams/verify-v2-minimal-exam/attempts`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${ownerToken}` },
       body: JSON.stringify({ examVersionId: publicExam.examVersionId, responses: [] }),

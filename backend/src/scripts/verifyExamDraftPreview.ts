@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   const unauthorizedEmail = `preview-reader-${suffix}@example.test`;
   process.env.DRAFT_PREVIEW_AUTHORIZED_EMAILS = `  ${authorizedEmail.toUpperCase()}  `;
 
-  const fixture = require('../data/import/sample-exam-content-v2.json') as Record<string, unknown>;
+  const fixture = require('../test-fixtures/v2-minimal-exam.json') as Record<string, unknown>;
   const examId = `verify-v2-draft-preview-${suffix}`;
   const raw = JSON.parse(JSON.stringify(fixture)) as Record<string, unknown>;
   raw.exam = { ...(raw.exam as Record<string, unknown>), id: examId };
@@ -79,7 +79,7 @@ async function main(): Promise<void> {
     assertNoPreviewAnswerKeys(preview);
 
     // A draft must remain invisible through the public published-only route.
-    assert.equal((await fetch(`${baseUrl}/api/v2/exams/${examId}`)).status, 409);
+    assert.equal((await fetch(`${baseUrl}/api/v2/exams/${examId}`)).status, 404);
 
     await publishDraftExamVersion(examId);
     assert.equal((await fetch(previewPath, {

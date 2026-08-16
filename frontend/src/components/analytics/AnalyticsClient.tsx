@@ -9,7 +9,6 @@ import {
 } from '../../lib/authApi';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
 import { getExamTakingHref } from '../../lib/examRoutes';
-import type { TopicStatDto } from '../exam/types';
 import type {
   ProgressAttemptPoint as ProgressByAttempt,
   ProgressResponse,
@@ -21,6 +20,7 @@ import type {
   SubtopicStat,
   SubtopicStatsResponse,
   TopicStatsResponse,
+  TopicStatDto,
 } from '../../lib/apiTypes';
 
 type AnalyticsStatus = 'loading' | 'unauthorized' | 'ready' | 'error';
@@ -205,7 +205,7 @@ export function AnalyticsClient() {
               <p className="workspace-page-description mt-2">Xem điểm mạnh, phần cần ôn và xu hướng từ các lần làm gần đây.</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {status === 'ready' && nextExam ? <Link href={getExamTakingHref(nextExam.examId, nextExam.contentEngine)} className="workspace-button-text inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề được gợi ý</Link> : null}
+              {status === 'ready' && nextExam ? <Link href={getExamTakingHref(nextExam.examId)} className="workspace-button-text inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề được gợi ý</Link> : null}
               <Link href="/history" className="workspace-button-text inline-flex h-10 items-center justify-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem lịch sử</Link>
             </div>
           </div>
@@ -243,7 +243,7 @@ export function AnalyticsClient() {
               <div className="p-5 lg:col-span-5">
                 <p className="workspace-eyebrow">Bước tiếp theo</p>
                 <h2 className="workspace-section-title mt-1 text-text-primary">Một đề phù hợp để tiếp tục.</h2>
-                {nextExam ? <><div className="mt-5 border-y border-border py-4"><p className="workspace-item-title text-text-primary">{nextExam.title}</p><p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút</p><p className="workspace-metadata mt-3">{nextExam.reason}</p></div><Link href={getExamTakingHref(nextExam.examId, nextExam.contentEngine)} className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề này</Link></> : <><p className="workspace-page-description mt-5">Chưa có đề gợi ý riêng. Bạn vẫn có thể chọn một đề trong kho để tiếp tục luyện tập.</p><Link href="/dashboard" className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-primary transition-colors hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem kho đề</Link></>}
+                {nextExam ? <><div className="mt-5 border-y border-border py-4"><p className="workspace-item-title text-text-primary">{nextExam.title}</p><p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút</p><p className="workspace-metadata mt-3">{nextExam.reason}</p></div><Link href={getExamTakingHref(nextExam.examId)} className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề này</Link></> : <><p className="workspace-page-description mt-5">Chưa có đề gợi ý riêng. Bạn vẫn có thể chọn một đề trong kho để tiếp tục luyện tập.</p><Link href="/dashboard" className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-primary transition-colors hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem kho đề</Link></>}
                 {recommendedExams.length > 1 ? <Link href="/dashboard" className="workspace-button-text mt-4 inline-flex text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem thêm gợi ý</Link> : null}
               </div>
             </section>

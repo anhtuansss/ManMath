@@ -16,7 +16,7 @@ import { getExamTakingHref } from '../../lib/examRoutes';
 
 const toExamListItem = (exam: ExamListApiItem): ExamListItem => ({
   ...exam,
-  href: getExamTakingHref(exam.id, exam.contentEngine),
+  href: getExamTakingHref(exam.id),
 });
 
 function ExamListSkeleton() {

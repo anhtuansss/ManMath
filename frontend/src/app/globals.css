@@ -181,7 +181,7 @@ body {
   line-height: 1.2;
 }
 
-/* Legacy heading utilities remain in focus components, but workspace text
+/* Shared heading utilities remain in focus components, but workspace text
    inherits the Inter/system stack instead of the old display-font variable. */
 .workspace-shell [class*="font-[family-name:var(--font-outfit)]"] {
   font-family: inherit;

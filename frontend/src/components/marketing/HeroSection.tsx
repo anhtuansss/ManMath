@@ -10,7 +10,7 @@ export function HeroSection() {
           <p className="text-sm font-semibold text-primary">Luyện đề Toán THPT</p>
           <TypeOnHeadline />
           <p className="mt-6 max-w-[32rem] text-[17px] leading-7 text-text-secondary sm:text-lg sm:leading-8">
-            Chọn đề, làm bài có bấm giờ, xem lại đáp án và biết chuyên đề nào cần ôn tiếp.
+            Chọn đề, làm bài có bấm giờ, xem lại đáp án và biết chuyên đề nào cần ôn tiếp
           </p>
           <LandingAuthActions className="mt-8" />
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const headline = 'Luyện đề Toán như một buổi thi thật.';
+const headline = 'Luyện đề Toán như một buổi thi thật';
 const characters = Array.from(headline);
 
 type HeadlineLinesProps = {
@@ -54,7 +54,7 @@ export function TypeOnHeadline() {
         if (nextCharacter === characters.length) {
           window.clearInterval(interval);
         }
-      }, 32);
+      }, 60);
     }, 80);
 
     return () => {

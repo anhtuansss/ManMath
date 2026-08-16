@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const examId = 'thpt-math-2026-001';
+const examId = 'verify-v2-minimal-exam';
 const apiBaseUrl = 'http://127.0.0.1:5000';
 
 const forbiddenPublicKeys = new Set([
@@ -73,13 +73,13 @@ test('learner can switch between all-question and single-question modes without 
   await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(1);
   await page.getByRole('radio').first().click();
   await page.getByRole('button', { name: 'Câu tiếp theo', exact: true }).click();
-  await expect(page.getByText('Câu 2 / 22', { exact: true })).toBeVisible();
+  await expect(page.getByText('Câu 2 / 3', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Câu trước', exact: true }).click();
   await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
 
   await page.getByRole('button', { name: 'Tất cả câu', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Tất cả câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(22);
+  await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(3);
 });
 
 test('internal draft preview renders safe V2 content without a taking flow', async ({ page }) => {

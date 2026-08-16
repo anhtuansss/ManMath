@@ -13,7 +13,6 @@ function testExamData(id: string) {
     subject: 'Toán',
     difficulty: 'easy' as const,
     statusLabel: 'Nháp',
-    contentEngine: 'v2' as const,
   };
 }
 
@@ -36,7 +35,7 @@ async function createPublishedVersion(tx: Transaction, suffix: string, withQuest
     },
   });
 
-  let questionId: string | null = null;
+  let examVersionQuestionId: string | null = null;
   if (withQuestion) {
     const question = await tx.examVersionQuestion.create({
       data: {
@@ -55,7 +54,7 @@ async function createPublishedVersion(tx: Transaction, suffix: string, withQuest
         answerKey: { correctChoiceId: 'a' },
       },
     });
-    questionId = question.id;
+    examVersionQuestionId = question.id;
   }
 
   const published = await tx.examVersion.update({
@@ -63,7 +62,7 @@ async function createPublishedVersion(tx: Transaction, suffix: string, withQuest
     data: { status: 'published', publishedAt: new Date() },
   });
 
-  return { exam, version: published, questionId };
+  return { exam, version: published, examVersionQuestionId };
 }
 
 async function assertRejected(name: string, action: () => Promise<unknown>): Promise<void> {
@@ -90,9 +89,9 @@ async function main(): Promise<void> {
 
   await assertRejected('Published version questions cannot change', async () => {
     await prisma.$transaction(async (tx) => {
-      const { questionId } = await createPublishedVersion(tx, `${suffix}-question`, true);
+      const { examVersionQuestionId } = await createPublishedVersion(tx, `${suffix}-question`, true);
       await tx.examVersionQuestion.update({
-        where: { id: questionId! },
+        where: { id: examVersionQuestionId! },
         data: { content: 'Mutated question' },
       });
     });
@@ -119,12 +118,27 @@ async function main(): Promise<void> {
 
   await assertRejected('Attempt-answer grading facts cannot change', async () => {
     await prisma.$transaction(async (tx) => {
-      const exam = await tx.exam.create({ data: testExamData(`verify-history-${suffix}-answer`) });
+      const { exam, version, examVersionQuestionId } = await createPublishedVersion(
+        tx,
+        `${suffix}-answer`,
+        true,
+      );
       const attempt = await tx.attempt.create({
-        data: { examId: exam.id, score: 0, correctCount: 0, totalQuestions: 1, unansweredCount: 1 },
+        data: {
+          examId: exam.id,
+          examVersionId: version.id,
+          score: 0,
+          correctCount: 0,
+          totalQuestions: 1,
+          unansweredCount: 1,
+        },
       });
       const answer = await tx.attemptAnswer.create({
-        data: { attemptId: attempt.id, questionId: 1, isCorrect: false },
+        data: {
+          attemptId: attempt.id,
+          examVersionQuestionId: examVersionQuestionId!,
+          isCorrect: false,
+        },
       });
       await tx.attemptAnswer.update({ where: { id: answer.id }, data: { isCorrect: true } });
     });

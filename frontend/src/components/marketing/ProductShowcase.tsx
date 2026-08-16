@@ -24,11 +24,11 @@ export function ProductShowcase() {
 
           <div className="order-1 lg:order-2 lg:col-span-5 lg:pl-3">
             <p className="text-xs font-semibold tracking-[0.12em] text-primary">PRODUCT PROOF</p>
-            <h2 className="mt-3 text-2xl font-bold tracking-[-0.025em] sm:text-3xl">Làm đề, xem lại và đi tiếp.</h2>
-            <p className="mt-4 max-w-md leading-7 text-text-secondary">ManMath giữ luồng luyện đề trong một nơi: tập trung khi làm bài, rồi xem điểm, đáp án và chuyên đề cần ôn tiếp.</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.025em] sm:text-3xl">Làm đề, xem lại và đi tiếp</h2>
+            <p className="mt-4 max-w-md leading-7 text-text-secondary">ManMath giữ luồng luyện đề trong một nơi: tập trung khi làm bài, rồi xem điểm, đáp án và chuyên đề cần ôn tiếp</p>
             <ul className="mt-6 space-y-4 border-t border-border pt-5 text-sm leading-6 text-text-secondary">
-              <li><span className="font-semibold text-text-primary">Trong lúc làm:</span> timer, đáp án và điều hướng câu hỏi.</li>
-              <li><span className="font-semibold text-text-primary">Sau khi nộp:</span> điểm số, review đáp án và phân tích theo chuyên đề.</li>
+              <li><span className="font-semibold text-text-primary">Trong lúc làm:</span> timer, đáp án và điều hướng câu hỏi</li>
+              <li><span className="font-semibold text-text-primary">Sau khi nộp:</span> điểm số, review đáp án và phân tích theo chuyên đề</li>
             </ul>
           </div>
         </div>

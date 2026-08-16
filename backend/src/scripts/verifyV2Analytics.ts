@@ -13,9 +13,9 @@ async function main(): Promise<void> {
     },
   });
 
-  const attempt = await createExamContentAttempt('thpt-math-v2-sample', {
+  const attempt = await createExamContentAttempt('verify-v2-minimal-exam', {
     examVersionId: (await prisma.examVersion.findFirst({
-      where: { examId: 'thpt-math-v2-sample', status: 'published' },
+      where: { examId: 'verify-v2-minimal-exam', status: 'published' },
       orderBy: { versionNumber: 'desc' },
       select: { id: true },
     }))?.id,
@@ -36,20 +36,17 @@ async function main(): Promise<void> {
   const topicAnalytics = await getUserTopicAnalytics(user.id);
   assert.deepEqual(topicAnalytics.coverage, {
     scoreUnitAttemptCount: 1,
-    legacyBestEffortAttemptCount: 0,
     unavailableV2AttemptCount: 0,
   });
   assert.equal(topicAnalytics.topicStats.length, 1);
   assert.equal(topicAnalytics.topicStats[0]?.awardedScoreUnits, 50);
   assert.equal(topicAnalytics.topicStats[0]?.maxScoreUnits, 175);
   assert.equal(topicAnalytics.topicStats[0]?.masteryPercentage, 29);
-  assert.equal(topicAnalytics.topicStats[0]?.analyticsConfidence, 'score_units');
   assert.equal(topicAnalytics.topicStats[0]?.accuracy, 0);
 
   const subtopicAnalytics = await getUserSubtopicAnalytics(user.id);
   assert.equal(subtopicAnalytics.subtopicStats.length, 1);
   assert.equal(subtopicAnalytics.subtopicStats[0]?.masteryPercentage, 0);
-  assert.equal(subtopicAnalytics.subtopicStats[0]?.analyticsConfidence, 'score_units');
 
   console.log('V2 score-unit analytics verification passed');
 }

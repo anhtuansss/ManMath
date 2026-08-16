@@ -1,29 +1,22 @@
 {
   "schemaVersion": 2,
   "exam": {
-    "id": "thpt-math-v2-sample",
-    "title": "Đề mẫu nội dung V2",
-    "description": "Fixture kiểm tra contract import V2.",
+    "id": "verify-v2-minimal-exam",
+    "title": "V2 minimal verification fixture",
+    "description": "Dedicated fixture for isolated V2 verification only.",
     "durationMinutes": 90,
     "subject": "Toán",
     "difficulty": "medium",
     "source": null,
     "year": 2025,
-    "statusLabel": "Draft"
+    "statusLabel": "Fixture"
   },
   "taxonomy": {
     "topics": [
-      {
-        "name": "Hàm số",
-        "slug": "ham-so"
-      }
+      { "name": "Hàm số", "slug": "ham-so" }
     ],
     "subtopics": [
-      {
-        "name": "Đạo hàm",
-        "slug": "dao-ham",
-        "topicSlug": "ham-so"
-      }
+      { "name": "Đạo hàm", "slug": "dao-ham", "topicSlug": "ham-so" }
     ]
   },
   "questions": [
@@ -41,9 +34,7 @@
         { "id": "c", "content": "2" },
         { "id": "d", "content": "3" }
       ],
-      "answerKey": {
-        "correctChoiceId": "a"
-      }
+      "answerKey": { "correctChoiceId": "a" }
     },
     {
       "id": "tf-1",
@@ -59,12 +50,7 @@
         { "id": "d", "content": "Mệnh đề d" }
       ],
       "answerKey": {
-        "values": {
-          "a": true,
-          "b": false,
-          "c": true,
-          "d": false
-        }
+        "values": { "a": true, "b": false, "c": true, "d": false }
       }
     },
     {
@@ -74,10 +60,7 @@
       "order": 3,
       "content": "Tính giá trị biểu thức.",
       "topicSlug": "ham-so",
-      "answerKey": {
-        "mode": "numeric",
-        "answer": "1,5"
-      }
+      "answerKey": { "mode": "numeric", "answer": "1,5" }
     }
   ]
 }

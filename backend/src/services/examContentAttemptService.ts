@@ -141,7 +141,7 @@ function getMaximumScoreUnits(
   }
 }
 
-function toLegacyScore(scoreUnits: ScoreUnits): number {
+function toDisplayScore(scoreUnits: ScoreUnits): number {
   return scoreUnits / 100;
 }
 
@@ -283,12 +283,42 @@ export async function createExamContentAttempt(
   );
 
   return prisma.$transaction(async (tx) => {
+    const versionQuestions = await tx.examVersionQuestion.findMany({
+      where: {
+        examVersionId: exam.versionId,
+        externalId: { in: exam.questions.map((question) => question.id) },
+      },
+      select: {
+        id: true,
+        externalId: true,
+      },
+    });
+    const versionQuestionIdByExternalId = new Map<string, string>();
+
+    for (const versionQuestion of versionQuestions) {
+      if (versionQuestionIdByExternalId.has(versionQuestion.externalId)) {
+        throw new ExamContentAttemptIntegrityError(
+          `Exam version ${exam.versionId} has duplicate question external ID ${versionQuestion.externalId}`,
+        );
+      }
+      versionQuestionIdByExternalId.set(
+        versionQuestion.externalId,
+        versionQuestion.id,
+      );
+    }
+
+    if (versionQuestionIdByExternalId.size !== exam.questions.length) {
+      throw new ExamContentAttemptIntegrityError(
+        `Exam version ${exam.versionId} does not contain every validated question`,
+      );
+    }
+
     const attempt = await tx.attempt.create({
       data: {
         examId: exam.id,
         examVersionId: exam.versionId,
         userId: userId ?? null,
-        score: toLegacyScore(grading.totalAwardedScore),
+        score: toDisplayScore(grading.totalAwardedScore),
         scoringPolicy: 'vietnam_thpt_math_2025',
         scoreUnits: grading.totalAwardedScore,
         maxScoreUnits: maximumScoreUnits,
@@ -312,14 +342,17 @@ export async function createExamContentAttempt(
               );
             }
 
+            const examVersionQuestionId = versionQuestionIdByExternalId.get(question.id);
+            if (examVersionQuestionId === undefined) {
+              throw new ExamContentAttemptIntegrityError(
+                `Question ${question.id} has no canonical V2 reference in version ${exam.versionId}`,
+              );
+            }
+
             return {
-              // Deprecated legacy scalar: it is not a foreign key. V2 source
-              // of truth is questionExternalId plus Attempt.examVersionId.
-              questionId: question.order,
-              selectedOptionIndex: null,
-              correctOptionIndex: null,
               isCorrect: gradingResult.isCorrect,
               questionExternalId: question.id,
+              examVersionQuestionId,
               questionType: question.type,
               response:
                 gradingResult.response === undefined
@@ -417,11 +450,18 @@ export async function getExamContentAttemptReceiptById(
         orderBy: { questionExternalId: 'asc' },
         select: {
           questionExternalId: true,
+          examVersionQuestionId: true,
           questionType: true,
           response: true,
           awardedScoreUnits: true,
           maxScoreUnits: true,
           isFullyCorrect: true,
+          examVersionQuestion: {
+            select: {
+              examVersionId: true,
+              externalId: true,
+            },
+          },
         },
       },
     },
@@ -468,6 +508,8 @@ export async function getExamContentAttemptReceiptById(
     (answer) => {
       if (
         answer.questionExternalId === null ||
+        answer.examVersionQuestionId === null ||
+        answer.examVersionQuestion === null ||
         answer.questionType === null ||
         answer.awardedScoreUnits === null ||
         answer.maxScoreUnits === null ||
@@ -475,6 +517,16 @@ export async function getExamContentAttemptReceiptById(
       ) {
         throw new ExamContentAttemptIntegrityError(
           'Persisted V2 attempt answer is incomplete',
+        );
+      }
+
+      if (
+        attempt.examVersionId === null ||
+        answer.examVersionQuestion.examVersionId !== attempt.examVersionId ||
+        answer.examVersionQuestion.externalId !== answer.questionExternalId
+      ) {
+        throw new ExamContentAttemptIntegrityError(
+          'Persisted V2 attempt answer does not match its canonical question reference',
         );
       }
 

@@ -42,9 +42,7 @@ async function upsertExam(
         where: {
             id: exam.id,
         },
-        update: {
-            contentEngine: 'v2',
-        },
+        update: {},
         create: {
             id: exam.id,
             title: exam.title,
@@ -55,7 +53,6 @@ async function upsertExam(
             source: exam.source,
             year: exam.year,
             statusLabel: exam.statusLabel,
-            contentEngine: 'v2',
         },
     });
 }
