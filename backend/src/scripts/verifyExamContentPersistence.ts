@@ -1,40 +1,32 @@
 import assert from 'assert';
 import { disconnectPrisma, prisma } from '../lib/prisma';
 
-const examId = 'thpt-math-v2-sample';
+const examId = 'verify-v2-minimal-exam';
 
 async function main(): Promise<void> {
-  const exam = await prisma.exam.findUnique({
-    where: { id: examId },
-    include: {
+  const version = await prisma.examVersion.findFirst({
+    where: { examId, status: 'published' },
+    orderBy: { versionNumber: 'desc' },
+    select: {
       questions: {
         select: {
-          id: true,
           externalId: true,
           type: true,
           order: true,
-          topic: {
-            select: {
-              slug: true,
-            },
-          },
-          subtopic: {
-            select: {
-              slug: true,
-            },
-          },
+          topicSlug: true,
+          subtopicSlug: true,
         },
       },
     },
   });
 
-  if (exam === null) {
-    throw new Error(`Imported exam ${examId} must exist`);
+  if (version === null) {
+    throw new Error(`Published exam version for ${examId} must exist`);
   }
-  assert.equal(exam.questions.length, 3);
+  assert.equal(version.questions.length, 3);
 
   const questionsByExternalId = new Map(
-    exam.questions.map((question) => [question.externalId, question]),
+    version.questions.map((question) => [question.externalId, question]),
   );
 
   assert.equal(questionsByExternalId.size, 3);
@@ -45,8 +37,8 @@ async function main(): Promise<void> {
   );
   assert.equal(questionsByExternalId.get('sa-1')?.type, 'short_answer');
 
-  for (const question of exam.questions) {
-    assert.equal(question.topic?.slug, 'ham-so');
+  for (const question of version.questions) {
+    assert.equal(question.topicSlug, 'ham-so');
   }
 
   console.log('Exam content persistence verification passed');

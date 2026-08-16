@@ -6,6 +6,164 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  fullName     String?
+  avatarUrl    String?
+  googleId     String?      @unique
+  passwordHash String?
+  authProvider AuthProvider @default(google)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  attempts     Attempt[]
+}
+
+model Topic {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  subtopics   Subtopic[]
+}
+
+model Subtopic {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  topicId   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, name])
+  @@index([topicId])
+}
+
+model Exam {
+  id              String             @id
+  title           String
+  description     String
+  durationMinutes Int
+  subject         String
+  difficulty      ExamDifficulty
+  year            Int?
+  statusLabel     String
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  source          String?
+  attempts        Attempt[]
+  versions        ExamVersion[]
+}
+
+model Attempt {
+  id                        String                @id @default(cuid())
+  examId                    String
+  userId                    String?
+  score                     Float
+  correctCount              Int
+  totalQuestions            Int
+  unansweredCount           Int
+  startedAt                 DateTime?
+  submittedAt               DateTime              @default(now())
+  durationSeconds           Int?
+  maxScoreUnits             Int?
+  scoreUnits                Int?
+  scoringPolicy             AttemptScoringPolicy?
+  contentSnapshotVersion    Int?
+  examContentSnapshot       Json?
+  examVersionId             String?
+  anonymousReceiptTokenHash String?
+  anonymousReceiptExpiresAt DateTime?
+  exam                      Exam                  @relation(fields: [examId], references: [id])
+  examVersion               ExamVersion?          @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
+  user                      User?                 @relation(fields: [userId], references: [id])
+  answers                   AttemptAnswer[]
+
+  @@index([examId])
+  @@index([examVersionId])
+  @@index([userId])
+  @@index([submittedAt])
+  @@index([anonymousReceiptExpiresAt])
+}
+
+model ExamVersion {
+  id              String                @id @default(cuid())
+  examId          String
+  versionNumber   Int
+  status          ExamVersionStatus     @default(draft)
+  publishProfile  ExamPublishProfile    @default(practice)
+  title           String
+  description     String
+  durationMinutes Int
+  subject         String
+  difficulty      ExamDifficulty
+  source          String?
+  year            Int?
+  statusLabel     String
+  scoringPolicy   AttemptScoringPolicy  @default(vietnam_thpt_math_2025)
+  contentChecksum String
+  publishedAt     DateTime?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  attempts        Attempt[]
+  exam            Exam                  @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questions       ExamVersionQuestion[]
+
+  @@unique([examId, versionNumber])
+  @@index([examId, status])
+}
+
+model ExamVersionQuestion {
+  id            String       @id @default(cuid())
+  examVersionId String
+  externalId    String
+  order         Int
+  type          QuestionType
+  section       Int
+  content       String
+  topicSlug     String
+  topicName     String
+  subtopicSlug  String?
+  subtopicName  String?
+  assets        Json?
+  choices       Json?
+  statements    Json?
+  answerKey     Json
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  examVersion    ExamVersion     @relation(fields: [examVersionId], references: [id], onDelete: Cascade)
+  attemptAnswers AttemptAnswer[]
+
+  @@unique([examVersionId, externalId])
+  @@unique([examVersionId, order])
+  @@index([examVersionId, type])
+  @@index([topicSlug])
+  @@index([subtopicSlug])
+}
+
+model AttemptAnswer {
+  id                    String               @id @default(cuid())
+  attemptId             String
+  isCorrect             Boolean
+  awardedScoreUnits     Int?
+  isFullyCorrect        Boolean?
+  maxScoreUnits         Int?
+  questionExternalId    String?
+  examVersionQuestionId String
+  questionType          QuestionType?
+  response              Json?
+  attempt               Attempt              @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  examVersionQuestion   ExamVersionQuestion  @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+
+  @@unique([attemptId, examVersionQuestionId])
+  @@index([attemptId])
+  @@index([examVersionQuestionId])
+}
+
 enum ExamDifficulty {
   easy
   medium
@@ -22,13 +180,6 @@ enum AttemptScoringPolicy {
   vietnam_thpt_math_2025
 }
 
-// Nullable while the coexistence audit classifies existing records. New V2
-// imports set this explicitly; null is handled as legacy compatibility data.
-enum ExamContentEngine {
-  legacy
-  v2
-}
-
 enum ExamVersionStatus {
   draft
   published
@@ -43,205 +194,4 @@ enum ExamPublishProfile {
 enum AuthProvider {
   google
   password
-}
-
-model User {
-  id           String       @id @default(cuid())
-  email        String       @unique
-  fullName     String?
-  avatarUrl    String?
-  googleId     String?      @unique
-  passwordHash String?
-  authProvider AuthProvider @default(google)
-  attempts     Attempt[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-}
-
-model Topic {
-  id          String     @id @default(cuid())
-  name        String     @unique
-  slug        String     @unique
-  description String?
-  order       Int        @default(0)
-  questions   Question[]
-  subtopics   Subtopic[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-model Subtopic {
-  id        String     @id @default(cuid())
-  name      String
-  slug      String     @unique
-  topicId   String
-  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  questions Question[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  @@index([topicId])
-  @@unique([topicId, name])
-}
-
-model Exam {
-  id               String            @id
-  title            String
-  description      String
-  durationMinutes  Int
-  subject          String
-  difficulty       ExamDifficulty
-  source           String?
-  year             Int?
-  statusLabel      String
-  contentEngine    ExamContentEngine?
-  questions        Question[]
-  attempts         Attempt[]
-  versions         ExamVersion[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt 
-
-  @@index([contentEngine])
-}
-
-model Question {
-  id            Int      @id @default(autoincrement())
-  examId        String
-  exam          Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
-  order         Int
-  topicId       String?
-  topic         Topic? @relation(fields: [topicId], references: [id], onDelete: SetNull)
-  subtopicId    String?
-  subtopic      Subtopic? @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
-  question      String
-  imageUrl      String?
-  explanation   String?
-  options       String[] @default([])
-  optionImageUrls String[] @default([])
-  correctAnswer String?
-  externalId    String?
-  type          QuestionType @default(single_choice)
-  section       Int?
-  assets        Json?
-  choices       Json?
-  statements    Json?
-  answerKey     Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@unique([examId, order])
-  @@unique([examId, externalId])
-  @@index([examId])
-  @@index([examId, type])
-  @@index([topicId])
-  @@index([subtopicId])
-}
-
-model Attempt {
-  id                      String          @id @default(cuid())
-  examId                  String
-  // An exam with attempt history cannot be removed implicitly. User deletion
-  // remains independent: `userId` is still set to null by its own relation.
-  exam                    Exam            @relation(fields: [examId], references: [id], onDelete: Restrict)
-  examVersionId           String?
-  examVersion             ExamVersion?    @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
-  userId                  String?
-  user                    User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  score                   Float
-  scoringPolicy           AttemptScoringPolicy?
-  scoreUnits              Int?
-  contentSnapshotVersion  Int?
-  examContentSnapshot     Json?
-  maxScoreUnits           Int?
-  correctCount            Int
-  totalQuestions          Int
-  unansweredCount         Int
-  startedAt               DateTime?
-  submittedAt             DateTime        @default(now())
-  durationSeconds         Int?
-  anonymousReceiptTokenHash String?
-  anonymousReceiptExpiresAt DateTime?
-  answers                 AttemptAnswer[]
-
-  @@index([examId])
-  @@index([examVersionId])
-  @@index([userId])
-  @@index([submittedAt])
-  @@index([anonymousReceiptExpiresAt])
-}
-
-// Immutable content container once status is published. Legacy `Question`
-// remains for coexistence and is deliberately not reused as a version table.
-model ExamVersion {
-  id             String             @id @default(cuid())
-  examId         String
-  exam           Exam               @relation(fields: [examId], references: [id], onDelete: Cascade)
-  versionNumber  Int
-  status         ExamVersionStatus  @default(draft)
-  publishProfile ExamPublishProfile @default(practice)
-  title          String
-  description    String
-  durationMinutes Int
-  subject        String
-  difficulty     ExamDifficulty
-  source         String?
-  year           Int?
-  statusLabel    String
-  scoringPolicy  AttemptScoringPolicy @default(vietnam_thpt_math_2025)
-  contentChecksum String
-  publishedAt    DateTime?
-  questions      ExamVersionQuestion[]
-  attempts       Attempt[]
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-
-  @@unique([examId, versionNumber])
-  @@index([examId, status])
-}
-
-model ExamVersionQuestion {
-  id            String       @id @default(cuid())
-  examVersionId String
-  examVersion   ExamVersion  @relation(fields: [examVersionId], references: [id], onDelete: Cascade)
-  externalId    String
-  order         Int
-  type          QuestionType
-  section       Int
-  content       String
-  topicSlug     String
-  topicName     String
-  subtopicSlug  String?
-  subtopicName  String?
-  assets        Json?
-  choices       Json?
-  statements    Json?
-  answerKey     Json
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-
-  @@unique([examVersionId, externalId])
-  @@unique([examVersionId, order])
-  @@index([examVersionId, type])
-  @@index([topicSlug])
-  @@index([subtopicSlug])
-}
-
-model AttemptAnswer {
-  id                  String   @id @default(cuid())
-  attemptId           String
-  attempt             Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  questionId          Int
-  selectedOptionIndex Int?
-  correctOptionIndex  Int?
-  isCorrect           Boolean
-  questionExternalId  String?
-  questionType        QuestionType?
-  response            Json?
-  awardedScoreUnits   Int?
-  maxScoreUnits       Int?
-  isFullyCorrect      Boolean?
-
-  @@index([attemptId])
-  @@index([questionId])
-  @@unique([attemptId, questionId])
 }

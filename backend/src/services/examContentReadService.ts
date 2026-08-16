@@ -39,12 +39,6 @@ const expectedQuestionTypeBySection: Readonly<Record<1 | 2 | 3, QuestionInput['t
   3: 'short_answer',
 };
 
-export class ExamContentNotV2Error extends Error {
-  constructor(examId: string) {
-    super(`Exam ${examId} does not provide a published V2 version`);
-  }
-}
-
 export class ExamContentIntegrityError extends Error {
   readonly issues: readonly string[];
 
@@ -140,12 +134,7 @@ async function getValidatedExamContentByStatus(
   });
 
   if (version === null) {
-    const exam = await prisma.exam.findUnique({
-      where: { id: examId },
-      select: { id: true, contentEngine: true },
-    });
-    if (exam === null) return null;
-    throw new ExamContentNotV2Error(examId);
+    return null;
   }
 
   const issues: string[] = [];
@@ -183,17 +172,11 @@ export async function getValidatedExamContentById(
 async function getValidatedDraftExamContentById(
   examId: string,
 ): Promise<ValidatedExamContent | null> {
-  try {
-    return await getValidatedExamContentByStatus(examId, 'draft');
-  } catch (error) {
-    // A published-only exam has no draft to preview; do not treat it as a
-    // public V2 read error or disclose a separate version state to the client.
-    if (error instanceof ExamContentNotV2Error) return null;
-    throw error;
-  }
+  return getValidatedExamContentByStatus(examId, 'draft');
 }
 
-function toPublicQuestion(question: QuestionInput): PublicQuestion {
+/** Shared public DTO boundary: answer keys never cross this mapper. */
+export function toPublicQuestion(question: QuestionInput): PublicQuestion {
   const { answerKey: _answerKey, ...publicQuestion } = question;
   return publicQuestion;
 }

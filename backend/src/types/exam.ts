@@ -1,6 +1,5 @@
 export type ExamDifficulty = 'easy' | 'medium' | 'hard';
 
-export type ExamContentEngine = 'legacy' | 'v2';
 
 export const examDifficulties: ExamDifficulty[] = ['easy', 'medium', 'hard'];
 
@@ -17,27 +16,6 @@ export type TopicFilterDto = {
   subtopics: SubtopicDto[];
 };
 
-export type PracticeTopicDto = {
-  practiceId: string;
-  topic: {
-    name: string;
-    slug: string;
-  };
-  title: string;
-  durationMinutes: number;
-  questions: QuestionDto[];
-};
-
-export type QuestionDto = {
-  id: number;
-  question: string;
-  imageUrl: string | null;
-  explanation: string | null;
-  options: string[];
-  optionImageUrls: (string | null)[];
-  subtopic: SubtopicDto | null;
-  correctAnswer: string;
-};
 
 export type TopicStatDto = {
   topicId: string | null;
@@ -49,7 +27,6 @@ export type TopicStatDto = {
   awardedScoreUnits: number;
   maxScoreUnits: number;
   masteryPercentage: number | null;
-  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
 };
 
 export type ExamSummaryDto = {
@@ -63,53 +40,4 @@ export type ExamSummaryDto = {
   source: string | null;
   year?: number;
   statusLabel: string;
-  contentEngine: ExamContentEngine;
-};
-
-export type ExamDetailDto = {
-  id: string;
-  examTitle: string;
-  durationMinutes: number;
-  subject: string;
-  difficulty: ExamDifficulty;
-  source: string | null;
-  year: number | null;
-  statusLabel: string;
-  questions: QuestionDto[];
-};
-
-export type ExamAttemptSummaryDto = {
-  id: string;
-  examId: string;
-  attemptFormat: 'legacy' | 'v2';
-  score: number;
-  correctCount: number;
-  totalQuestions: number;
-  unansweredCount: number;
-  durationSeconds: number | null;
-  submittedAt: string;
-};
-
-export type AttemptAnswerDetailDto = {
-  questionId: number;
-  question: string;
-  imageUrl: string | null;
-  explanation: string | null;
-  options: string[];
-  optionImageUrls: (string | null)[];
-  subtopic: SubtopicDto | null;
-  selectedOptionIndex: number | null;
-  correctOptionIndex: number;
-  isCorrect: boolean;
-};
-
-export type ExamAttemptDetailDto = {
-  attempt: ExamAttemptSummaryDto;
-  exam: {
-    id: string;
-    title: string;
-    durationMinutes: number;
-  };
-  answers: AttemptAnswerDetailDto[];
-  topicStats: TopicStatDto[];
 };

@@ -1,18 +1,8 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
-import {
-  getAttemptDetailById,
-  getExamAttemptsByExamId,
-  getExamDetailById,
-  getExamSummaries,
-  getPracticeByTopicSlug,
-  getTopicFilters,
-  LegacyExamReadNotSupportedError,
-  submitExam,
-} from '../services/examService';
+import { getExamSummaries, getTopicFilters } from '../services/examService';
 import {
   ExamContentIntegrityError,
-  ExamContentNotV2Error,
   getDraftPreviewExamContentById,
   getPublicExamContentById,
 } from '../services/examContentReadService';
@@ -21,6 +11,11 @@ import {
   ExamContentGradeRequestError,
   gradeExamContent,
 } from '../services/examContentGradingService';
+import {
+  getPracticeByTopicSlugV2,
+  gradePracticeV2,
+  PracticeRequestError,
+} from '../services/examContentPracticeService';
 import {
   createExamContentAttempt,
   ExamContentAttemptIntegrityError,
@@ -31,6 +26,7 @@ import {
   getExamContentAttemptReviewById,
   ExamContentAttemptReviewUnavailableError,
 } from '../services/examContentAttemptService';
+
 
 const parseOptionalInteger = (
   rawValue: unknown,
@@ -163,58 +159,6 @@ export const getTopicList = async (
 };
 
 // Xử lý nộp bài thi, tính điểm và trả về kết quả
-export const getTopicPractice = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const limit = parseOptionalInteger(req.query.limit);
-
-    if (limit === 'invalid' || (typeof limit === 'number' && limit <= 0)) {
-      res.status(400).json({ message: 'limit khong hop le' });
-      return;
-    }
-
-    const practice = await getPracticeByTopicSlug(
-      req.params.topicSlug,
-      limit === null ? undefined : limit,
-    );
-
-    if (!practice) {
-      res.status(404).json({ message: 'Khong tim thay chuyen de de luyen tap' });
-      return;
-    }
-
-    res.json(practice);
-  } catch (error) {
-    console.error('Failed to load topic practice:', error);
-    res.status(500).json({ message: 'Khong the tao bo luyen tap theo chuyen de' });
-  }
-};
-
-export const getExamDetail = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const examDetail = await getExamDetailById(req.params.id);
-
-    if (!examDetail) {
-      res.status(404).json({ message: 'Khong tim thay de thi' });
-      return;
-    }
-
-    res.json(examDetail);
-  } catch (error) {
-    if (error instanceof LegacyExamReadNotSupportedError) {
-      res.status(409).json({ message: 'De thi chi ho tro API V2' });
-      return;
-    }
-    console.error('Failed to load exam detail:', error);
-    res.status(500).json({ message: 'Khong the lay chi tiet de thi' });
-  }
-};
-
 export const getExamContentV2 = async (
   req: Request,
   res: Response,
@@ -229,11 +173,6 @@ export const getExamContentV2 = async (
 
     res.json(examContent);
   } catch (error) {
-    if (error instanceof ExamContentNotV2Error) {
-      res.status(409).json({ message: 'De thi khong co noi dung V2' });
-      return;
-    }
-
     if (error instanceof ExamContentIntegrityError) {
       console.error('V2 exam content integrity error:', error.issues);
       res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
@@ -264,11 +203,6 @@ export const gradeExamContentV2 = async (
         message: 'Du lieu nop bai V2 khong hop le',
         issues: error.issues,
       });
-      return;
-    }
-
-    if (error instanceof ExamContentNotV2Error) {
-      res.status(409).json({ message: 'De thi khong co noi dung V2' });
       return;
     }
 
@@ -308,11 +242,6 @@ export const createExamContentAttemptV2 = async (
       res.status(400).json({
         message: 'Du lieu nop bai V2 khong hop le',
       });
-      return;
-    }
-
-    if (error instanceof ExamContentNotV2Error) {
-      res.status(409).json({ message: 'De thi khong co noi dung V2' });
       return;
     }
 
@@ -368,6 +297,65 @@ export const getExamContentAttemptReceiptV2 = async (
   }
 };
 
+/** Public V2 practice read boundary. It never includes answer keys. */
+export const getTopicPracticeV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const limit = parseOptionalInteger(req.query.limit);
+    if (limit === 'invalid' || (typeof limit === 'number' && limit <= 0)) {
+      res.status(400).json({ message: 'limit khong hop le' });
+      return;
+    }
+    const practice = await getPracticeByTopicSlugV2(
+      req.params.topicSlug,
+      limit === null ? undefined : limit,
+    );
+    if (practice === null) {
+      res.status(404).json({ message: 'Khong tim thay chuyen de de luyen tap' });
+      return;
+    }
+    res.json(practice);
+  } catch (error) {
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 practice content integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung luyen tap V2 khong hop le' });
+      return;
+    }
+    console.error('Failed to load V2 topic practice:', error);
+    res.status(500).json({ message: 'Khong the tai bo luyen tap V2' });
+  }
+};
+
+/** Server-side V2 practice grading; deliberately creates no Attempt records. */
+export const gradeTopicPracticeV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    res.json(await gradePracticeV2(req.body));
+  } catch (error) {
+    if (
+      error instanceof PracticeRequestError ||
+      error instanceof ExamContentGradeRequestError
+    ) {
+      res.status(400).json({
+        message: 'Du lieu luyen tap V2 khong hop le',
+        issues: error.issues,
+      });
+      return;
+    }
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 practice grading integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung luyen tap V2 khong hop le' });
+      return;
+    }
+    console.error('Failed to grade V2 topic practice:', error);
+    res.status(500).json({ message: 'Khong the cham luyen tap V2' });
+  }
+};
+
 /** Returns a safe, answer-key-free DTO for an authorized author's draft only. */
 export const getExamContentDraftPreviewV2 = async (
   req: Request,
@@ -383,11 +371,6 @@ export const getExamContentDraftPreviewV2 = async (
 
     res.json(examContent);
   } catch (error) {
-    if (error instanceof ExamContentNotV2Error) {
-      res.status(409).json({ message: 'De thi khong co noi dung V2' });
-      return;
-    }
-
     if (error instanceof ExamContentIntegrityError) {
       console.error('V2 draft preview integrity error:', error.issues);
       res.status(500).json({ message: 'Noi dung ban nhap de thi V2 khong hop le' });
@@ -488,80 +471,7 @@ export const getExamContentAttemptReviewV2 = async (
 };
 
 // Xử lý nộp bài thi, tính điểm và trả về kết quả
-export const getExamAttempts = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    if (!req.user) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-
-    const attempts = await getExamAttemptsByExamId(req.params.id, req.user.userId);
-
-    if (!attempts) {
-      res.status(404).json({ message: 'Khong tim thay de thi' });
-      return;
-    }
-
-    res.json(attempts);
-  } catch (error) {
-    if (error instanceof LegacyExamReadNotSupportedError) {
-      res.status(409).json({ message: 'De thi chi ho tro API V2' });
-      return;
-    }
-    console.error('Failed to load exam attempts:', error);
-    res.status(500).json({ message: 'Khong the lay lich su lam bai' });
-  }
-};
 
 // Lấy chi tiết một lần thi theo ID, bao gồm cả thông tin đề thi và câu trả lời đã chọn
-export const getAttemptDetail = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    if (!req.user) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-
-
-    const attemptDetail = await getAttemptDetailById(req.params.attemptId, req.user.userId);
-
-    if (!attemptDetail) {
-      res.status(404).json({ message: 'Khong tim thay lan lam bai' });
-      return;
-    }
-
-    res.json(attemptDetail);
-  } catch (error) {
-    if (error instanceof LegacyExamReadNotSupportedError) {
-      res.status(409).json({ message: 'Lan lam bai chi ho tro API V2' });
-      return;
-    }
-    console.error('Failed to load attempt detail:', error);
-    res.status(500).json({ message: 'Khong the lay chi tiet lan lam bai' });
-  }
-};
 
 // Xử lý nộp bài thi, tính điểm và trả về kết quả
-export const submitExamController = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const result = await submitExam(req.body, req.user?.userId);
-
-    if (!result.ok) {
-      res.status(result.statusCode).json({ message: result.message });
-      return;
-    }
-
-    res.json(result.data);
-  } catch (error) {
-    console.error('Failed to submit exam:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};

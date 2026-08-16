@@ -107,14 +107,26 @@ export function gradeValidatedExamContent(
   exam: ValidatedExamContent,
   rawPayload: unknown,
 ): GradeExamContentResponseDto {
+  return gradeQuestionSet(exam.questions, rawPayload);
+}
+
+/**
+ * Grades any already-authorized V2 question set. It is intentionally shared
+ * by persistent exams and non-persistent practice so their validation,
+ * normalization, and scoring cannot drift.
+ */
+export function gradeQuestionSet(
+  questions: readonly QuestionInput[],
+  rawPayload: unknown,
+): GradeExamContentResponseDto {
   const rawResponses = readRawResponses(rawPayload);
 
   const responsesByQuestionId = validateResponses(
     rawResponses,
-    exam.questions,
+    questions,
   );
 
-  const results = exam.questions.map((question) =>
+  const results = questions.map((question) =>
     gradeQuestion(question, responsesByQuestionId.get(question.id)),
   );
 

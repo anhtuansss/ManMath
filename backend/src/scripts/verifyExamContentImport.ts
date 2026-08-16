@@ -9,7 +9,7 @@ import {
 const loadFixture = async (): Promise<unknown> => {
   const fixturePath = path.resolve(
     process.cwd(),
-    'src/data/import/sample-exam-content-v2.json',
+    'src/test-fixtures/v2-minimal-exam.json',
   );
   const rawContent = await readFile(fixturePath, 'utf8');
 

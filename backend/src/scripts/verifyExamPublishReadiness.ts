@@ -2,7 +2,7 @@ import assert from 'assert';
 import { validateExamContentImportPayload } from './importExamContentValidator';
 import { validateExamPublishReadiness } from '../services/examPublishReadinessService';
 
-const fixture = require('../data/import/sample-exam-content-v2.json') as unknown;
+const fixture = require('../test-fixtures/v2-minimal-exam.json') as unknown;
 const envelope = validateExamContentImportPayload(fixture);
 
 const practiceResult = validateExamPublishReadiness({

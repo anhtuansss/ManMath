@@ -4,7 +4,7 @@ import { importExamContentFile } from './importExamContentFromJson';
 import { publishDraftExamVersion } from '../services/examVersionPublishService';
 import { disconnectPrisma } from '../lib/prisma';
 
-const fixtureExamId = 'thpt-math-v2-sample';
+const fixtureExamId = 'verify-v2-minimal-exam';
 
 async function main(): Promise<void> {
   assertVerificationDatabase();
@@ -12,7 +12,7 @@ async function main(): Promise<void> {
   // Use the same validated import and publish pipeline as the application.
   const fixturePath = path.resolve(
     process.cwd(),
-    'src/data/import/sample-exam-content-v2.json',
+    'src/test-fixtures/v2-minimal-exam.json',
   );
   await importExamContentFile(fixturePath, { write: true });
   await publishDraftExamVersion(fixtureExamId);

@@ -1,21 +1,17 @@
 import { prisma } from '../lib/prisma';
 import { validateExamContentSnapshotV1 } from '../types/examContentSnapshotValidation';
 
-export type AnalyticsConfidence = 'score_units' | 'legacy_best_effort' | 'mixed';
-
 export type AnalyticsCoverageDto = {
   readonly scoreUnitAttemptCount: number;
-  readonly legacyBestEffortAttemptCount: number;
   readonly unavailableV2AttemptCount: number;
 };
 
 export type AnalyticsFact = {
   readonly topicSlug: string | null;
   readonly subtopicSlug: string | null;
-  readonly awardedScoreUnits: number | null;
-  readonly maxScoreUnits: number | null;
+  readonly awardedScoreUnits: number;
+  readonly maxScoreUnits: number;
   readonly isFullyCorrect: boolean;
-  readonly source: 'score_units' | 'legacy_best_effort';
 };
 
 export type AnalyticsFactsResult = {
@@ -23,7 +19,7 @@ export type AnalyticsFactsResult = {
   readonly coverage: AnalyticsCoverageDto;
 };
 
-/** V2 facts use submit-time snapshots; legacy mappings remain best-effort. */
+/** Only complete V2 submit-time snapshots form analytics facts; invalid rows are excluded. */
 export async function getUserAnalyticsFacts(userId: string): Promise<AnalyticsFactsResult> {
   const attempts = await prisma.attempt.findMany({
     where: { userId },
@@ -33,7 +29,6 @@ export async function getUserAnalyticsFacts(userId: string): Promise<AnalyticsFa
       examContentSnapshot: true,
       answers: {
         select: {
-          questionId: true,
           questionExternalId: true,
           awardedScoreUnits: true,
           maxScoreUnits: true,
@@ -44,45 +39,12 @@ export async function getUserAnalyticsFacts(userId: string): Promise<AnalyticsFa
     },
   });
 
-  const legacyQuestionIds = Array.from(new Set(
-    attempts
-      .filter((attempt) => attempt.scoringPolicy === null)
-      .flatMap((attempt) => attempt.answers.map((answer) => answer.questionId)),
-  ));
-  const legacyQuestions = legacyQuestionIds.length === 0 ? [] : await prisma.question.findMany({
-    where: { id: { in: legacyQuestionIds } },
-    select: {
-      id: true,
-      topic: { select: { slug: true } },
-      subtopic: { select: { slug: true } },
-    },
-  });
-  const legacyTaxonomyByQuestionId = new Map(legacyQuestions.map((question) => [
-    question.id,
-    { topicSlug: question.topic?.slug ?? null, subtopicSlug: question.subtopic?.slug ?? null },
-  ]));
-
   const facts: AnalyticsFact[] = [];
   let scoreUnitAttemptCount = 0;
-  let legacyBestEffortAttemptCount = 0;
   let unavailableV2AttemptCount = 0;
 
   for (const attempt of attempts) {
-    if (attempt.scoringPolicy === null) {
-      legacyBestEffortAttemptCount += 1;
-      for (const answer of attempt.answers) {
-        const taxonomy = legacyTaxonomyByQuestionId.get(answer.questionId);
-        facts.push({
-          topicSlug: taxonomy?.topicSlug ?? null,
-          subtopicSlug: taxonomy?.subtopicSlug ?? null,
-          awardedScoreUnits: null,
-          maxScoreUnits: null,
-          isFullyCorrect: answer.isCorrect,
-          source: 'legacy_best_effort',
-        });
-      }
-      continue;
-    }
+    if (attempt.scoringPolicy !== 'vietnam_thpt_math_2025') continue;
 
     if (attempt.contentSnapshotVersion !== 1 || attempt.examContentSnapshot === null) {
       unavailableV2AttemptCount += 1;
@@ -121,7 +83,6 @@ export async function getUserAnalyticsFacts(userId: string): Promise<AnalyticsFa
         awardedScoreUnits: answer.awardedScoreUnits,
         maxScoreUnits: answer.maxScoreUnits,
         isFullyCorrect: answer.isFullyCorrect,
-        source: 'score_units',
       });
     }
 
@@ -136,14 +97,6 @@ export async function getUserAnalyticsFacts(userId: string): Promise<AnalyticsFa
 
   return {
     facts,
-    coverage: { scoreUnitAttemptCount, legacyBestEffortAttemptCount, unavailableV2AttemptCount },
+    coverage: { scoreUnitAttemptCount, unavailableV2AttemptCount },
   };
-}
-
-export function getAnalyticsConfidence(
-  scoreFactCount: number,
-  legacyFactCount: number,
-): AnalyticsConfidence {
-  if (scoreFactCount > 0 && legacyFactCount > 0) return 'mixed';
-  return scoreFactCount > 0 ? 'score_units' : 'legacy_best_effort';
 }

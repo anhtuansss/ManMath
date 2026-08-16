@@ -61,6 +61,49 @@ export type CreateExamContentAttemptResponseDto = {
   readonly anonymousReceiptToken?: string;
 };
 
+export type PracticeQuestionReferenceDto = {
+  readonly examVersionId: string;
+  readonly questionId: string;
+};
+
+export type PublicPracticeQuestionDto = PublicQuestion & {
+  /** Stable source reference, required when this public question is graded. */
+  readonly reference: PracticeQuestionReferenceDto;
+};
+
+export type PublicPracticeTopicDto = {
+  readonly topic: {
+    readonly slug: string;
+    readonly name: string;
+  };
+  readonly questions: readonly PublicPracticeQuestionDto[];
+};
+
+export type GradePracticeRequestDto = {
+  readonly topicSlug: string;
+  readonly questionRefs: readonly PracticeQuestionReferenceDto[];
+  readonly responses: readonly RawSubmittedResponse[];
+};
+
+export type PracticeGradingResultDto = {
+  readonly questionId: string;
+  readonly response: SubmittedResponse | null;
+  readonly isCorrect: boolean;
+  readonly awardedScoreUnits: ScoreUnits;
+  readonly maxScoreUnits: ScoreUnits;
+};
+
+/** Safe post-grade result: no answer keys or correct-answer fields are exposed. */
+export type GradePracticeResponseDto = {
+  readonly scoringPolicyId: ScoringPolicyId;
+  readonly scoreUnits: ScoreUnits;
+  readonly maxScoreUnits: ScoreUnits;
+  readonly correctCount: number;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number;
+  readonly results: readonly PracticeGradingResultDto[];
+};
+
 /** Safe V2 attempt receipt. It deliberately excludes answer keys and explanations. */
 export type ExamContentAttemptAnswerReceiptDto = {
   readonly questionExternalId: string;

@@ -5,7 +5,7 @@ import {
   validateExamContentSnapshotV1,
 } from '../types/examContentSnapshotValidation';
 
-const examId = 'thpt-math-v2-sample';
+const examId = 'verify-v2-minimal-exam';
 const forbiddenAnswerKeyFields = new Set([
   'answerKey',
   'correctAnswer',
@@ -41,6 +41,7 @@ async function getAttemptOrThrow(attemptId: string) {
     where: { id: attemptId },
     select: {
       score: true,
+      examVersionId: true,
       scoringPolicy: true,
       scoreUnits: true,
       maxScoreUnits: true,
@@ -49,13 +50,19 @@ async function getAttemptOrThrow(attemptId: string) {
       answers: {
         select: {
           questionExternalId: true,
+          examVersionQuestionId: true,
           questionType: true,
           response: true,
           awardedScoreUnits: true,
           maxScoreUnits: true,
           isCorrect: true,
           isFullyCorrect: true,
-          correctOptionIndex: true,
+          examVersionQuestion: {
+            select: {
+              examVersionId: true,
+              externalId: true,
+            },
+          },
         },
       },
     },
@@ -149,12 +156,20 @@ async function main(): Promise<void> {
 
   for (const answer of persistedCompleteAttempt.answers) {
     assert.notEqual(answer.questionExternalId, null);
+    assert.notEqual(answer.examVersionQuestionId, null);
+    assert.equal(
+      answer.examVersionQuestion?.examVersionId,
+      persistedCompleteAttempt.examVersionId,
+    );
+    assert.equal(
+      answer.examVersionQuestion?.externalId,
+      answer.questionExternalId,
+    );
     assert.notEqual(answer.questionType, null);
     assert.notEqual(answer.awardedScoreUnits, null);
     assert.notEqual(answer.maxScoreUnits, null);
     assert.equal(answer.isFullyCorrect, true);
     assert.equal(answer.isCorrect, answer.isFullyCorrect);
-    assert.equal(answer.correctOptionIndex, null);
     assertNoAnswerKeyFields(answer.response);
   }
 

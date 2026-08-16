@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "exam": {
+    "id": "verify-v2-practice-draft-only",
+    "title": "Draft-only practice fixture",
+    "description": "Must never appear in public V2 practice.",
+    "durationMinutes": 15,
+    "subject": "Toán",
+    "difficulty": "easy",
+    "source": null,
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [{ "name": "Hàm số", "slug": "ham-so" }],
+    "subtopics": []
+  },
+  "questions": [{
+    "id": "draft-only",
+    "type": "single_choice",
+    "section": 1,
+    "order": 1,
+    "content": "Câu hỏi chỉ ở draft.",
+    "topicSlug": "ham-so",
+    "choices": [
+      { "id": "a", "content": "A" },
+      { "id": "b", "content": "B" },
+      { "id": "c", "content": "C" },
+      { "id": "d", "content": "D" }
+    ],
+    "answerKey": { "correctChoiceId": "a" }
+  }]
+}

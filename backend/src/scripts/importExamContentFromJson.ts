@@ -35,7 +35,7 @@ function parseCliArguments(args: string[]): ImportCliOptions {
 
   if (inputPath.trim().length === 0) {
     throw new Error(
-      'Missing JSON file path. Example: npm run import:exam-content -- ./src/data/import/sample-exam-content-v2.json',
+      'Missing JSON file path. Example: npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json',
     );
   }
 

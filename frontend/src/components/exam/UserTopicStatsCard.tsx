@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { fetchProtectedJson, isUnauthorizedError } from '../../lib/authApi';
 import { subscribeAuthTokenChange } from '../../lib/authStorage';
-import type { TopicStatDto } from './types';
+import type { TopicStatDto } from '../../lib/apiTypes';
 
 type TopicStatsResponse = { topicStats: TopicStatDto[] };
 type TopicStatsStatus = 'loading' | 'unauthenticated' | 'empty' | 'ready' | 'error';

@@ -1,4 +1,14 @@
-import type { TopicStatDto } from '../components/exam/types';
+export type TopicStatDto = {
+  topicId: string | null;
+  topicName: string;
+  topicSlug: string | null;
+  correct: number;
+  total: number;
+  accuracy: number;
+  awardedScoreUnits: number;
+  maxScoreUnits: number;
+  masteryPercentage: number | null;
+};
 
 export type RecommendationWeakTopic = {
   topicId: string | null;
@@ -10,7 +20,6 @@ export type RecommendationWeakTopic = {
   awardedScoreUnits: number;
   maxScoreUnits: number;
   masteryPercentage: number | null;
-  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
   reason: string;
 };
 
@@ -21,12 +30,10 @@ export type RecommendedExam = {
   matchedWeakTopicCount: number;
   matchedWeakQuestionCount: number;
   reason: string;
-  contentEngine: 'legacy' | 'v2';
 };
 
 export type AnalyticsCoverage = {
   scoreUnitAttemptCount: number;
-  legacyBestEffortAttemptCount: number;
   unavailableV2AttemptCount: number;
 };
 
@@ -47,7 +54,6 @@ export type SubtopicStat = {
   awardedScoreUnits: number;
   maxScoreUnits: number;
   masteryPercentage: number | null;
-  analyticsConfidence: 'score_units' | 'legacy_best_effort' | 'mixed';
 };
 
 export type SubtopicStatsResponse = {
@@ -63,7 +69,6 @@ export type RecommendationsResponse = {
 export type RecentAttempt = {
   attemptId: string;
   examId: string;
-  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;
@@ -95,7 +100,6 @@ export type ProgressResponse = {
 export type HistoryAttempt = {
   attemptId: string;
   examId: string;
-  attemptFormat: 'legacy' | 'v2';
   examTitle: string;
   score: number;
   correctCount: number;

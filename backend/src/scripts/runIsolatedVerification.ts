@@ -10,23 +10,28 @@ import {
 // backend-local .env value when a shell has exported DATABASE_URL as empty.
 const backendEnvironment = dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-type VerificationTarget = 'all' | 'security-containment' | 'version-pinning' | 'draft-preview';
+type VerificationTarget = 'all' | 'security-containment' | 'version-pinning' | 'draft-preview' | 'practice' | 'analytics' | 'attempt-persistence' | 'attempt-read' | 'history-immutability';
 
 const targetScripts: Record<Exclude<VerificationTarget, 'all'>, string> = {
   'security-containment': 'src/scripts/verifySecurityContainment.ts',
   'version-pinning': 'src/scripts/verifyExamVersionPinning.ts',
   'draft-preview': 'src/scripts/verifyExamDraftPreview.ts',
+  practice: 'src/scripts/verifyV2Practice.ts',
+  analytics: 'src/scripts/verifyV2Analytics.ts',
+  'attempt-persistence': 'src/scripts/verifyExamContentAttemptPersistence.ts',
+  'attempt-read': 'src/scripts/verifyExamContentAttemptRead.ts',
+  'history-immutability': 'src/scripts/verifyHistoryImmutability.ts',
 };
 
 function readTarget(argv: readonly string[]): VerificationTarget {
   if (argv.length === 0) return 'all';
   if (
     argv.length === 1 &&
-    (argv[0] === 'security-containment' || argv[0] === 'version-pinning' || argv[0] === 'draft-preview')
+    (argv[0] === 'security-containment' || argv[0] === 'version-pinning' || argv[0] === 'draft-preview' || argv[0] === 'practice' || argv[0] === 'analytics' || argv[0] === 'attempt-persistence' || argv[0] === 'attempt-read' || argv[0] === 'history-immutability')
   ) {
     return argv[0];
   }
-  throw new Error('Usage: verify:isolated [security-containment|version-pinning|draft-preview]');
+  throw new Error('Usage: verify:isolated [security-containment|version-pinning|draft-preview|practice|analytics|attempt-persistence|attempt-read|history-immutability]');
 }
 
 function verificationEnvironment(): NodeJS.ProcessEnv {

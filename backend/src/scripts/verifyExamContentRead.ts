@@ -2,7 +2,7 @@ import assert from 'assert';
 import { disconnectPrisma } from '../lib/prisma';
 import { getPublicExamContentById } from '../services/examContentReadService';
 
-const examId = 'thpt-math-v2-sample';
+const examId = 'verify-v2-minimal-exam';
 const forbiddenAnswerKeyFields = new Set([
   'answerKey',
   'correctAnswer',
