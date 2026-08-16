@@ -1,9 +1,0 @@
-<svg width="320" height="120" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="320" height="120" rx="16" fill="#F8FAFC"/>
-  <rect x="12" y="12" width="296" height="96" rx="12" fill="white" stroke="#E2E8F0" stroke-width="2"/>
-  <line x1="72" y1="34" x2="72" y2="86" stroke="#3882F6" stroke-width="3"/>
-  <line x1="156" y1="34" x2="156" y2="86" stroke="#3882F6" stroke-width="3"/>
-  <text x="92" y="54" fill="#0F172A" font-family="Arial, sans-serif" font-size="22" font-weight="700">1   2</text>
-  <text x="92" y="82" fill="#0F172A" font-family="Arial, sans-serif" font-size="22" font-weight="700">3   4</text>
-  <text x="190" y="70" fill="#EF4444" font-family="Arial, sans-serif" font-size="32" font-weight="700">= -2</text>
-</svg>

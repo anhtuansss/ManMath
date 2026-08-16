@@ -1,5 +1,3 @@
-'use client';
-
 import { AuthButton } from '../auth/AuthButton';
 import Link from 'next/link';
 import { Logo } from '../exam/Logo';
