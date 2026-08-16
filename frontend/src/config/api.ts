@@ -10,8 +10,8 @@
  * File liên quan:
  * frontend/.env.local
  * frontend/src/components/exam/ExamListClient.tsx
- * frontend/src/components/exam/ExamTakingClient.tsx
- * frontend/src/components/exam/ExamResultClient.tsx
+ * frontend/src/components/exam-v2/ExamContentTakingClient.tsx
+ * frontend/src/components/exam-v2/ExamContentResultClient.tsx
  */
 const rawApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
 
