@@ -41,7 +41,7 @@ export type GradeExamContentResponseDto = {
 export type CreateExamContentAttemptRequestDto = {
   readonly examVersionId: string;
   readonly responses: readonly RawSubmittedResponse[];
-  readonly durationSeconds?: number;
+  readonly durationSeconds: number;
 };
 
 export type CreateExamContentAttemptResponseDto = {
@@ -107,6 +107,8 @@ export type GradePracticeResponseDto = {
 /** Safe V2 attempt receipt. It deliberately excludes answer keys and explanations. */
 export type ExamContentAttemptAnswerReceiptDto = {
   readonly questionExternalId: string;
+  /** Question position from the submitted content snapshot/version. */
+  readonly questionOrder: number;
   readonly questionType: QuestionInput['type'];
   readonly response: SubmittedResponse | null;
   readonly awardedScoreUnits: ScoreUnits;
@@ -118,6 +120,8 @@ export type ExamContentAttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
   readonly examVersionId: string | null;
+  /** Title from the submitted content snapshot/version. */
+  readonly examTitle: string;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: ScoringPolicyId;

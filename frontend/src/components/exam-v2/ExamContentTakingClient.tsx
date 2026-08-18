@@ -7,10 +7,9 @@ import { API_BASE_URL } from '../../config/api';
 import { getAuthToken } from '../../lib/authStorage';
 import {
   clearV2ExamDraft,
-  readV2ExamViewMode,
+  readV2ExamDraftReference,
   writeV2ExamDraft,
   writeV2ExamResult,
-  writeV2ExamViewMode,
   readV2ExamDraft,
   type V2ExamViewMode,
 } from '../../lib/examContentV2Storage';
@@ -30,6 +29,8 @@ import type {
 type ExamContentTakingClientProps = {
   examId: string;
 };
+
+const createSubmissionKey = (): string => crypto.randomUUID();
 
 function ExamViewModeToggle({
   value,
@@ -276,16 +277,37 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const [exam, setExam] = useState<V2PublicExamDto | null>(null);
   const [answers, setAnswers] = useState<V2AnswersByQuestionId>({});
   const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [deadlineAt, setDeadlineAt] = useState<number | null>(null);
   const [currentQuestionId, setCurrentQuestionId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<V2ExamViewMode>('all');
+  const [submissionKey, setSubmissionKey] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [staleDraftVersionId, setStaleDraftVersionId] = useState<string | null>(null);
   const pendingAllModeScrollQuestionId = useRef<string | null>(null);
-  const isTimeUp = remainingSeconds === 0;
+  const isTimeUp = deadlineAt !== null && remainingSeconds === 0;
+
+  const remainingSecondsAt = (deadline: number): number => Math.max(
+    0,
+    Math.floor((deadline - Date.now()) / 1000),
+  );
+
+  const startFreshSession = (data: V2PublicExamDto): void => {
+    const startedAt = Date.now();
+    const nextDeadlineAt = startedAt + (data.durationMinutes * 60 * 1000);
+    setAnswers({});
+    setDeadlineAt(nextDeadlineAt);
+    setRemainingSeconds(remainingSecondsAt(nextDeadlineAt));
+    setCurrentQuestionId(data.questions[0]?.id ?? null);
+    setViewMode('all');
+    setSubmissionKey(createSubmissionKey());
+    setStaleDraftVersionId(null);
+    setIsReady(true);
+  };
 
   useEffect(() => {
     let active = true;
@@ -298,13 +320,35 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
         if (!response.ok) throw new Error(response.status === 404 ? 'Không tìm thấy đề thi V2.' : 'Không thể tải đề thi V2.');
         const data = await response.json() as V2PublicExamDto;
         if (!active) return;
-        const draft = readV2ExamDraft(localStorage, examId, data.examVersionId);
         setExam(data);
-        setAnswers(draft?.answers ?? {});
-        setRemainingSeconds(draft?.remainingSeconds ?? data.durationMinutes * 60);
-        setCurrentQuestionId(data.questions[0]?.id ?? null);
-        setViewMode(readV2ExamViewMode(localStorage, examId, data.examVersionId));
-        setIsReady(true);
+        const draft = readV2ExamDraft(localStorage, examId, data.examVersionId);
+        if (draft !== null) {
+          const questionIds = new Set(data.questions.map((question) => question.id));
+          setAnswers(draft.answers);
+          setDeadlineAt(draft.deadlineAt);
+          setRemainingSeconds(remainingSecondsAt(draft.deadlineAt));
+          setCurrentQuestionId(
+            draft.currentQuestionId !== null && questionIds.has(draft.currentQuestionId)
+              ? draft.currentQuestionId
+              : data.questions[0]?.id ?? null,
+          );
+          if (draft.currentQuestionId !== null && questionIds.has(draft.currentQuestionId)) {
+            pendingAllModeScrollQuestionId.current = draft.currentQuestionId;
+          }
+          setViewMode(draft.viewMode);
+          setSubmissionKey(draft.submissionKey);
+          setStaleDraftVersionId(null);
+          setIsReady(true);
+          return;
+        }
+
+        const draftReference = readV2ExamDraftReference(localStorage, examId);
+        if (draftReference !== null && draftReference.examVersionId !== data.examVersionId) {
+          setStaleDraftVersionId(draftReference.examVersionId);
+          return;
+        }
+
+        startFreshSession(data);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : 'Không thể tải đề thi V2.');
       } finally {
@@ -316,20 +360,31 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   }, [examId]);
 
   useEffect(() => {
-    if (!exam || !isReady) return;
-    writeV2ExamDraft(localStorage, examId, exam.examVersionId, { version: 2, examVersionId: exam.examVersionId, answers, remainingSeconds, updatedAt: Date.now() });
-  }, [answers, exam, examId, isReady, remainingSeconds]);
+    if (!exam || !isReady || deadlineAt === null) return;
+    const timeout = window.setTimeout(() => {
+      writeV2ExamDraft(localStorage, examId, exam.examVersionId, {
+        version: 3,
+        examId,
+        examVersionId: exam.examVersionId,
+        startedAt: deadlineAt - (exam.durationMinutes * 60 * 1000),
+        deadlineAt,
+        answers,
+        currentQuestionId,
+        viewMode,
+        submissionKey,
+        updatedAt: Date.now(),
+      });
+    }, 200);
+    return () => window.clearTimeout(timeout);
+  }, [answers, currentQuestionId, deadlineAt, exam, examId, isReady, submissionKey, viewMode]);
 
   useEffect(() => {
-    if (!exam || !isReady) return;
-    writeV2ExamViewMode(localStorage, examId, exam.examVersionId, viewMode);
-  }, [exam, examId, isReady, viewMode]);
-
-  useEffect(() => {
-    if (!isReady || remainingSeconds === 0) return;
-    const timer = window.setInterval(() => setRemainingSeconds((seconds) => Math.max(seconds - 1, 0)), 1000);
+    if (!isReady || deadlineAt === null) return;
+    const refreshRemainingTime = (): void => setRemainingSeconds(remainingSecondsAt(deadlineAt));
+    refreshRemainingTime();
+    const timer = window.setInterval(refreshRemainingTime, 1000);
     return () => window.clearInterval(timer);
-  }, [isReady, remainingSeconds]);
+  }, [deadlineAt, isReady]);
 
   useEffect(() => {
     if (viewMode !== 'single' || currentQuestionId === null) return;
@@ -368,18 +423,22 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
     pendingAllModeScrollQuestionId.current = null;
     const animationFrame = window.requestAnimationFrame(() => scrollToQuestion(questionId, true, false));
     return () => window.cancelAnimationFrame(animationFrame);
-  }, [viewMode]);
+  }, [currentQuestionId, exam, viewMode]);
 
   const answeredCount = useMemo(() => exam?.questions.filter((question) => isAnswered(question, answers[question.id])).length ?? 0, [answers, exam]);
 
   const updateAnswer = (questionId: string, nextAnswer: V2AnswerState): void => {
+    if (deadlineAt === null || remainingSecondsAt(deadlineAt) === 0) {
+      setRemainingSeconds(0);
+      return;
+    }
     setCurrentQuestionId(questionId);
     setAnswers((previous) => ({ ...previous, [questionId]: nextAnswer }));
     setSubmitError(null);
   };
 
   const handleSubmit = async (): Promise<void> => {
-    if (!exam) return;
+    if (!exam || deadlineAt === null || submissionKey.length === 0) return;
     const submission = buildSubmission(exam.questions, answers);
     if (submission.error) {
       setSubmitError(submission.error);
@@ -393,9 +452,22 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       const token = getAuthToken();
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
       if (token) headers.Authorization = `Bearer ${token}`;
+      headers['Idempotency-Key'] = submissionKey;
+      writeV2ExamDraft(localStorage, examId, exam.examVersionId, {
+        version: 3,
+        examId,
+        examVersionId: exam.examVersionId,
+        startedAt: deadlineAt - (exam.durationMinutes * 60 * 1000),
+        deadlineAt,
+        answers,
+        currentQuestionId,
+        viewMode,
+        submissionKey,
+        updatedAt: Date.now(),
+      });
       const response = await fetch(`${API_BASE_URL}/api/v2/exams/${examId}/attempts`, {
         method: 'POST', headers,
-        body: JSON.stringify({ examVersionId: exam.examVersionId, responses: submission.responses, durationSeconds: Math.max(exam.durationMinutes * 60 - remainingSeconds, 0) }),
+        body: JSON.stringify({ examVersionId: exam.examVersionId, responses: submission.responses, durationSeconds: Math.min(exam.durationMinutes * 60, Math.max(exam.durationMinutes * 60 - remainingSecondsAt(deadlineAt), 0)) }),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { message?: string } | null;
@@ -435,8 +507,21 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
     setViewMode(nextViewMode);
   };
 
+  const discardStaleDraftAndStartFresh = (): void => {
+    if (exam === null || staleDraftVersionId === null) return;
+    clearV2ExamDraft(localStorage, examId, staleDraftVersionId);
+    startFreshSession(exam);
+  };
+
+  const discardCurrentDraftAndStartFresh = (): void => {
+    if (exam === null) return;
+    clearV2ExamDraft(localStorage, examId, exam.examVersionId);
+    startFreshSession(exam);
+  };
+
   if (loading) return <main className="min-h-[100dvh] bg-background px-4 py-8 text-text-primary"><div className="mx-auto max-w-7xl animate-pulse space-y-5"><div className="h-16 rounded-xl bg-background-alt" /><div className="h-80 rounded-xl border border-border bg-surface" /></div></main>;
   if (error || !exam) return <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4"><section className="w-full max-w-md rounded-xl border border-border bg-surface p-8 text-center shadow-card"><h1 className="text-xl font-bold text-text-primary">Không thể mở đề V2</h1><p className="mt-3 text-sm text-error">{error ?? 'Dữ liệu đề không hợp lệ.'}</p><Link href="/dashboard" className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white">Về kho đề</Link></section></main>;
+  if (staleDraftVersionId !== null) return <main className="flex min-h-[100dvh] items-center justify-center bg-background px-4 text-text-primary"><section className="w-full max-w-lg rounded-xl border border-warning-border bg-surface p-8 text-center shadow-card"><h1 className="text-xl font-bold text-text-primary">Bản nháp thuộc phiên bản đề cũ</h1><p className="mt-3 text-sm leading-6 text-text-secondary">Đề hiện tại đã được cập nhật. Câu trả lời của phiên bản cũ sẽ không được áp dụng sang phiên bản mới.</p><div className="mt-6 flex flex-wrap justify-center gap-3"><Button variant="primary" onClick={discardStaleDraftAndStartFresh}>Bỏ bản nháp cũ và bắt đầu đề mới</Button><Link href="/dashboard" className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-text-primary">Về kho đề</Link></div></section></main>;
 
   const currentQuestionIndex = Math.max(
     exam.questions.findIndex((question) => question.id === currentQuestionId),
@@ -446,14 +531,15 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
 
   return <div className="min-h-[100dvh] bg-background text-text-primary">
     <Modal isOpen={showSubmitConfirm} onClose={() => setShowSubmitConfirm(false)} title="Xác nhận nộp bài" footer={<><Button variant="primary" onClick={() => void handleSubmit()} disabled={isSubmitting}>{isSubmitting ? 'Đang nộp...' : 'Nộp bài ngay'}</Button><Button variant="outline" onClick={() => setShowSubmitConfirm(false)} disabled={isSubmitting}>Tiếp tục làm bài</Button></>}><p>Bạn đã hoàn thành <span className="font-semibold text-text-primary">{answeredCount}/{exam.questions.length}</span> câu. Những câu chưa làm vẫn có thể nộp.</p></Modal>
-    <ExamHeader examTitle={exam.title} questionCount={exam.questions.length} remainingSeconds={remainingSeconds} isTimeUp={false} onSubmit={() => setShowSubmitConfirm(true)} />
+    <ExamHeader examTitle={exam.title} questionCount={exam.questions.length} remainingSeconds={remainingSeconds} onSubmit={() => setShowSubmitConfirm(true)} submitDisabled={isSubmitting} submitLabel={isTimeUp ? 'Nộp bài đã khóa' : 'Nộp bài'} />
     <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mb-5 flex justify-end"><button type="button" onClick={discardCurrentDraftAndStartFresh} className="text-sm font-semibold text-text-secondary underline decoration-border underline-offset-4 hover:text-text-primary">Bỏ bản nháp và bắt đầu lại</button></div>
       {viewMode === 'all' ? <>
-      {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
+      {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Câu trả lời đã được khóa; bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
       {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"><div className="space-y-7">{exam.questions.map((question, index) => <V2QuestionCard key={question.id} question={question} index={index} answer={answers[question.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(question.id, nextAnswer)} />)}</div><aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={changeViewMode} /></div></aside></div>
       </> : <>
-        {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
+        {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Câu trả lời đã được khóa; bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
         {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
           <div className="space-y-5">

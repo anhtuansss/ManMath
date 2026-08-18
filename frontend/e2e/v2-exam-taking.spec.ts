@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const examId = 'verify-v2-minimal-exam';
 const apiBaseUrl = 'http://127.0.0.1:5000';
@@ -25,10 +25,197 @@ function assertNoForbiddenPublicKeys(value: unknown): void {
   }
 }
 
+const sessionQuestions = [
+  {
+    id: 'session-sc', type: 'single_choice' as const, section: 1, order: 1,
+    content: 'Chọn A.', topicSlug: 'ham-so',
+    choices: [{ id: 'a', content: 'A' }, { id: 'b', content: 'B' }, { id: 'c', content: 'C' }, { id: 'd', content: 'D' }],
+  },
+  {
+    id: 'session-tf', type: 'true_false_group' as const, section: 2, order: 2,
+    content: 'Chọn đúng hoặc sai.', topicSlug: 'ham-so',
+    statements: [{ id: 'a', content: 'A' }, { id: 'b', content: 'B' }, { id: 'c', content: 'C' }, { id: 'd', content: 'D' }],
+  },
+  { id: 'session-sa', type: 'short_answer' as const, section: 3, order: 3, content: 'Nhập 1,5.', topicSlug: 'ham-so' },
+];
+
+async function mockSessionExam(page: Page, examId: string, examVersionId: string, durationMinutes = 2): Promise<void> {
+  await page.route(`**/api/v2/exams/${examId}`, async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: examId,
+        examVersionId,
+        versionNumber: 1,
+        title: 'Đề kiểm tra phiên làm bài',
+        durationMinutes,
+        subject: 'Toán',
+        difficulty: 'medium',
+        source: null,
+        year: 2026,
+        statusLabel: 'Published',
+        questions: sessionQuestions,
+      }),
+    });
+  });
+}
+
 test('V2 public read never exposes grading secrets', async ({ request }) => {
   const response = await request.get(`${apiBaseUrl}/api/v2/exams/${examId}`);
   expect(response.ok()).toBe(true);
   assertNoForbiddenPublicKeys(await response.json());
+});
+
+test('landing only advertises supported review and exam-discovery flows', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.getByRole('link', { name: 'Khám phá kho đề', exact: true })).toHaveAttribute('href', '/dashboard');
+  await expect(page.getByText('Đối chiếu đáp án và lời giải sau khi nộp bài', { exact: true })).toHaveCount(0);
+});
+
+test('deadline draft restores answers, current question, view mode, and does not save on timer ticks', async ({ page }) => {
+  const sessionExamId = 'deadline-session-fixture';
+  const sessionVersionId = 'deadline-session-version';
+  await page.addInitScript(({ examId: draftExamId, examVersionId }) => {
+    const now = Date.now();
+    const draft = {
+      version: 3,
+      examId: draftExamId,
+      examVersionId,
+      startedAt: now - 45_000,
+      deadlineAt: now + 75_000,
+      answers: {
+        'session-sc': { type: 'single_choice', choiceId: 'a' },
+        'session-tf': { type: 'true_false_group', values: { a: true, b: false, c: true, d: false } },
+        'session-sa': { type: 'short_answer', value: '1,5' },
+      },
+      currentQuestionId: 'session-tf',
+      viewMode: 'single',
+      submissionKey: 'a0000000-0000-4000-8000-000000000001',
+      updatedAt: now,
+    };
+    localStorage.setItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
+    localStorage.setItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`, JSON.stringify({ examId: draftExamId, examVersionId }));
+  }, { examId: sessionExamId, examVersionId: sessionVersionId });
+  await mockSessionExam(page, sessionExamId, sessionVersionId);
+
+  await page.goto(`/exam-v2/${sessionExamId}`);
+  await expect(page.getByRole('button', { name: 'Từng câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Câu 2 / 3', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Mệnh đề a: Đúng', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText(/^01:1[0-5]$/)).toBeVisible();
+
+  await page.waitForTimeout(300);
+  const firstUpdatedAt = await page.evaluate(({ examId: draftExamId, examVersionId }) => JSON.parse(
+    localStorage.getItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`) ?? '{}',
+  ).updatedAt as number, { examId: sessionExamId, examVersionId: sessionVersionId });
+  await page.waitForTimeout(1_100);
+  const secondUpdatedAt = await page.evaluate(({ examId: draftExamId, examVersionId }) => JSON.parse(
+    localStorage.getItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`) ?? '{}',
+  ).updatedAt as number, { examId: sessionExamId, examVersionId: sessionVersionId });
+  expect(secondUpdatedAt).toBe(firstUpdatedAt);
+
+  await page.reload();
+  await expect(page.getByText('Câu 2 / 3', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Mệnh đề b: Sai', exact: true })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('stale draft waits for learner confirmation before starting the current version', async ({ page }) => {
+  const sessionExamId = 'stale-session-fixture';
+  const oldVersionId = 'old-session-version';
+  const currentVersionId = 'current-session-version';
+  await page.addInitScript(({ examId: draftExamId, examVersionId }) => {
+    const now = Date.now();
+    localStorage.setItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`, JSON.stringify({
+      version: 3, examId: draftExamId, examVersionId, startedAt: now, deadlineAt: now + 120_000,
+      answers: {}, currentQuestionId: 'session-sc', viewMode: 'all', submissionKey: 'a0000000-0000-4000-8000-000000000002', updatedAt: now,
+    }));
+    localStorage.setItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`, JSON.stringify({ examId: draftExamId, examVersionId }));
+  }, { examId: sessionExamId, examVersionId: oldVersionId });
+  await mockSessionExam(page, sessionExamId, currentVersionId);
+
+  await page.goto(`/exam-v2/${sessionExamId}`);
+  await expect(page.getByRole('heading', { name: 'Bản nháp thuộc phiên bản đề cũ' })).toBeVisible();
+  await expect(page.getByRole('radio')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Bỏ bản nháp cũ và bắt đầu đề mới' })).toBeVisible();
+  await expect.poll(() => page.evaluate(({ examId: draftExamId, examVersionId }) => localStorage.getItem(
+    `manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`,
+  ), { examId: sessionExamId, examVersionId: currentVersionId })).toBeNull();
+
+  await page.getByRole('button', { name: 'Bỏ bản nháp cũ và bắt đầu đề mới' }).click();
+  await expect(page.getByRole('radio').first()).toBeVisible();
+  await page.waitForTimeout(300);
+  await expect.poll(() => page.evaluate((draftExamId) => JSON.parse(
+    localStorage.getItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`) ?? '{}',
+  ).examVersionId as string, sessionExamId)).toBe(currentVersionId);
+});
+
+test('expired draft freezes answers while still allowing a manual full-duration submission', async ({ page }) => {
+  const sessionExamId = 'expired-session-fixture';
+  const sessionVersionId = 'expired-session-version';
+  let submittedPayload: { durationSeconds?: number } | null = null;
+  let submittedKey: string | null = null;
+  await page.addInitScript(({ examId: draftExamId, examVersionId }) => {
+    const now = Date.now();
+    const draft = {
+      version: 3, examId: draftExamId, examVersionId, startedAt: now - 61_000, deadlineAt: now - 1,
+      answers: { 'session-sc': { type: 'single_choice', choiceId: 'a' } },
+      currentQuestionId: 'session-sc', viewMode: 'all', submissionKey: 'a0000000-0000-4000-8000-000000000003', updatedAt: now,
+    };
+    localStorage.setItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
+    localStorage.setItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`, JSON.stringify({ examId: draftExamId, examVersionId }));
+  }, { examId: sessionExamId, examVersionId: sessionVersionId });
+  await mockSessionExam(page, sessionExamId, sessionVersionId, 1);
+  await page.route(`**/api/v2/exams/${sessionExamId}/attempts`, async (route) => {
+    submittedPayload = route.request().postDataJSON() as { durationSeconds?: number };
+    submittedKey = route.request().headers()['idempotency-key'] ?? null;
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({
+      attemptId: 'expired-attempt', examId: sessionExamId, examVersionId: sessionVersionId,
+      scoringPolicyId: 'vietnam_thpt_math_2025', scoreUnits: 0, maxScoreUnits: 175,
+      correctCount: 0, totalQuestions: 3, unansweredCount: 2, durationSeconds: 60,
+      submittedAt: new Date().toISOString(), results: [], anonymousReceiptToken: 'receipt-token',
+    }) });
+  });
+
+  await page.goto(`/exam-v2/${sessionExamId}`);
+  await expect(page.getByText('Hết giờ', { exact: true })).toBeVisible();
+  await expect(page.getByRole('radio').first()).toBeDisabled();
+  await page.getByRole('button', { name: 'Nộp bài đã khóa', exact: true }).click();
+  await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
+  await expect.poll(() => submittedPayload?.durationSeconds).toBe(60);
+  expect(submittedKey).toBe('a0000000-0000-4000-8000-000000000003');
+});
+
+test('network retry reuses the persisted submission key', async ({ page }) => {
+  const sessionExamId = 'submission-retry-fixture';
+  const sessionVersionId = 'submission-retry-version';
+  const requestKeys: string[] = [];
+  let requestCount = 0;
+  await mockSessionExam(page, sessionExamId, sessionVersionId);
+  await page.route(`**/api/v2/exams/${sessionExamId}/attempts`, async (route) => {
+    requestCount += 1;
+    requestKeys.push(route.request().headers()['idempotency-key'] ?? '');
+    if (requestCount === 1) {
+      await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ message: 'Tạm thời lỗi' }) });
+      return;
+    }
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({
+      attemptId: 'retry-attempt', examId: sessionExamId, examVersionId: sessionVersionId,
+      scoringPolicyId: 'vietnam_thpt_math_2025', scoreUnits: 0, maxScoreUnits: 175,
+      correctCount: 0, totalQuestions: 3, unansweredCount: 3, durationSeconds: 0,
+      submittedAt: new Date().toISOString(), results: [], anonymousReceiptToken: 'receipt-token',
+    }) });
+  });
+
+  await page.goto(`/exam-v2/${sessionExamId}`);
+  await page.getByRole('button', { name: 'Nộp bài', exact: true }).click();
+  await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
+  await expect(page.getByText('Tạm thời lỗi', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Nộp bài', exact: true }).click();
+  await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
+  await expect.poll(() => requestKeys.length).toBe(2);
+  expect(requestKeys[0]).toMatch(/^[0-9a-f-]{36}$/);
+  expect(requestKeys[1]).toBe(requestKeys[0]);
 });
 
 test('anonymous learner can answer all three V2 types, restore draft, submit, and recover a safe receipt', async ({ page }) => {

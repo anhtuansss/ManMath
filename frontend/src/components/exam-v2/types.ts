@@ -162,6 +162,7 @@ export type V2PracticeGradeResponseDto = {
 
 export type V2AttemptReceiptAnswerDto = {
   readonly questionExternalId: string;
+  readonly questionOrder: number;
   readonly questionType: V2PublicQuestionDto['type'];
   readonly response: V2SubmittedResponse | null;
   readonly awardedScoreUnits: number;
@@ -173,6 +174,7 @@ export type V2AttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
   readonly examVersionId: string | null;
+  readonly examTitle: string;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: 'vietnam_thpt_math_2025';
@@ -232,10 +234,15 @@ export type V2AttemptReviewDto = {
 };
 
 export type V2ExamDraft = {
-  readonly version: 2;
+  readonly version: 3;
+  readonly examId: string;
   readonly examVersionId: string;
+  readonly startedAt: number;
+  readonly deadlineAt: number;
   readonly answers: V2AnswersByQuestionId;
-  readonly remainingSeconds: number;
+  readonly currentQuestionId: string | null;
+  readonly viewMode: 'all' | 'single';
+  readonly submissionKey: string;
   readonly updatedAt: number;
 };
 

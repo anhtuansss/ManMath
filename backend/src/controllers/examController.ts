@@ -17,7 +17,8 @@ import {
   PracticeRequestError,
 } from '../services/examContentPracticeService';
 import {
-  createExamContentAttempt,
+  submitExamContentAttempt,
+  ExamContentAttemptIdempotencyConflictError,
   ExamContentAttemptIntegrityError,
   ExamContentAttemptNotV2Error,
   ExamContentAttemptRequestError,
@@ -222,10 +223,21 @@ export const createExamContentAttemptV2 = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const result = await createExamContentAttempt(
+    const idempotencyKey = req.header('Idempotency-Key');
+    if (
+      idempotencyKey === undefined ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(idempotencyKey)
+    ) {
+      res.status(400).json({ message: 'Idempotency-Key khong hop le' });
+      return;
+    }
+
+    const result = await submitExamContentAttempt(
       req.params.id,
       req.body,
       req.user?.userId,
+      idempotencyKey.toLowerCase(),
+      req.user === undefined ? `anonymous:${req.ip}` : `user:${req.user.userId}`,
     );
 
     if (result === null) {
@@ -233,8 +245,13 @@ export const createExamContentAttemptV2 = async (
       return;
     }
 
-    res.status(201).json(result);
+    if (result.replayed) res.setHeader('Idempotency-Replayed', 'true');
+    res.status(result.replayed ? 200 : 201).json(result.response);
   } catch (error) {
+    if (error instanceof ExamContentAttemptIdempotencyConflictError) {
+      res.status(409).json({ message: 'Idempotency-Key da duoc dung cho du lieu khac' });
+      return;
+    }
     if (
       error instanceof ExamContentGradeRequestError ||
       error instanceof ExamContentAttemptRequestError

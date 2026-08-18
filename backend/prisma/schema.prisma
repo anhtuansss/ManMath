@@ -78,6 +78,8 @@ model Attempt {
   examVersionId             String?
   anonymousReceiptTokenHash String?
   anonymousReceiptExpiresAt DateTime?
+  idempotencyKey            String?               @unique
+  submissionFingerprint     String?
   exam                      Exam                  @relation(fields: [examId], references: [id])
   examVersion               ExamVersion?          @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
   user                      User?                 @relation(fields: [userId], references: [id])
@@ -88,6 +90,7 @@ model Attempt {
   @@index([userId])
   @@index([submittedAt])
   @@index([anonymousReceiptExpiresAt])
+  @@index([submissionFingerprint])
 }
 
 model ExamVersion {
