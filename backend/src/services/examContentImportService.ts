@@ -1,5 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { createHash } from 'crypto';
+import {
+    CANONICAL_SUBTOPICS,
+    CANONICAL_TOPICS,
+} from '../data/canonicalTaxonomy';
 import { prisma } from '../lib/prisma';
 import type { ExamContentImportEnvelope } from '../scripts/importExamContentValidator';
 import type { QuestionInput } from '../types/examContent';
@@ -26,10 +30,8 @@ export async function importExamContent(
 
     await prisma.$transaction(async (tx) => {
         await upsertExam(tx, envelope);
-
-        const topicIdsBySlug = await upsertTopics(tx, envelope);
-        await upsertSubtopics(tx, envelope, topicIdsBySlug);
-        await upsertDraftExamVersion(tx, envelope);
+        const taxonomyNames = await readCanonicalTaxonomyNames(tx);
+        await upsertDraftExamVersion(tx, envelope, taxonomyNames);
     });
 }
 
@@ -124,6 +126,7 @@ function toExamVersionQuestionData(
 async function upsertDraftExamVersion(
     tx: Prisma.TransactionClient,
     envelope: ExamContentImportEnvelope,
+    taxonomyNames: TaxonomyNames,
 ): Promise<void> {
     const draft = await tx.examVersion.findFirst({
         where: { examId: envelope.exam.id, status: 'draft' },
@@ -136,14 +139,12 @@ async function upsertDraftExamVersion(
             _max: { versionNumber: true },
         }))._max.versionNumber ?? 0) + 1
         : undefined;
-    const topicNamesBySlug = new Map(
-        envelope.taxonomy.topics.map((topic) => [topic.slug, topic.name]),
-    );
-    const subtopicNamesBySlug = new Map(
-        envelope.taxonomy.subtopics.map((subtopic) => [subtopic.slug, subtopic.name]),
-    );
     const questions = envelope.questions.map((question) =>
-        toExamVersionQuestionData(question, topicNamesBySlug, subtopicNamesBySlug),
+        toExamVersionQuestionData(
+            question,
+            taxonomyNames.topicNamesBySlug,
+            taxonomyNames.subtopicNamesBySlug,
+        ),
     );
     const versionData = {
         publishProfile: envelope.publishProfile,
@@ -183,65 +184,46 @@ async function upsertDraftExamVersion(
     });
 }
 
-async function upsertTopics(
+type TaxonomyNames = {
+    readonly topicNamesBySlug: ReadonlyMap<string, string>;
+    readonly subtopicNamesBySlug: ReadonlyMap<string, string>;
+};
+
+async function readCanonicalTaxonomyNames(
     tx: Prisma.TransactionClient,
-    envelope: ExamContentImportEnvelope,
-): Promise<Map<string, string>> {
-    const topicIdsBySlug = new Map<string, string>();
+): Promise<TaxonomyNames> {
+    const [topics, subtopics] = await Promise.all([
+        tx.topic.findMany({
+            where: { slug: { in: CANONICAL_TOPICS.map((topic) => topic.slug) } },
+            select: { id: true, slug: true, name: true },
+        }),
+        tx.subtopic.findMany({
+            where: { slug: { in: CANONICAL_SUBTOPICS.map((subtopic) => subtopic.slug) } },
+            select: { slug: true, name: true, topic: { select: { slug: true } } },
+        }),
+    ]);
+    const topicNamesBySlug = new Map(topics.map((topic) => [topic.slug, topic.name]));
+    const subtopicNamesBySlug = new Map(subtopics.map((subtopic) => [subtopic.slug, subtopic.name]));
 
-    for (const topic of envelope.taxonomy.topics) {
-        const upsertedTopic = await tx.topic.upsert({
-            where: {
-                slug: topic.slug,
-            },
-            update: {
-                name: topic.name,
-            },
-            create: {
-                name: topic.name,
-                slug: topic.slug,
-            },
-        });
-
-        topicIdsBySlug.set(topic.slug, upsertedTopic.id);
-    }
-
-    return topicIdsBySlug;
-}
-
-async function upsertSubtopics(
-    tx: Prisma.TransactionClient,
-    envelope: ExamContentImportEnvelope,
-    topicIdsBySlug: ReadonlyMap<string, string>,
-): Promise<Map<string, string>> {
-    const subtopicIdsBySlug = new Map<string, string>();
-
-    for (const subtopic of envelope.taxonomy.subtopics) {
-        const topicId = topicIdsBySlug.get(subtopic.topicSlug);
-
-        if (topicId === undefined) {
-            throw new Error(
-                `Validated subtopic ${subtopic.slug} references missing topic ${subtopic.topicSlug}`,
-            );
+    const issues: string[] = [];
+    for (const topic of CANONICAL_TOPICS) {
+        if (topicNamesBySlug.get(topic.slug) !== topic.name) {
+            issues.push(`missing or invalid canonical topic: ${topic.slug}`);
         }
-
-        const upsertedSubtopic = await tx.subtopic.upsert({
-            where: {
-                slug: subtopic.slug,
-            },
-            update: {
-                name: subtopic.name,
-                topicId,
-            },
-            create: {
-                name: subtopic.name,
-                slug: subtopic.slug,
-                topicId,
-            },
-        });
-
-        subtopicIdsBySlug.set(subtopic.slug, upsertedSubtopic.id);
+    }
+    for (const subtopic of CANONICAL_SUBTOPICS) {
+        const persisted = subtopics.find((candidate) => candidate.slug === subtopic.slug);
+        if (
+            persisted === undefined ||
+            persisted.name !== subtopic.name ||
+            persisted.topic.slug !== subtopic.topicSlug
+        ) {
+            issues.push(`missing or invalid canonical subtopic: ${subtopic.slug}`);
+        }
+    }
+    if (issues.length > 0) {
+        throw new Error(`Canonical taxonomy is not synchronized: ${issues.join('; ')}`);
     }
 
-    return subtopicIdsBySlug;
+    return { topicNamesBySlug, subtopicNamesBySlug };
 }

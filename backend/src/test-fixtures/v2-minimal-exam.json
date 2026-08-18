@@ -13,10 +13,10 @@
   },
   "taxonomy": {
     "topics": [
-      { "name": "Hàm số", "slug": "ham-so" }
+      { "name": "Hàm số và Đồ thị nền tảng", "slug": "ham-so-va-do-thi-nen-tang" }
     ],
     "subtopics": [
-      { "name": "Đạo hàm", "slug": "dao-ham", "topicSlug": "ham-so" }
+      { "name": "Hàm số và tập xác định", "slug": "ham-so-va-tap-xac-dinh", "topicSlug": "ham-so-va-do-thi-nen-tang" }
     ]
   },
   "questions": [
@@ -26,8 +26,8 @@
       "section": 1,
       "order": 1,
       "content": "Giá trị của f(0) là bao nhiêu?",
-      "topicSlug": "ham-so",
-      "subtopicSlug": "dao-ham",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
+      "subtopicSlug": "ham-so-va-tap-xac-dinh",
       "choices": [
         { "id": "a", "content": "0" },
         { "id": "b", "content": "1" },
@@ -42,7 +42,7 @@
       "section": 2,
       "order": 2,
       "content": "Xét các mệnh đề sau.",
-      "topicSlug": "ham-so",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
       "statements": [
         { "id": "a", "content": "Mệnh đề a" },
         { "id": "b", "content": "Mệnh đề b" },
@@ -59,7 +59,7 @@
       "section": 3,
       "order": 3,
       "content": "Tính giá trị biểu thức.",
-      "topicSlug": "ham-so",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
       "answerKey": { "mode": "numeric", "answer": "1,5" }
     }
   ]

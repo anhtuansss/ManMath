@@ -1,6 +1,6 @@
 # Vòng đời nội dung
 
-Lược đồ truyền tải chính tắc được mô tả trong [IMPORT_JSON.md](IMPORT_JSON.md). Tài liệu này mô tả vòng đời vận hành.
+Lược đồ truyền tải chính tắc được mô tả trong [IMPORT_JSON.md](IMPORT_JSON.md). Tài liệu này mô tả vòng đời vận hành. Taxonomy dùng chung có nguồn chính tắc riêng tại [TAXONOMY.md](TAXONOMY.md); JSON không có quyền tự thay đổi catalog này.
 
 ## Quy trình hiện tại
 

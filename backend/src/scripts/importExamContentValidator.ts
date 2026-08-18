@@ -1,4 +1,8 @@
 import type { ExamDifficulty } from '@prisma/client';
+import {
+  getCanonicalSubtopic,
+  getCanonicalTopic,
+} from '../data/canonicalTaxonomy';
 import type { QuestionInput } from '../types/examContent';
 import {
   isRecord,
@@ -101,6 +105,7 @@ export function validateExamContentImportPayload(
         questions,
         issues,
     );
+    validateCanonicalTaxonomy(taxonomy, questions, issues);
 
     if (issues.length > 0) {
         throw new ExamContentImportValidationError(issues);
@@ -511,6 +516,57 @@ function validateTaxonomyReferences(
             issues.push(
                 `question ${question.id} subtopic ${question.subtopicSlug} does not belong to topic ${question.topicSlug}`,
             );
+        }
+    }
+}
+
+/** Import files may declare the used subset only, but every declaration/reference is canonical. */
+function validateCanonicalTaxonomy(
+    taxonomy: ImportTaxonomyInput,
+    questions: readonly QuestionInput[],
+    issues: string[],
+): void {
+    for (const topic of taxonomy.topics) {
+        const canonical = getCanonicalTopic(topic.slug);
+        if (canonical === undefined) {
+            issues.push(`taxonomy.topics contains unknown canonical slug: ${topic.slug}`);
+            continue;
+        }
+        if (topic.name !== canonical.name) {
+            issues.push(`taxonomy.topics name does not match canonical taxonomy for slug: ${topic.slug}`);
+        }
+    }
+
+    for (const subtopic of taxonomy.subtopics) {
+        const canonical = getCanonicalSubtopic(subtopic.slug);
+        if (canonical === undefined) {
+            issues.push(`taxonomy.subtopics contains unknown canonical slug: ${subtopic.slug}`);
+            continue;
+        }
+        if (subtopic.name !== canonical.name) {
+            issues.push(`taxonomy.subtopics name does not match canonical taxonomy for slug: ${subtopic.slug}`);
+        }
+        if (subtopic.topicSlug !== canonical.topicSlug) {
+            issues.push(`taxonomy.subtopics topic does not match canonical taxonomy for slug: ${subtopic.slug}`);
+        }
+    }
+
+    for (const question of questions) {
+        if (getCanonicalTopic(question.topicSlug) === undefined) {
+            issues.push(`question ${question.id} references unknown canonical topic: ${question.topicSlug}`);
+        }
+
+        if (question.subtopicSlug === undefined) {
+            continue;
+        }
+
+        const canonicalSubtopic = getCanonicalSubtopic(question.subtopicSlug);
+        if (canonicalSubtopic === undefined) {
+            issues.push(`question ${question.id} references unknown canonical subtopic: ${question.subtopicSlug}`);
+            continue;
+        }
+        if (canonicalSubtopic.topicSlug !== question.topicSlug) {
+            issues.push(`question ${question.id} canonical subtopic ${question.subtopicSlug} does not belong to topic ${question.topicSlug}`);
         }
     }
 }
