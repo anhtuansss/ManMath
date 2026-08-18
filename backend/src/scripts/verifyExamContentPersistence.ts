@@ -38,7 +38,7 @@ async function main(): Promise<void> {
   assert.equal(questionsByExternalId.get('sa-1')?.type, 'short_answer');
 
   for (const question of version.questions) {
-    assert.equal(question.topicSlug, 'ham-so');
+    assert.equal(question.topicSlug, 'ham-so-va-do-thi-nen-tang');
   }
 
   console.log('Exam content persistence verification passed');

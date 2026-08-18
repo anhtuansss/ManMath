@@ -22,7 +22,7 @@ function assertNoAnswerKeys(value: unknown): void {
 async function main(): Promise<void> {
   await importExamContentFile(path.resolve(process.cwd(), 'src/test-fixtures/v2-practice-draft-only.json'), { write: true });
 
-  const practice = await getPracticeByTopicSlugV2('ham-so', 10);
+  const practice = await getPracticeByTopicSlugV2('ham-so-va-do-thi-nen-tang', 10);
   assert.ok(practice);
   assert.ok(practice.questions.length <= 10);
   assert.equal(practice.questions.some((question) => question.reference.questionId === 'draft-only'), false);
@@ -40,7 +40,7 @@ async function main(): Promise<void> {
   const refs = fixtureQuestions.map((question) => question.reference);
   const attemptsBefore = await prisma.attempt.count();
   const allCorrect = await gradePracticeV2({
-    topicSlug: 'ham-so', questionRefs: refs,
+    topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs,
     responses: [
       { questionId: fixtureQuestions[0].id, type: 'single_choice', choiceId: 'a' },
       { questionId: fixtureQuestions[1].id, type: 'true_false_group', values: { a: true, b: false, c: true, d: false } },
@@ -54,29 +54,29 @@ async function main(): Promise<void> {
   assert.equal(await prisma.attempt.count(), attemptsBefore, 'Practice grading must not create an Attempt');
 
   const partialTrueFalse = await gradePracticeV2({
-    topicSlug: 'ham-so', questionRefs: refs,
+    topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs,
     responses: [{ questionId: fixtureQuestions[1].id, type: 'true_false_group', values: { a: true, b: false, c: false, d: true } }],
   });
   assert.equal(partialTrueFalse.scoreUnits, 25);
   assert.equal(partialTrueFalse.unansweredCount, 2);
 
   const normalizedShortAnswer = await gradePracticeV2({
-    topicSlug: 'ham-so', questionRefs: refs,
+    topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs,
     responses: [{ questionId: fixtureQuestions[2].id, type: 'short_answer', value: '01,5' }],
   });
   assert.equal(normalizedShortAnswer.results[2]?.response?.type, 'short_answer');
   assert.equal(normalizedShortAnswer.results[2]?.response?.type === 'short_answer' && normalizedShortAnswer.results[2].response.response, '1,5');
 
-  const missingResponses = await gradePracticeV2({ topicSlug: 'ham-so', questionRefs: refs, responses: [] });
+  const missingResponses = await gradePracticeV2({ topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs, responses: [] });
   assert.equal(missingResponses.scoreUnits, 0);
   assert.equal(missingResponses.unansweredCount, 3);
 
   await assert.rejects(
-    () => gradePracticeV2({ topicSlug: 'ham-so', questionRefs: refs, responses: [{ questionId: 'unknown', type: 'single_choice', choiceId: 'a' }] }),
+    () => gradePracticeV2({ topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs, responses: [{ questionId: 'unknown', type: 'single_choice', choiceId: 'a' }] }),
     (error: unknown) => error instanceof ExamContentGradeRequestError,
   );
   await assert.rejects(
-    () => gradePracticeV2({ topicSlug: 'ham-so', questionRefs: refs, responses: [
+    () => gradePracticeV2({ topicSlug: 'ham-so-va-do-thi-nen-tang', questionRefs: refs, responses: [
       { questionId: fixtureQuestions[0].id, type: 'single_choice', choiceId: 'a' },
       { questionId: fixtureQuestions[0].id, type: 'single_choice', choiceId: 'a' },
     ] }),

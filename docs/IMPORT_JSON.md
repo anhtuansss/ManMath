@@ -11,6 +11,8 @@ Các file chính tắc:
 
 Không còn trình nhập V1, trình nhập hàng loạt bằng manifest, OCR, bộ phân tích AI, chức năng tải lên web hoặc trình nhập Word/PDF/Excel đang hoạt động.
 
+Taxonomy canonical được mô tả trong [TAXONOMY.md](TAXONOMY.md). Trường `taxonomy` của mỗi JSON chỉ cần khai báo các topic/subtopic mà đề thực sự dùng, nhưng slug, tên và quan hệ cha-con phải khớp tuyệt đối với catalog canonical. Importer không tự tạo taxonomy từ file JSON.
+
 ## Lệnh
 
 Chạy từ `backend`:

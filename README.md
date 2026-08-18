@@ -119,4 +119,5 @@ npm run publish:exam-content -- thpt-math-2026-001
 - [Testing](docs/TESTING.md)
 - [Deployment](docs/DEPLOYMENT.md)
 - [UI design system](docs/UI_DESIGN_SYSTEM.md)
+- [Taxonomy Toán canonical](docs/TAXONOMY.md)
 - [Product tasks](TASKS.md)

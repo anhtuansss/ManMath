@@ -95,10 +95,14 @@ async function resetVerificationDatabase(environment: NodeJS.ProcessEnv): Promis
   );
 }
 
-async function runTypeScript(scriptPath: string, environment: NodeJS.ProcessEnv): Promise<void> {
+async function runTypeScript(
+  scriptPath: string,
+  environment: NodeJS.ProcessEnv,
+  args: readonly string[] = [],
+): Promise<void> {
   await run(
     process.execPath,
-    [packageEntrypoint('ts-node', 'dist', 'bin.js'), scriptPath],
+    [packageEntrypoint('ts-node', 'dist', 'bin.js'), scriptPath, ...args],
     environment,
   );
 }
@@ -111,6 +115,7 @@ async function main(): Promise<void> {
   try {
     resetStarted = true;
     await resetVerificationDatabase(environment);
+    await runTypeScript('src/scripts/syncCanonicalTaxonomy.ts', environment, ['--write']);
     await runTypeScript('src/scripts/prepareVerificationDatabase.ts', environment);
 
     const scripts = target === 'all'

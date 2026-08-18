@@ -82,6 +82,57 @@ test('learner can switch between all-question and single-question modes without 
   await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(3);
 });
 
+test('switching display modes preserves the active full-exam question', async ({ page }) => {
+  const questions = Array.from({ length: 8 }, (_, index) => ({
+    id: `mode-question-${index + 1}`,
+    type: 'single_choice' as const,
+    section: 1,
+    order: index + 1,
+    content: `Câu kiểm tra chuyển chế độ ${index + 1}.`,
+    topicSlug: 'ham-so-va-do-thi-nen-tang',
+    choices: [
+      { id: 'a', content: 'A' },
+      { id: 'b', content: 'B' },
+      { id: 'c', content: 'C' },
+      { id: 'd', content: 'D' },
+    ],
+  }));
+
+  await page.route('**/api/v2/exams/mode-switch-fixture', async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: 'mode-switch-fixture',
+        examVersionId: 'mode-switch-version',
+        versionNumber: 1,
+        title: 'Kiểm tra chuyển chế độ',
+        durationMinutes: 90,
+        subject: 'Toán',
+        difficulty: 'medium',
+        source: null,
+        year: 2026,
+        statusLabel: 'Draft',
+        questions,
+      }),
+    });
+  });
+
+  await page.goto('/exam-v2/mode-switch-fixture');
+  const questionEight = page.locator('#v2-question-mode-question-8');
+  await questionEight.scrollIntoViewIfNeeded();
+  await questionEight.getByRole('radio').first().click();
+
+  await page.getByRole('button', { name: 'Từng câu', exact: true }).click();
+  await expect(page.getByText('Câu 8 / 8', { exact: true })).toBeVisible();
+  await expect(questionEight).toBeVisible();
+  await expect(page.getByRole('button', { name: '8', exact: true })).toHaveAttribute('aria-current', 'true');
+
+  await page.getByRole('button', { name: 'Tất cả câu', exact: true }).click();
+  await expect(page.locator('article[id^="v2-question-"]')).toHaveCount(8);
+  await expect(questionEight).toBeInViewport();
+  await expect(page.getByRole('button', { name: '8', exact: true })).toHaveAttribute('aria-current', 'true');
+});
+
 test('internal draft preview renders safe V2 content without a taking flow', async ({ page }) => {
   await page.addInitScript(() => {
     window.localStorage.setItem('manmath-auth-token', 'preview-test-token');

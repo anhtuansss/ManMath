@@ -1,0 +1,784 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "thpt-math-2026-002",
+    "title": "Đề luyện tập Toán THPT 2026 — ManMath 002",
+    "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "medium",
+    "source": null,
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      { 
+        "name": "Lượng giác",
+        "slug": "luong-giac"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Chuyên đề học tập và Toán ứng dụng",
+        "slug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Phương trình lượng giác cơ bản",
+        "slug": "phuong-trinh-luong-giac-co-ban",
+        "topicSlug": "luong-giac"
+      },
+      {
+        "name": "Các số đặc trưng đo mức độ phân tán",
+        "slug": "cac-so-dac-trung-do-muc-do-phan-tan",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Phương trình đường thẳng",
+        "slug": "phuong-trinh-duong-thang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Tích phân và tính chất",
+        "slug": "tich-phan-va-tinh-chat",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Đạo hàm và các quy tắc tính đạo hàm",
+        "slug": "dao-ham-va-cac-quy-tac-tinh-dao-ham",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Nguyên hàm cơ bản",
+        "slug": "nguyen-ham-co-ban",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Giá trị lớn nhất, giá trị nhỏ nhất",
+        "slug": "gia-tri-lon-nhat-gia-tri-nho-nhat",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Số đặc trưng đo xu thế trung tâm",
+        "slug": "so-dac-trung-do-xu-the-trung-tam",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Vectơ trong không gian",
+        "slug": "vecto-trong-khong-gian",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Cấp số nhân",
+        "slug": "cap-so-nhan",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Quan hệ vuông góc trong không gian",
+        "slug": "quan-he-vuong-goc-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Cực trị của hàm số",
+        "slug": "cuc-tri-cua-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Xác suất cổ điển",
+        "slug": "xac-suat-co-dien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Bài toán tối ưu tuyến tính và bất phương trình",
+        "slug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+        "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      },
+      {
+        "name": "Thể tích vật thể và khối tròn xoay bằng tích phân",
+        "slug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Lý thuyết đồ thị cơ bản",
+        "slug": "ly-thuyet-do-thi-co-ban",
+        "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Thể tích khối chóp",
+        "slug": "the-tich-khoi-chop",
+        "topicSlug": "hinh-hoc-khong-gian"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Phương trình $\\sin x=0$ có tập nghiệm là",
+      "topicSlug": "luong-giac",
+      "subtopicSlug": "phuong-trinh-luong-giac-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$S=\\left\\{-\\dfrac{\\pi}{2}+k2\\pi\\mid k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "b",
+          "content": "$S=\\left\\{k\\pi\\mid k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "c",
+          "content": "$S=\\left\\{k2\\pi\\mid k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "d",
+          "content": "$S=\\left\\{\\dfrac{\\pi}{2}+k2\\pi\\mid k\\in\\mathbb{Z}\\right\\}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Sau khi khảo sát về mức lương khởi điểm (đơn vị: triệu đồng) của 20 công nhân, người ta thu được mẫu số liệu ghép nhóm như sau. Khoảng biến thiên của mẫu số liệu ghép nhóm đó bằng",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "cac-so-dac-trung-do-muc-do-phan-tan",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sc-02-bang-muc-luong-khoi-diem.png",
+          "alt": "Bảng mức lương khởi điểm và tần số của 20 công nhân"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$6$."
+        },
+        {
+          "id": "b",
+          "content": "$1$."
+        },
+        {
+          "id": "c",
+          "content": "$7{,}35$."
+        },
+        {
+          "id": "d",
+          "content": "$1{,}42$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Trong không gian với hệ tọa độ $Oxyz$, phương trình của đường thẳng đi qua điểm $A(1;3;-5)$ và có một vectơ chỉ phương $\\vec{u}=(2;-1;3)$ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-duong-thang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\dfrac{x-1}{2}=\\dfrac{y+3}{-1}=\\dfrac{z-5}{3}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\dfrac{x-1}{2}=\\dfrac{y+3}{-1}=\\dfrac{z+5}{3}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\dfrac{x-1}{2}=\\dfrac{y-3}{-1}=\\dfrac{z+5}{3}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\dfrac{x-1}{2}=\\dfrac{y-3}{-1}=\\dfrac{z-5}{3}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Cho hàm số $f(x)$ liên tục trên $\\mathbb{R}$ có một nguyên hàm là $F(x)$ thỏa mãn $F(1)=3$, $F(2)=9$. Phát biểu nào sau đây là đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "tich-phan-va-tinh-chat",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\displaystyle\\int_1^2 f(x)\\,dx=12$."
+        },
+        {
+          "id": "b",
+          "content": "$\\displaystyle\\int_1^2 f(x)\\,dx=3$."
+        },
+        {
+          "id": "c",
+          "content": "$\\displaystyle\\int_1^2 f(x)\\,dx=6$."
+        },
+        {
+          "id": "d",
+          "content": "$\\displaystyle\\int_1^2 f(x)\\,dx=27$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Cho hàm số $y=f(x)=\\dfrac{ax+4}{3x+1}$ (với $a>12$). Đạo hàm của hàm số đã cho là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "dao-ham-va-cac-quy-tac-tinh-dao-ham",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y'=\\dfrac{-a-12}{(3x+1)^2}$."
+        },
+        {
+          "id": "b",
+          "content": "$y'=\\dfrac{a-12}{(3x+1)^2}$."
+        },
+        {
+          "id": "c",
+          "content": "$y'=\\dfrac{a+12}{(3x+1)^2}$."
+        },
+        {
+          "id": "d",
+          "content": "$y'=\\dfrac{12-a}{(3x+1)^2}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Cho hàm số $f(x)=ax+b$ $(a,b\\in\\mathbb{R},\\ a\\ne0)$. Phát biểu nào sau đây là đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\displaystyle\\int 7f(x)\\,dx=7+\\int f(x)\\,dx$."
+        },
+        {
+          "id": "b",
+          "content": "$\\displaystyle\\int 7f(x)\\,dx=7\\int f(x)\\,dx$."
+        },
+        {
+          "id": "c",
+          "content": "$\\displaystyle\\int 7f(x)\\,dx=7-\\int f(x)\\,dx$."
+        },
+        {
+          "id": "d",
+          "content": "$\\displaystyle\\int 7f(x)\\,dx=-7\\int f(x)\\,dx$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Cho hàm số bậc ba $y=f(x)$ có bảng biến thiên trên đoạn $[-1;2]$ như sau. Giá trị lớn nhất của hàm số đã cho trên đoạn $[-1;2]$ bằng",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "gia-tri-lon-nhat-gia-tri-nho-nhat",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sc-07-bang-bien-thien.png",
+          "alt": "Bảng biến thiên của hàm số bậc ba trên đoạn từ -1 đến 2"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$1$."
+        },
+        {
+          "id": "b",
+          "content": "$5$."
+        },
+        {
+          "id": "c",
+          "content": "$0$."
+        },
+        {
+          "id": "d",
+          "content": "$-4$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Sau khi khảo sát tổng số giờ xem truyền hình (đơn vị: giờ) của 100 gia đình trong hai ngày nghỉ cuối tuần, người ta thu được mẫu số liệu ghép nhóm như sau. Giá trị trung bình của mẫu số liệu ghép nhóm đó bằng (làm tròn kết quả đến hàng phần mười)",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "so-dac-trung-do-xu-the-trung-tam",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sc-08-bang-so-gio-xem-truyen-hinh.png",
+          "alt": "Bảng số giờ xem truyền hình và tần số của 100 gia đình"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3{,}9$."
+        },
+        {
+          "id": "b",
+          "content": "$4{,}6$."
+        },
+        {
+          "id": "c",
+          "content": "$2{,}1$."
+        },
+        {
+          "id": "d",
+          "content": "$10$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Cho hình hộp $ABCD.A'B'C'D'$ (xem hình minh họa bên dưới). Vectơ nào sau đây cùng phương với vectơ $\\overrightarrow{A'D'}$?",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "vecto-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sc-09-hinh-hop-abcd-a-b-c-d.png",
+          "alt": "Hình hộp ABCD.A'B'C'D'"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\overrightarrow{BD}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\overrightarrow{AB}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\overrightarrow{AC}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\overrightarrow{AD}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Cho cấp số nhân $(u_n)$ có công bội $q$ với $u_1=m$ và $u_2=n$, trong đó $m>2$, $n>2m$. Phát biểu nào sau đây là đúng?",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-nhan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$n=m\\cdot q$."
+        },
+        {
+          "id": "b",
+          "content": "$m=n+q$."
+        },
+        {
+          "id": "c",
+          "content": "$m=n\\cdot q$."
+        },
+        {
+          "id": "d",
+          "content": "$n=m+q$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình vuông và $SA$ vuông góc với $(ABCD)$. Đường thẳng $BC$ vuông góc với mặt phẳng nào trong các mặt phẳng sau đây?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "quan-he-vuong-goc-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sc-11-hinh-chop-s-abcd.png",
+          "alt": "Hình chóp S.ABCD có đáy ABCD là hình vuông"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(SCD)$."
+        },
+        {
+          "id": "b",
+          "content": "$(SAB)$."
+        },
+        {
+          "id": "c",
+          "content": "$(SBC)$."
+        },
+        {
+          "id": "d",
+          "content": "$(SBD)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Nguyên hàm của hàm số $f(x)=3x^2-\\cos x$ là",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$x^3+\\sin x+C$."
+        },
+        {
+          "id": "b",
+          "content": "$6x+\\sin x+C$."
+        },
+        {
+          "id": "c",
+          "content": "$6x-\\sin x+C$."
+        },
+        {
+          "id": "d",
+          "content": "$x^3-\\sin x+C$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Cho hàm số $y=f(x)=x^3-6x^2+9x+2$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "cuc-tri-cua-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Đạo hàm của hàm số đã cho là $f'(x)=3x^2-12x+9$."
+        },
+        {
+          "id": "b",
+          "content": "Phương trình $f'(x)=0$ có tập nghiệm là $S=\\{1;3\\}$."
+        },
+        {
+          "id": "c",
+          "content": "Hàm số đã cho đạt giá trị lớn nhất trên đoạn $[2;4]$ tại $x=2$."
+        },
+        {
+          "id": "d",
+          "content": "Gọi $x_1,x_2$ là hai điểm cực trị của hàm số $y=f(x)$. Khi đó, phương trình đường thẳng đi qua hai điểm $M_1(x_1;f(x_1))$ và $M_2(x_2;f(x_2))$ là $y=-2x+1$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": false,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Người ta dùng một thiết bị bơm nước vào một bể không có nước. Tính từ lúc thiết bị bắt đầu hoạt động, tại thời điểm $t$ giờ với $0\\le t\\le 8$, thiết bị đó có tốc độ bơm nước vào bể là $f(t)$ ($\\mathrm{m}^3$/giờ). Biết rằng đồ thị của hàm số $y=f(t)$ là một phần đường parabol đi qua gốc tọa độ $O$ và hai điểm $A(2;3)$, $B(6;3)$ (xem hình minh họa bên dưới).",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/tf-02-do-thi-toc-do-bom-nuoc.png",
+          "alt": "Đồ thị parabol biểu diễn tốc độ bơm nước theo thời gian"
+        }
+      ],
+      "statements": [
+        {
+          "id": "a",
+          "content": "Với $0\\le t\\le 8$ thì $f(t)=3t-\\dfrac{t^2}{6}$ ($\\mathrm{m}^3$/giờ)."
+        },
+        {
+          "id": "b",
+          "content": "Tại thời điểm $t$ giờ ($0\\le t\\le 8$) tính từ lúc thiết bị bắt đầu hoạt động, lượng nước trong bể là $V(t)=t^2-\\dfrac{t^3}{12}$ ($\\mathrm{m}^3$)."
+        },
+        {
+          "id": "c",
+          "content": "Tại thời điểm thiết bị có tốc độ bơm nước vào bể là lớn nhất, lượng nước trong bể lớn hơn $10{,}7$ mét khối."
+        },
+        {
+          "id": "d",
+          "content": "Sau $\\dfrac{a}{b}$ giờ tính từ lúc thiết bị bắt đầu hoạt động (trong đó $\\dfrac{a}{b}$ là phân số tối giản và $b>0$), lượng nước trong bể là $13{,}824$ mét khối. Khi đó, giá trị của $a+b$ là $29$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Trong không gian với hệ tọa độ $Oxyz$, một trạm thu phát sóng điện thoại di động được đặt ở vị trí $I(2;1;12)$, trong đó một đơn vị độ dài trên mỗi trục tương ứng với 10 mét trên thực tế. Trạm thu phát sóng đó có bán kính phủ sóng là 130 mét. Vùng phủ sóng của trạm thu phát được quy ước là tập hợp tất cả các điểm $P$ trên mặt đất và trong không gian sao cho khoảng cách $IP$ không vượt quá 130 mét. Mặt đất được coi là một phần của mặt phẳng $(Oxy)$ và mỗi người trên mặt đất được coi như một chất điểm.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Vùng phủ sóng của trạm thu phát là một phần của hình cầu giới hạn bởi mặt cầu $(S)$ có phương trình $(x-2)^2+(y-1)^2+(z-12)^2=169$."
+        },
+        {
+          "id": "b",
+          "content": "Giả sử một người cầm điện thoại đang ở vị trí điểm $M(3;1;0)$ và chuyển động thẳng đều trên mặt đất với tốc độ $3{,}6$ km/h. Khi đó, tại giây thứ 40 tính từ lúc xuất phát ở vị trí điểm $M(3;1;0)$, người đó đã đi được ra ngoài vùng phủ sóng của trạm thu phát."
+        },
+        {
+          "id": "c",
+          "content": "Khoảng cách ngắn nhất để một người cầm điện thoại đang ở vị trí có tọa độ $N(8;9;0)$ di chuyển trên mặt đất tới được vùng phủ sóng (theo đơn vị mét) là $100$ m."
+        },
+        {
+          "id": "d",
+          "content": "Giả sử một người cầm điện thoại chuyển động thẳng đều trên mặt đất từ vị trí $A(6;9;0)$ đến vị trí $B(-4;b;0)$ với tốc độ $3{,}6$ km/h sao cho khoảng thời gian người đó thuộc vùng phủ sóng đúng bằng 60 giây. Khi đó $b=\\dfrac{3}{2}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Một trường đại học trao hai loại học bổng $A$ và $B$ cho sinh viên trong trường, một sinh viên có thể được nhận cả hai loại học bổng $A$ và $B$. Trong số các sinh viên được trao học bổng loại $A$ có $12\\%$ số bạn được trao học bổng loại $B$ và trong số các sinh viên không được trao học bổng loại $A$ có $10\\%$ số bạn được trao học bổng loại $B$. Có $10{,}2\\%$ số sinh viên toàn trường được trao học bổng loại $B$. Chọn ngẫu nhiên một sinh viên trong trường.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Xác suất để sinh viên đó không được trao học bổng loại $B$ là $0{,}898$."
+        },
+        {
+          "id": "b",
+          "content": "Xác suất để sinh viên đó không được trao học bổng loại $B$, biết sinh viên đó không được trao học bổng loại $A$, là $0{,}88$."
+        },
+        {
+          "id": "c",
+          "content": "Xác suất để sinh viên đó không được trao học bổng loại $A$ là $0{,}89$."
+        },
+        {
+          "id": "d",
+          "content": "Xác suất để sinh viên đó không được trao học bổng loại $A$, biết sinh viên đó không được trao học bổng loại $B$, lớn hơn $0{,}9$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Cho bảng $6\\times 6$ gồm 36 ô vuông đơn vị và cho 8 quân cờ đôi một khác nhau. Người ta xếp ngẫu nhiên 8 quân cờ đó vào 36 ô trong bảng sao cho mỗi ô xếp nhiều nhất một quân cờ. Hai cách xếp được gọi là như nhau nếu vị trí của 8 quân cờ tương ứng trên bảng là giống nhau sau khi xếp xong (không tính đến thứ tự xếp các quân cờ vào bảng). Chọn ngẫu nhiên một cách xếp như trên. Gọi $P$ là xác suất của biến cố: “Cách xếp được chọn thỏa mãn đồng thời ba điều kiện sau: Trên mỗi hàng có ít nhất một quân cờ; Trên mỗi cột có ít nhất một quân cờ; Mỗi quân cờ phải cùng hàng với đúng một quân cờ khác hoặc cùng cột với đúng một quân cờ khác.” Giá trị của $9^4P$ bằng bao nhiêu (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả phép tính cuối cùng đến hàng phần trăm)?",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1,76"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Công ty vận tải nhận một đơn hàng vận chuyển ít nhất 23 tấn hàng loại $A$, ít nhất 59 tấn hàng loại $B$ và không quá 139 tấn hàng loại $C$. Công ty vận tải sử dụng hai loại xe $X$ và $Y$ để chở số hàng đó. Mỗi xe loại $X$ đều chở 12 tấn hàng loại $A$, 6 tấn hàng loại $B$ và 18 tấn hàng loại $C$. Mỗi xe loại $Y$ đều chở 2 tấn hàng loại $A$, 20 tấn hàng loại $B$ và 22 tấn hàng loại $C$. Chi phí cho 1 xe loại $X$ là 37 triệu đồng và cho 1 xe loại $Y$ là 45 triệu đồng. Gọi $T$ (triệu đồng) là chi phí nhỏ nhất để công ty hoàn thành đơn hàng. Giá trị của $10T$ bằng bao nhiêu?",
+      "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung",
+      "subtopicSlug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "2090"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Người ta cần tính thể tích của một vật thể được chế tác như sau. Trên mặt phẳng với hệ tọa độ $Oxy$ (một đơn vị độ dài trên mỗi trục tương ứng với một xắc-ti-mét trong thực tế), gọi $(H)$ là hình phẳng được tô đậm, giới hạn bởi đường elip $\\dfrac{x^2}{256}+\\dfrac{y^2}{48}=1$ và đường tròn tâm $O$ có bán kính 10 (xem hình minh họa bên dưới). Vật thể có dạng khối tròn xoay được tạo thành khi quay hình phẳng $(H)$ quanh trục hoành. Lưu ý: Các kích thước trong hình minh họa có thể không đúng tỉ lệ thực tế. Thể tích của vật thể nói trên bằng bao nhiêu xăng-ti-mét khối (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả phép tính cuối cùng đến hàng đơn vị)?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+      "assets": [
+        {
+          "src": "/images/2026_002_img/sa-03-hinh-phang-h-va-khoi-tron-xoay.png",
+          "alt": "Hình phẳng H giới hạn bởi elip và đường tròn, dùng để tạo khối tròn xoay"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1743"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Cho bảng $5\\times 5$ gồm 25 ô vuông đơn vị và cho bốn màu. Người ta tô mỗi ô trong bảng bởi một trong bốn màu đã cho sao cho hai ô bất kì có chung đỉnh hoặc chung cạnh thì khác màu. Hai cách tô màu bảng được gọi là giống nhau nếu mỗi ô của bảng có cùng màu ở cả hai cách tô (không tính đến thứ tự tô màu các ô). Gọi $S$ là số cách tô màu bảng phân biệt thỏa mãn điều kiện trên. Giá trị của $9S$ bằng bao nhiêu?",
+      "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung",
+      "subtopicSlug": "ly-thuyet-do-thi-co-ban",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3240"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Một doanh nghiệp dự kiến sản xuất không quá 2000 sản phẩm cùng loại. Giả sử rằng doanh thu của doanh nghiệp khi sản xuất $x$ sản phẩm ($x\\in\\mathbb{N};\\ 0\\le x\\le 2000$) là $R(x)=16x-0{,}005x^2$ (triệu đồng) và doanh nghiệp phải nộp một khoản thuế là $5\\%$ của doanh thu $R(x)$. Chi phí để sản xuất mỗi sản phẩm là bốn triệu đồng. Lợi nhuận của doanh nghiệp (khi sản xuất $x$ sản phẩm) được tính theo công thức: Lợi nhuận bằng doanh thu trừ đi thuế và chi phí. Doanh nghiệp phải sản xuất bao nhiêu sản phẩm để thu được lợi nhuận lớn nhất?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1179"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Cho tứ diện $ABCD$ có $AB=CD=20\\sqrt{5}$, $AC=BD=50$, $AD=BC=10\\sqrt{13}$. Thể tích của khối tứ diện đã cho bằng bao nhiêu?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "the-tich-khoi-chop",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "8000"
+      }
+    }
+  ]
+}

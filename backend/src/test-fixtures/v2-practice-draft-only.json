@@ -12,7 +12,7 @@
     "statusLabel": "Draft"
   },
   "taxonomy": {
-    "topics": [{ "name": "Hàm số", "slug": "ham-so" }],
+    "topics": [{ "name": "Hàm số và Đồ thị nền tảng", "slug": "ham-so-va-do-thi-nen-tang" }],
     "subtopics": []
   },
   "questions": [{
@@ -21,7 +21,7 @@
     "section": 1,
     "order": 1,
     "content": "Câu hỏi chỉ ở draft.",
-    "topicSlug": "ham-so",
+    "topicSlug": "ham-so-va-do-thi-nen-tang",
     "choices": [
       { "id": "a", "content": "A" },
       { "id": "b", "content": "B" },

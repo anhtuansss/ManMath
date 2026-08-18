@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { API_BASE_URL } from '../../config/api';
@@ -97,6 +97,47 @@ const isAnswered = (
     (statement) => typeof answer.values[statement.id] === 'boolean',
   );
 };
+
+function getQuestionClosestToViewport(questionIds: readonly string[]): string | null {
+  const viewportFocus = window.innerHeight * 0.35;
+  let closestQuestionId: string | null = null;
+  let closestDistance = Number.POSITIVE_INFINITY;
+
+  for (const questionId of questionIds) {
+    const element = document.getElementById(`v2-question-${questionId}`);
+    if (element === null) continue;
+
+    const bounds = element.getBoundingClientRect();
+    if (bounds.bottom <= 0 || bounds.top >= window.innerHeight) continue;
+
+    const distance = viewportFocus < bounds.top
+      ? bounds.top - viewportFocus
+      : viewportFocus > bounds.bottom
+        ? viewportFocus - bounds.bottom
+        : 0;
+
+    if (distance < closestDistance) {
+      closestQuestionId = questionId;
+      closestDistance = distance;
+    }
+  }
+
+  return closestQuestionId;
+}
+
+function scrollToQuestion(questionId: string, focus = false, animate = true): void {
+  const questionElement = document.getElementById(`v2-question-${questionId}`);
+  if (questionElement === null) return;
+
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  questionElement.scrollIntoView({
+    // `auto` would inherit html { scroll-behavior: smooth }; navigator jumps
+    // must update immediately instead of stepping through intermediate cards.
+    behavior: (animate && !reducedMotion ? 'smooth' : 'instant') as ScrollBehavior,
+    block: 'start',
+  });
+  if (focus) questionElement.focus({ preventScroll: true });
+}
 
 function buildSubmission(
   questions: readonly V2PublicQuestionDto[],
@@ -243,6 +284,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const pendingAllModeScrollQuestionId = useRef<string | null>(null);
   const isTimeUp = remainingSeconds === 0;
 
   useEffect(() => {
@@ -291,14 +333,47 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
 
   useEffect(() => {
     if (viewMode !== 'single' || currentQuestionId === null) return;
-    const questionElement = document.getElementById(`v2-question-${currentQuestionId}`);
-    questionElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    questionElement?.focus({ preventScroll: true });
+    scrollToQuestion(currentQuestionId, true);
   }, [currentQuestionId, viewMode]);
+
+  useEffect(() => {
+    if (viewMode !== 'all' || exam === null) return;
+
+    let animationFrame: number | null = null;
+    const syncCurrentQuestionFromViewport = (): void => {
+      if (pendingAllModeScrollQuestionId.current !== null) return;
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = null;
+        const visibleQuestionId = getQuestionClosestToViewport(exam.questions.map((question) => question.id));
+        if (visibleQuestionId !== null) setCurrentQuestionId(visibleQuestionId);
+      });
+    };
+
+    syncCurrentQuestionFromViewport();
+    window.addEventListener('scroll', syncCurrentQuestionFromViewport, { passive: true });
+    window.addEventListener('resize', syncCurrentQuestionFromViewport);
+    return () => {
+      window.removeEventListener('scroll', syncCurrentQuestionFromViewport);
+      window.removeEventListener('resize', syncCurrentQuestionFromViewport);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+    };
+  }, [exam, viewMode]);
+
+  useEffect(() => {
+    if (viewMode !== 'all') return;
+    const questionId = pendingAllModeScrollQuestionId.current;
+    if (questionId === null) return;
+
+    pendingAllModeScrollQuestionId.current = null;
+    const animationFrame = window.requestAnimationFrame(() => scrollToQuestion(questionId, true, false));
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [viewMode]);
 
   const answeredCount = useMemo(() => exam?.questions.filter((question) => isAnswered(question, answers[question.id])).length ?? 0, [answers, exam]);
 
   const updateAnswer = (questionId: string, nextAnswer: V2AnswerState): void => {
+    setCurrentQuestionId(questionId);
     setAnswers((previous) => ({ ...previous, [questionId]: nextAnswer }));
     setSubmitError(null);
   };
@@ -341,8 +416,23 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const navigate = (questionId: string): void => {
     setCurrentQuestionId(questionId);
     if (viewMode === 'all') {
-      document.getElementById(`v2-question-${questionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToQuestion(questionId, false, false);
     }
+  };
+
+  const changeViewMode = (nextViewMode: V2ExamViewMode): void => {
+    if (nextViewMode === viewMode) return;
+
+    if (nextViewMode === 'single' && viewMode === 'all' && exam !== null) {
+      const visibleQuestionId = getQuestionClosestToViewport(exam.questions.map((question) => question.id));
+      if (visibleQuestionId !== null) setCurrentQuestionId(visibleQuestionId);
+    }
+
+    if (nextViewMode === 'all' && currentQuestionId !== null) {
+      pendingAllModeScrollQuestionId.current = currentQuestionId;
+    }
+
+    setViewMode(nextViewMode);
   };
 
   if (loading) return <main className="min-h-[100dvh] bg-background px-4 py-8 text-text-primary"><div className="mx-auto max-w-7xl animate-pulse space-y-5"><div className="h-16 rounded-xl bg-background-alt" /><div className="h-80 rounded-xl border border-border bg-surface" /></div></main>;
@@ -361,7 +451,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       {viewMode === 'all' ? <>
       {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
       {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"><div className="space-y-7">{exam.questions.map((question, index) => <V2QuestionCard key={question.id} question={question} index={index} answer={answers[question.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(question.id, nextAnswer)} />)}</div><aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={setViewMode} /></div></aside></div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"><div className="space-y-7">{exam.questions.map((question, index) => <V2QuestionCard key={question.id} question={question} index={index} answer={answers[question.id]} isTimeUp={isTimeUp} onAnswerChange={(nextAnswer) => updateAnswer(question.id, nextAnswer)} />)}</div><aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={changeViewMode} /></div></aside></div>
       </> : <>
         {isTimeUp ? <p className="mb-5 rounded-lg border border-warning-border bg-warning-light px-4 py-3 text-sm text-text-secondary">Đã hết thời gian. Bạn vẫn có thể nộp bài với các câu đã trả lời.</p> : null}
         {submitError ? <p className="mb-5 rounded-lg border border-error-border bg-error-light px-4 py-3 text-sm text-error">{submitError}</p> : null}
@@ -372,7 +462,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
               <QuestionPager currentQuestionIndex={currentQuestionIndex} questionCount={exam.questions.length} onPrevious={() => navigate(exam.questions[currentQuestionIndex - 1]!.id)} onNext={() => navigate(exam.questions[currentQuestionIndex + 1]!.id)} />
             </> : null}
           </div>
-          <aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={setViewMode} /></div></aside>
+          <aside className="lg:sticky lg:top-24"><div className="rounded-xl border border-border bg-surface p-5 shadow-card"><h2 className="text-sm font-semibold text-text-primary">Câu hỏi</h2><p className="mt-1 text-xs text-text-secondary">Đã trả lời {answeredCount}/{exam.questions.length}</p><div className="mt-4 grid grid-cols-5 gap-2">{exam.questions.map((question, index) => { const answered = isAnswered(question, answers[question.id]); const current = currentQuestionId === question.id; return <button key={question.id} type="button" aria-current={current ? 'true' : undefined} onClick={() => navigate(question.id)} className={`flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-semibold ${current ? 'border-primary bg-primary text-white' : answered ? 'border-success-border bg-success-light text-success' : 'border-border bg-surface text-text-secondary hover:border-primary'}`}>{index + 1}</button>; })}</div><CompactExamViewModeControl value={viewMode} onChange={changeViewMode} /></div></aside>
         </div>
       </>}
     </main>

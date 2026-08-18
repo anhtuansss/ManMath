@@ -69,6 +69,15 @@ function prepareVerificationDatabase(env) {
   return run(process.execPath, [tsNodePath(), 'src/scripts/prepareVerificationDatabase.ts'], backendDir, env);
 }
 
+function syncCanonicalTaxonomy(env) {
+  return run(
+    process.execPath,
+    [tsNodePath(), 'src/scripts/syncCanonicalTaxonomy.ts', '--write'],
+    backendDir,
+    env,
+  );
+}
+
 async function waitFor(url, label) {
   const deadline = Date.now() + 120_000;
   while (Date.now() < deadline) {
@@ -100,6 +109,7 @@ async function main() {
   try {
     resetStarted = true;
     await resetVerificationDatabase(env);
+    await syncCanonicalTaxonomy(env);
     await prepareVerificationDatabase(env);
     backend = start(process.execPath, [tsNodePath(), 'server.ts'], backendDir, env);
     frontend = start(process.execPath, [path.join(frontendDir, 'node_modules', 'next', 'dist', 'bin', 'next'), 'dev', '--hostname', '127.0.0.1'], frontendDir, { ...env, NEXT_PUBLIC_API_BASE_URL: 'http://127.0.0.1:5000' });
