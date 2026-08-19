@@ -1,6 +1,6 @@
 const benefits = [
   ['Trong lúc làm', 'Làm bài như thi thật', 'Timer và điều hướng câu hỏi giữ nhịp cho một lượt làm đề'],
-  ['Sau khi nộp', 'Chấm điểm và xem lại', 'Đối chiếu đáp án và lời giải sau khi nộp bài'],
+  ['Sau khi nộp', 'Chấm điểm và xem lại', 'Xem kết quả và nhận ra phần cần ôn sau khi nộp bài'],
   ['Lượt tiếp theo', 'Biết phần nào cần ôn tiếp', 'Xem kết quả theo chuyên đề trước lượt làm tiếp theo'],
 ] as const;
 

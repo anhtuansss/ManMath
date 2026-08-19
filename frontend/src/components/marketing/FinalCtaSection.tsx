@@ -12,8 +12,8 @@ export function FinalCtaSection() {
           <Link href="/dashboard" className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-primary-hover active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
             Bắt đầu luyện đề
           </Link>
-          <Link href="/exam/tong-hop-van-dung-cao" className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-primary transition-[background-color,transform] duration-150 hover:bg-background-alt active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-            Xem đề mẫu
+          <Link href="/dashboard" className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-surface px-5 text-sm font-semibold text-text-primary transition-[background-color,transform] duration-150 hover:bg-background-alt active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+            Khám phá kho đề
           </Link>
         </div>
       </div>

@@ -565,6 +565,7 @@ export const getUserProgress = async (
   const attempts = await prisma.attempt.findMany({
     where: {
       userId,
+      scoringPolicy: 'vietnam_thpt_math_2025',
     },
     orderBy: {
       submittedAt: 'desc',

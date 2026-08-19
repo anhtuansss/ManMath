@@ -160,8 +160,40 @@ export type V2PracticeGradeResponseDto = {
   readonly results: readonly V2PracticeGradingResultDto[];
 };
 
+/** Persistent authenticated practice; intentionally contains no answer keys. */
+export type V2PracticeSessionQuestionDto = {
+  readonly sessionQuestionId: string;
+  readonly order: number;
+  readonly question: V2PublicQuestionDto;
+  readonly response: V2SubmittedResponse | null;
+  readonly responseRevision: number;
+  readonly result?: { readonly isFullyCorrect: boolean; readonly awardedScoreUnits: number; readonly maxScoreUnits: number };
+};
+
+export type V2PracticeSessionDto = {
+  readonly id: string;
+  readonly status: 'in_progress' | 'completed' | 'cancelled';
+  readonly topic: { readonly slug: string; readonly name: string };
+  readonly startedAt: string;
+  readonly submittedAt: string | null;
+  readonly scoreUnits: number | null;
+  readonly maxScoreUnits: number | null;
+  readonly fullyCorrectCount: number | null;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number | null;
+  readonly configuration: {
+    readonly topicSlug: string;
+    readonly subtopicSlug: string | null;
+    readonly requestedQuestionCount: number;
+    readonly actualQuestionCount: number;
+    readonly questionTypes: readonly V2PublicQuestionDto['type'][];
+  };
+  readonly questions: readonly V2PracticeSessionQuestionDto[];
+};
+
 export type V2AttemptReceiptAnswerDto = {
   readonly questionExternalId: string;
+  readonly questionOrder: number;
   readonly questionType: V2PublicQuestionDto['type'];
   readonly response: V2SubmittedResponse | null;
   readonly awardedScoreUnits: number;
@@ -173,6 +205,7 @@ export type V2AttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
   readonly examVersionId: string | null;
+  readonly examTitle: string;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: 'vietnam_thpt_math_2025';
@@ -232,10 +265,15 @@ export type V2AttemptReviewDto = {
 };
 
 export type V2ExamDraft = {
-  readonly version: 2;
+  readonly version: 3;
+  readonly examId: string;
   readonly examVersionId: string;
+  readonly startedAt: number;
+  readonly deadlineAt: number;
   readonly answers: V2AnswersByQuestionId;
-  readonly remainingSeconds: number;
+  readonly currentQuestionId: string | null;
+  readonly viewMode: 'all' | 'single';
+  readonly submissionKey: string;
   readonly updatedAt: number;
 };
 

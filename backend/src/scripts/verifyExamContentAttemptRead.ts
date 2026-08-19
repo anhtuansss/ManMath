@@ -112,7 +112,9 @@ async function main(): Promise<void> {
   assert.notEqual(ownerReceipt, null);
   assert.equal(ownerReceipt?.attemptId, ownerAttempt.attemptId);
   assert.equal(ownerReceipt?.examId, examId);
+  assert.equal(ownerReceipt?.examTitle, 'V2 minimal verification fixture');
   assert.equal(ownerReceipt?.answers.length, 3);
+  assert.deepEqual(ownerReceipt?.answers.map((answer) => answer.questionOrder), [1, 2, 3]);
   assert.equal(ownerReceipt?.scoreUnits, 175);
   assert.equal(ownerReceipt?.maxScoreUnits, 175);
   assertNoAnswerKeyFields(JSON.parse(JSON.stringify(ownerReceipt)) as unknown);

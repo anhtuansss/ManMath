@@ -41,7 +41,7 @@ export type GradeExamContentResponseDto = {
 export type CreateExamContentAttemptRequestDto = {
   readonly examVersionId: string;
   readonly responses: readonly RawSubmittedResponse[];
-  readonly durationSeconds?: number;
+  readonly durationSeconds: number;
 };
 
 export type CreateExamContentAttemptResponseDto = {
@@ -104,9 +104,45 @@ export type GradePracticeResponseDto = {
   readonly results: readonly PracticeGradingResultDto[];
 };
 
+export type PracticeSessionQuestionDto = {
+  readonly sessionQuestionId: string;
+  readonly order: number;
+  readonly question: PublicQuestion;
+  readonly response: SubmittedResponse | null;
+  readonly responseRevision: number;
+  readonly result?: {
+    readonly isFullyCorrect: boolean;
+    readonly awardedScoreUnits: ScoreUnits;
+    readonly maxScoreUnits: ScoreUnits;
+  };
+};
+
+export type PracticeSessionDto = {
+  readonly id: string;
+  readonly status: 'in_progress' | 'completed' | 'cancelled';
+  readonly topic: { readonly slug: string; readonly name: string };
+  readonly startedAt: string;
+  readonly submittedAt: string | null;
+  readonly scoreUnits: ScoreUnits | null;
+  readonly maxScoreUnits: ScoreUnits | null;
+  readonly fullyCorrectCount: number | null;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number | null;
+  readonly configuration: {
+    readonly topicSlug: string;
+    readonly subtopicSlug: string | null;
+    readonly requestedQuestionCount: number;
+    readonly actualQuestionCount: number;
+    readonly questionTypes: readonly ('single_choice' | 'true_false_group' | 'short_answer')[];
+  };
+  readonly questions: readonly PracticeSessionQuestionDto[];
+};
+
 /** Safe V2 attempt receipt. It deliberately excludes answer keys and explanations. */
 export type ExamContentAttemptAnswerReceiptDto = {
   readonly questionExternalId: string;
+  /** Question position from the submitted content snapshot/version. */
+  readonly questionOrder: number;
   readonly questionType: QuestionInput['type'];
   readonly response: SubmittedResponse | null;
   readonly awardedScoreUnits: ScoreUnits;
@@ -118,6 +154,8 @@ export type ExamContentAttemptReceiptDto = {
   readonly attemptId: string;
   readonly examId: string;
   readonly examVersionId: string | null;
+  /** Title from the submitted content snapshot/version. */
+  readonly examTitle: string;
   readonly submittedAt: string;
   readonly durationSeconds: number | null;
   readonly scoringPolicyId: ScoringPolicyId;

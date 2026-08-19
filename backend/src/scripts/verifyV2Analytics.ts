@@ -1,7 +1,9 @@
 import assert from 'assert';
 import { disconnectPrisma, prisma } from '../lib/prisma';
-import { getUserSubtopicAnalytics, getUserTopicAnalytics } from '../services/analyticsService';
+import { getUserProgress, getUserSubtopicAnalytics, getUserTopicAnalytics } from '../services/analyticsService';
 import { createExamContentAttempt } from '../services/examContentAttemptService';
+
+const examId = 'verify-v2-minimal-exam';
 
 async function main(): Promise<void> {
   const suffix = Date.now().toString();
@@ -13,7 +15,7 @@ async function main(): Promise<void> {
     },
   });
 
-  const attempt = await createExamContentAttempt('verify-v2-minimal-exam', {
+  const attempt = await createExamContentAttempt(examId, {
     examVersionId: (await prisma.examVersion.findFirst({
       where: { examId: 'verify-v2-minimal-exam', status: 'published' },
       orderBy: { versionNumber: 'desc' },
@@ -47,6 +49,21 @@ async function main(): Promise<void> {
   const subtopicAnalytics = await getUserSubtopicAnalytics(user.id);
   assert.equal(subtopicAnalytics.subtopicStats.length, 1);
   assert.equal(subtopicAnalytics.subtopicStats[0]?.masteryPercentage, 0);
+
+  await prisma.attempt.create({
+    data: {
+      examId,
+      userId: user.id,
+      score: 10,
+      correctCount: 3,
+      totalQuestions: 3,
+      unansweredCount: 0,
+    },
+  });
+
+  const progress = await getUserProgress(user.id);
+  assert.equal(progress.summary.attemptCount, 1);
+  assert.equal(progress.summary.averageScore, 0.5);
 
   console.log('V2 score-unit analytics verification passed');
 }

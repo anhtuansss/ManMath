@@ -6,16 +6,18 @@ type ExamHeaderProps = {
   examTitle?: string;
   questionCount: number;
   remainingSeconds: number;
-  isTimeUp: boolean;
   onSubmit: () => void;
+  submitDisabled?: boolean;
+  submitLabel?: string;
 };
 
 export function ExamHeader({
   examTitle,
   remainingSeconds,
-  isTimeUp,
   onSubmit,
   questionCount,
+  submitDisabled = false,
+  submitLabel = 'Nộp bài',
 }: ExamHeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur-sm shadow-header">
@@ -47,7 +49,7 @@ export function ExamHeader({
           <button
             type="button"
             onClick={onSubmit}
-            disabled={isTimeUp}
+            disabled={submitDisabled}
             className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:bg-primary-hover disabled:cursor-not-allowed disabled:bg-background-alt disabled:text-text-muted"
           >
             <svg
@@ -68,7 +70,7 @@ export function ExamHeader({
                 fill="currentColor"
               />
             </svg>
-            Nộp bài
+            {submitLabel}
           </button>
         </div>
       </div>
