@@ -1,6 +1,7 @@
 import { AuthProvider } from '../../components/auth/AuthProvider';
 import { AppHeader } from '../../components/layout/AppHeader';
 import { AppSidebar } from '../../components/layout/AppSidebar';
+import { WorkspaceScrollReset } from '../../components/layout/WorkspaceScrollReset';
 
 type WorkspaceLayoutProps = {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   return (
     <AuthProvider>
       <div className="workspace-shell flex min-h-[100dvh] bg-background">
+        <WorkspaceScrollReset />
         <a href="#main-content" className="skip-link">
           Bỏ qua điều hướng
         </a>

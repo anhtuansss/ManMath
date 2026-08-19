@@ -15,10 +15,7 @@ export function AppHeader() {
         </Link>
       </div>
 
-      {/* Desktop left side (Search bar placeholder or empty) */}
-      <div className="hidden flex-1 items-center lg:flex">
-        {/* We can add a search bar here later if needed */}
-      </div>
+      <div className="hidden flex-1 lg:block" />
 
       {/* Right side (Auth) */}
       <div className="flex items-center gap-4">

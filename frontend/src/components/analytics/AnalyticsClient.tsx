@@ -1,265 +1,589 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   fetchProtectedJson,
   getCurrentUser,
   isUnauthorizedError,
-} from '../../lib/authApi';
-import { subscribeAuthTokenChange } from '../../lib/authStorage';
-import { getAttemptDetailHref } from '../../lib/attemptLinks';
-import { getExamTakingHref } from '../../lib/examRoutes';
+} from "../../lib/authApi";
+import { subscribeAuthTokenChange } from "../../lib/authStorage";
+import { getExamTakingHref } from "../../lib/examRoutes";
 import type {
-  ProgressAttemptPoint as ProgressByAttempt,
   ProgressResponse,
   ProgressSummary,
-  RecentAttempt,
   RecommendationsResponse,
   RecommendationWeakTopic,
   RecommendedExam,
-  SubtopicStat,
-  SubtopicStatsResponse,
   TopicStatsResponse,
   TopicStatDto,
-} from '../../lib/apiTypes';
+} from "../../lib/apiTypes";
 
-type AnalyticsStatus = 'loading' | 'unauthorized' | 'ready' | 'error';
-
-const MAX_VISIBLE_TOPICS = 6;
-const MINIMUM_TOPIC_SAMPLE = 3;
+type AnalyticsStatus = "loading" | "unauthorized" | "ready" | "error";
+const PROFILE_TARGET_ATTEMPTS = 3;
 const EMPTY_PROGRESS_SUMMARY: ProgressSummary = {
   attemptCount: 0,
   averageScore: 0,
   bestScore: 0,
   latestScore: null,
 };
-
-const clampAccuracy = (accuracy: number): number => Math.min(Math.max(accuracy, 0), 100);
-
-const formatSubmittedAt = (submittedAt: string): string =>
-  new Date(submittedAt).toLocaleString('vi-VN', {
-    hour: '2-digit',
-    minute: '2-digit',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-
-const getTopicPerformancePercentage = (topic: TopicStatDto): number =>
+const clamp = (value: number) => Math.min(Math.max(value, 0), 100);
+const performance = (topic: TopicStatDto) =>
   topic.masteryPercentage ?? topic.accuracy;
 
-const sortWeakTopics = (topicStats: TopicStatDto[]): TopicStatDto[] =>
-  [...topicStats]
-    .filter((topic) => topic.total > 0)
-    .sort((a, b) => getTopicPerformancePercentage(a) - getTopicPerformancePercentage(b) || b.total - a.total || a.topicName.localeCompare(b.topicName, 'vi'));
-
-const getTopicState = (topic: TopicStatDto): string => {
-  if (topic.total < MINIMUM_TOPIC_SAMPLE) return 'Cần thêm dữ liệu';
-  if (getTopicPerformancePercentage(topic) < 60) return 'Cần ôn';
-  if (getTopicPerformancePercentage(topic) >= 80) return 'Ổn định';
-  return 'Đang củng cố';
+type CapabilityScore = {
+  readonly key: string;
+  readonly label: string;
+  readonly description: string;
+  readonly topicSlugs: readonly string[];
+  readonly correct: number;
+  readonly total: number;
+  readonly percentage: number;
 };
 
-function TrendChart({ attempts, averageScore }: { attempts: ProgressByAttempt[]; averageScore: number }) {
-  const chartAttempts = attempts.slice(0, 10);
-  if (chartAttempts.length < 3) {
-    return (
-      <div className="border-y border-border py-6 text-sm leading-6 text-text-secondary">
-        Làm thêm đề để ManMath xác định xu hướng.
-      </div>
+const CAPABILITY_GROUPS: readonly Omit<CapabilityScore, 'correct' | 'total' | 'percentage'>[] = [
+  {
+    key: "functions",
+    label: "Hàm số",
+    description: "Hàm số và ứng dụng đạo hàm",
+    topicSlugs: ["ham-so-va-do-thi-nen-tang", "dao-ham-va-khao-sat-ham-so"],
+  },
+  {
+    key: "exponential-log",
+    label: "Mũ – Logarit",
+    description: "Lũy thừa, mũ và logarit",
+    topicSlugs: ["luy-thua-mu-va-logarit"],
+  },
+  {
+    key: "calculus",
+    label: "Tích phân",
+    description: "Nguyên hàm, tích phân và ứng dụng",
+    topicSlugs: ["nguyen-ham-tich-phan-va-ung-dung"],
+  },
+  {
+    key: "coordinate-geometry",
+    label: "Oxyz",
+    description: "Vectơ và tọa độ trong không gian Oxyz",
+    topicSlugs: ["vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"],
+  },
+  {
+    key: "geometry",
+    label: "Hình không gian",
+    description: "Hình học không gian và khối tròn xoay",
+    topicSlugs: ["hinh-hoc-khong-gian", "khoi-tron-xoay"],
+  },
+  {
+    key: "probability-statistics",
+    label: "Xác suất – Thống kê",
+    description: "Xác suất, tổ hợp và thống kê",
+    topicSlugs: ["xac-suat-va-to-hop", "thong-ke"],
+  },
+] as const;
+
+const aggregateCapabilityScores = (topics: TopicStatDto[]): CapabilityScore[] =>
+  CAPABILITY_GROUPS.map((group) => {
+    const matching = topics.filter(
+      (topic) =>
+        topic.topicSlug !== null && group.topicSlugs.includes(topic.topicSlug),
     );
-  }
-
-  const width = 560;
-  const height = 168;
-  const paddingX = 18;
-  const paddingY = 20;
-  const points = chartAttempts.map((attempt, index) => {
-    const x = paddingX + (index * (width - paddingX * 2)) / (chartAttempts.length - 1);
-    const y = height - paddingY - (Math.min(Math.max(attempt.score, 0), 10) / 10) * (height - paddingY * 2);
-    return { x, y, score: attempt.score };
+    const correct = matching.reduce((sum, topic) => sum + topic.correct, 0);
+    const total = matching.reduce((sum, topic) => sum + topic.total, 0);
+    return {
+      ...group,
+      correct,
+      total,
+      percentage: total > 0 ? (correct / total) * 100 : 0,
+    };
   });
-  const pointString = points.map((point) => `${point.x},${point.y}`).join(' ');
-  const averageY = height - paddingY - (Math.min(Math.max(averageScore, 0), 10) / 10) * (height - paddingY * 2);
-  const scoreDelta = chartAttempts[chartAttempts.length - 1].score - chartAttempts[0].score;
-  const trendText = scoreDelta >= 0.5 ? 'Điểm gần đây cao hơn lượt đầu trong chuỗi.' : scoreDelta <= -0.5 ? 'Điểm gần đây thấp hơn lượt đầu trong chuỗi.' : 'Điểm số đang khá ổn định trong các lượt gần đây.';
 
+function MetricIcon({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <svg className="mt-5 h-auto w-full" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Biểu đồ điểm của các lần làm gần đây">
-        <line x1={paddingX} x2={width - paddingX} y1={averageY} y2={averageY} stroke="currentColor" strokeWidth="1" strokeDasharray="4 5" className="text-border-hover" />
-        <polyline points={pointString} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
-        {points.map((point, index) => <circle key={chartAttempts[index].attemptId} cx={point.x} cy={point.y} r="3.5" fill="currentColor" className="text-primary" />)}
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary">
+      {children}
+    </span>
+  );
+}
+
+function RadarChart({ groups }: { groups: CapabilityScore[] }) {
+  const size = 420;
+  const center = size / 2;
+  const radius = 108;
+  const pointAt = (index: number, value: number) => {
+    const angle = -Math.PI / 2 + (index * 2 * Math.PI) / groups.length;
+    return {
+      x: center + Math.cos(angle) * radius * value,
+      y: center + Math.sin(angle) * radius * value,
+    };
+  };
+  const polygon = (value: number) =>
+    groups
+      .map((_, index) => {
+        const point = pointAt(index, value);
+        return `${point.x},${point.y}`;
+      })
+      .join(" ");
+  const values = groups
+    .map((group, index) => {
+      const point = pointAt(index, group.percentage / 100);
+      return `${point.x},${point.y}`;
+    })
+    .join(" ");
+  return (
+    <div className="relative mx-auto w-full max-w-[460px]">
+      <svg
+        viewBox={`0 0 ${size} ${size}`}
+        className="h-auto w-full"
+        role="img"
+        aria-label="Chỉ số năng lực sơ bộ theo sáu nhóm năng lực"
+      >
+        {[0.25, 0.5, 0.75, 1].map((level) => (
+          <polygon
+            key={level}
+            points={polygon(level)}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+            className="text-border"
+          />
+        ))}
+        {groups.map((_, index) => {
+          const point = pointAt(index, 1);
+          return (
+            <line
+              key={index}
+              x1={center}
+              y1={center}
+              x2={point.x}
+              y2={point.y}
+              stroke="currentColor"
+              strokeWidth="1"
+              className="text-border"
+            />
+          );
+        })}
+        <polygon
+          points={values}
+          fill="currentColor"
+          fillOpacity="0.1"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-primary"
+        />
+        {groups.map((group, index) => {
+          const point = pointAt(index, group.percentage / 100);
+          const label = pointAt(index, 1.42);
+          return (
+            <g key={group.key}>
+              <title>
+                {group.total > 0
+                  ? `${group.description}: ${group.correct}/${group.total} câu đúng (${Math.round(group.percentage)}%)`
+                  : `${group.description}: Chưa có dữ liệu`}
+              </title>
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="3.5"
+                fill="currentColor"
+                className="text-primary"
+              />
+              <text
+                x={label.x}
+                y={label.y}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                style={{ fill: "var(--color-text-secondary)", fontSize: 13 }}
+              >
+                {group.label}
+              </text>
+            </g>
+          );
+        })}
       </svg>
-      <p className="workspace-metadata mt-3">{trendText} Đường đứt là điểm trung bình {averageScore.toFixed(1)}.</p>
-    </>
+      <p className="workspace-metadata -mt-1 text-center">
+        Chỉ số sơ bộ dựa trên kết quả các câu bạn đã làm.
+      </p>
+    </div>
   );
 }
 
 export function AnalyticsClient() {
-  const [status, setStatus] = useState<AnalyticsStatus>('loading');
+  const [status, setStatus] = useState<AnalyticsStatus>("loading");
   const [topicStats, setTopicStats] = useState<TopicStatDto[]>([]);
-  const [subtopicStats, setSubtopicStats] = useState<SubtopicStat[]>([]);
-  const [progressSummary, setProgressSummary] = useState<ProgressSummary>(EMPTY_PROGRESS_SUMMARY);
-  const [recentAttempts, setRecentAttempts] = useState<RecentAttempt[]>([]);
-  const [progressByAttempt, setProgressByAttempt] = useState<ProgressByAttempt[]>([]);
-  const [recommendedExams, setRecommendedExams] = useState<RecommendedExam[]>([]);
-  const [recommendationWeakTopics, setRecommendationWeakTopics] = useState<RecommendationWeakTopic[]>([]);
+  const [summary, setSummary] = useState<ProgressSummary>(
+    EMPTY_PROGRESS_SUMMARY,
+  );
+  const [latestAccuracy, setLatestAccuracy] = useState<number | null>(null);
+  const [recommendedExams, setRecommendedExams] = useState<RecommendedExam[]>(
+    [],
+  );
+  const [weakTopics, setWeakTopics] = useState<RecommendationWeakTopic[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   useEffect(() => {
-    let isMounted = true;
-    const resetAnalytics = () => {
+    let mounted = true;
+    const reset = () => {
       setTopicStats([]);
-      setSubtopicStats([]);
-      setProgressSummary(EMPTY_PROGRESS_SUMMARY);
-      setRecentAttempts([]);
-      setProgressByAttempt([]);
+      setSummary(EMPTY_PROGRESS_SUMMARY);
+      setLatestAccuracy(null);
       setRecommendedExams([]);
-      setRecommendationWeakTopics([]);
+      setWeakTopics([]);
     };
-
-    const loadAnalytics = async () => {
+    const load = async () => {
       try {
-        setStatus('loading');
+        setStatus("loading");
         setErrorMessage(null);
-        const currentUser = await getCurrentUser();
-        if (!isMounted) return;
-        if (!currentUser) {
-          resetAnalytics();
-          setStatus('unauthorized');
+        const user = await getCurrentUser();
+        if (!mounted) return;
+        if (!user) {
+          reset();
+          setStatus("unauthorized");
           return;
         }
-        const [topicStatsResult, subtopicStatsResult, progressResult, recommendationResult] = await Promise.allSettled([
-          fetchProtectedJson<TopicStatsResponse>('/api/me/topic-stats'),
-          fetchProtectedJson<SubtopicStatsResponse>('/api/me/subtopic-stats'),
-          fetchProtectedJson<ProgressResponse>('/api/me/progress'),
-          fetchProtectedJson<RecommendationsResponse>('/api/me/recommendations'),
+        const [topics, progress, recommendations] = await Promise.allSettled([
+          fetchProtectedJson<TopicStatsResponse>("/api/me/topic-stats"),
+          fetchProtectedJson<ProgressResponse>("/api/me/progress"),
+          fetchProtectedJson<RecommendationsResponse>(
+            "/api/me/recommendations",
+          ),
         ]);
-        if (!isMounted) return;
-        const hasUnauthorized = [topicStatsResult, subtopicStatsResult, progressResult, recommendationResult]
-          .some((result) => result.status === 'rejected' && isUnauthorizedError(result.reason));
-        if (hasUnauthorized) {
-          resetAnalytics();
-          setStatus('unauthorized');
+        if (!mounted) return;
+        if (
+          [topics, progress, recommendations].some(
+            (result) =>
+              result.status === "rejected" &&
+              isUnauthorizedError(result.reason),
+          )
+        ) {
+          reset();
+          setStatus("unauthorized");
           return;
         }
-        if (topicStatsResult.status === 'rejected') throw topicStatsResult.reason;
-        if (progressResult.status === 'rejected') throw progressResult.reason;
-
-        setTopicStats(Array.isArray(topicStatsResult.value.topicStats) ? topicStatsResult.value.topicStats : []);
-        setSubtopicStats(subtopicStatsResult.status === 'fulfilled' && Array.isArray(subtopicStatsResult.value.subtopicStats) ? subtopicStatsResult.value.subtopicStats : []);
-        setProgressSummary(progressResult.value.summary ?? EMPTY_PROGRESS_SUMMARY);
-        setRecentAttempts(Array.isArray(progressResult.value.recentAttempts) ? progressResult.value.recentAttempts : []);
-        setProgressByAttempt(Array.isArray(progressResult.value.progressByAttempt) ? progressResult.value.progressByAttempt : []);
-        if (recommendationResult.status === 'fulfilled') {
-          setRecommendedExams(Array.isArray(recommendationResult.value.recommendedExams) ? recommendationResult.value.recommendedExams : []);
-          setRecommendationWeakTopics(Array.isArray(recommendationResult.value.weakTopics) ? recommendationResult.value.weakTopics : []);
+        if (topics.status === "rejected") throw topics.reason;
+        if (progress.status === "rejected") throw progress.reason;
+        setTopicStats(
+          Array.isArray(topics.value.topicStats) ? topics.value.topicStats : [],
+        );
+        setSummary(progress.value.summary ?? EMPTY_PROGRESS_SUMMARY);
+        const last = progress.value.recentAttempts?.[0];
+        setLatestAccuracy(
+          last && last.totalQuestions > 0
+            ? Math.round((last.correctCount / last.totalQuestions) * 100)
+            : null,
+        );
+        if (recommendations.status === "fulfilled") {
+          setRecommendedExams(
+            Array.isArray(recommendations.value.recommendedExams)
+              ? recommendations.value.recommendedExams
+              : [],
+          );
+          setWeakTopics(
+            Array.isArray(recommendations.value.weakTopics)
+              ? recommendations.value.weakTopics
+              : [],
+          );
         } else {
           setRecommendedExams([]);
-          setRecommendationWeakTopics([]);
+          setWeakTopics([]);
         }
-        setStatus('ready');
+        setStatus("ready");
       } catch (error: unknown) {
-        if (!isMounted) return;
+        if (!mounted) return;
         if (isUnauthorizedError(error)) {
-          resetAnalytics();
-          setStatus('unauthorized');
-          setErrorMessage(null);
+          reset();
+          setStatus("unauthorized");
           return;
         }
-        setErrorMessage('Không tải được phân tích học tập. Hãy thử lại sau.');
-        setStatus('error');
+        setErrorMessage("Không tải được phân tích học tập. Hãy thử lại sau.");
+        setStatus("error");
       }
     };
-
-    void loadAnalytics();
-    const unsubscribeAuthTokenChange = subscribeAuthTokenChange(() => { void loadAnalytics(); });
+    void load();
+    const unsubscribe = subscribeAuthTokenChange(() => {
+      void load();
+    });
     return () => {
-      isMounted = false;
-      unsubscribeAuthTokenChange();
+      mounted = false;
+      unsubscribe();
     };
   }, []);
-
+  const capabilityScores = useMemo(
+    () => aggregateCapabilityScores(topicStats),
+    [topicStats],
+  );
   const priorityTopics = useMemo(() => {
-    const recommended = recommendationWeakTopics.filter((topic) => topic.total > 0).slice(0, 2);
-    if (recommended.length > 0) return recommended;
-    return sortWeakTopics(topicStats).slice(0, 2).map((topic) => ({ ...topic, reason: 'Đây là một trong những chuyên đề có tỷ lệ đúng thấp hơn của bạn.' }));
-  }, [recommendationWeakTopics, topicStats]);
-  const topicPerformance = useMemo(() => [...topicStats].filter((topic) => topic.total > 0).sort((a, b) => b.total - a.total || a.topicName.localeCompare(b.topicName, 'vi')).slice(0, MAX_VISIBLE_TOPICS), [topicStats]);
+    const recommended = weakTopics
+      .filter((topic) => topic.total > 0)
+      .slice(0, 3);
+    return recommended.length
+      ? recommended
+      : [...topicStats]
+          .filter((topic) => topic.total > 0)
+          .sort((a, b) => performance(a) - performance(b))
+          .slice(0, 3)
+          .map((topic) => ({
+            ...topic,
+            reason: "Dữ liệu hiện có cho thấy đây là một chuyên đề cần chú ý.",
+          }));
+  }, [topicStats, weakTopics]);
   const nextExam = recommendedExams[0] ?? null;
-  const recentAttemptRows = recentAttempts.slice(0, 5);
-  const latestAccuracy = recentAttempts[0] && recentAttempts[0].totalQuestions > 0
-    ? Math.round((recentAttempts[0].correctCount / recentAttempts[0].totalQuestions) * 100)
-    : null;
-  const hasAnalyticsData = progressSummary.attemptCount > 0 || topicPerformance.length > 0 || subtopicStats.some((subtopic) => subtopic.totalAnswers > 0) || recommendedExams.length > 0;
-
+  const complete = Math.min(summary.attemptCount, PROFILE_TARGET_ATTEMPTS);
+  const profilePercent = (complete / PROFILE_TARGET_ATTEMPTS) * 100;
+  const metrics = [
+    ["Bài đã làm", summary.attemptCount, "▤"],
+    [
+      "Tỷ lệ đúng gần đây",
+      latestAccuracy === null ? "--" : `${latestAccuracy}%`,
+      "◎",
+    ],
+    ["Dữ liệu phân tích", `${complete} / ${PROFILE_TARGET_ATTEMPTS}`, "▥"],
+    [
+      "Điểm tốt nhất",
+      summary.attemptCount ? summary.bestScore.toFixed(1) : "--",
+      "★",
+    ],
+  ];
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-[100dvh] bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl animate-fade-in flex-col gap-6">
-        <header className="border-b border-border pb-5">
-          <p className="workspace-eyebrow">Phân tích học tập</p>
-          <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-              <h1 className="workspace-page-title text-text-primary">Bạn đang tiến bộ như thế nào?</h1>
-              <p className="workspace-page-description mt-2">Xem điểm mạnh, phần cần ôn và xu hướng từ các lần làm gần đây.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {status === 'ready' && nextExam ? <Link href={getExamTakingHref(nextExam.examId)} className="workspace-button-text inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề được gợi ý</Link> : null}
-              <Link href="/history" className="workspace-button-text inline-flex h-10 items-center justify-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem lịch sử</Link>
-            </div>
-          </div>
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[100dvh] bg-background px-4 py-7 text-text-primary sm:px-6 lg:px-8"
+    >
+      <div className="mx-auto flex w-full max-w-[1100px] animate-fade-in flex-col gap-5">
+        <header className="pb-1">
+          <h1 className="workspace-page-title text-text-primary">
+            Tổng quan học tập
+          </h1>
+          <p className="workspace-page-description mt-2">
+            Xem điểm mạnh, phần cần ôn và xu hướng từ các lần làm gần đây.
+          </p>
         </header>
-
-        {status === 'loading' && <>
-          <section className="rounded-xl border border-border bg-surface p-5 shadow-card"><div className="grid gap-4 sm:grid-cols-4">{[0, 1, 2, 3].map((item) => <div key={item} className="border-b border-border pb-4 last:border-b-0 sm:border-b-0 sm:border-r sm:pr-4 sm:last:border-r-0"><div className="h-4 w-24 animate-pulse rounded bg-background-alt" /><div className="mt-3 h-8 w-20 animate-pulse rounded bg-background-alt" /></div>)}</div></section>
-          <div className="grid gap-6 lg:grid-cols-12"><section className="h-64 animate-pulse rounded-xl border border-border bg-surface lg:col-span-7" /><section className="h-64 animate-pulse rounded-xl border border-border bg-surface lg:col-span-5" /></div>
-        </>}
-
-        {status === 'unauthorized' && <section className="rounded-xl border border-border bg-surface p-8 text-center shadow-card"><h2 className="workspace-section-title text-text-primary">Bạn cần đăng nhập để xem phân tích học tập.</h2><p className="workspace-page-description mx-auto mt-2 max-w-md">Đăng nhập ở trang luyện đề để xem các chuyên đề cần ôn, tiến độ và đề được gợi ý.</p><Link href="/dashboard" className="workspace-button-text mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Về trang luyện đề</Link></section>}
-
-        {status === 'error' && <section className="rounded-xl border border-error-border bg-surface p-6 shadow-card"><h2 className="workspace-section-title text-error">Không tải được analytics</h2><p className="workspace-page-description mt-2">{errorMessage}</p></section>}
-
-        {status === 'ready' && <>
-          <section className="rounded-xl border border-border bg-surface p-5 shadow-card">
+        {status === "loading" && (
+          <>
+            <section className="h-28 animate-pulse rounded-xl border border-border bg-surface" />
             <div className="grid gap-4 sm:grid-cols-4">
-              {[
-                ['Số lần làm', progressSummary.attemptCount],
-                ['Điểm trung bình', progressSummary.averageScore.toFixed(1)],
-                ['Điểm tốt nhất', progressSummary.bestScore.toFixed(1)],
-                ['Tỷ lệ đúng gần đây', latestAccuracy === null ? '--' : `${latestAccuracy}%`],
-              ].map(([label, value], index) => <div key={String(label)} className={`min-w-0 ${index < 3 ? 'border-b border-border pb-4 sm:border-b-0 sm:border-r sm:pr-4' : ''}`}><p className="workspace-metadata">{label}</p><p className="mt-1 text-2xl font-bold tabular-nums text-text-primary">{value}</p></div>)}
+              {[0, 1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="h-[88px] animate-pulse rounded-xl border border-border bg-surface"
+                />
+              ))}
             </div>
-            {progressSummary.attemptCount > 0 && progressSummary.attemptCount < 3 ? <p className="workspace-metadata mt-4 border-t border-border pt-4">Hoàn thành thêm vài đề để xu hướng chính xác hơn.</p> : null}
+            <div className="grid gap-5 lg:grid-cols-2">
+              <section className="h-[360px] animate-pulse rounded-xl border border-border bg-surface" />
+              <section className="h-[360px] animate-pulse rounded-xl border border-border bg-surface" />
+            </div>
+          </>
+        )}
+        {status === "unauthorized" && (
+          <section className="rounded-xl border border-border bg-surface p-8 text-center shadow-card">
+            <h2 className="workspace-section-title text-text-primary">
+              Bạn cần đăng nhập để xem phân tích học tập.
+            </h2>
+            <p className="workspace-page-description mx-auto mt-2 max-w-md">
+              Đăng nhập ở trang luyện đề để xem tiến độ và các đề được gợi ý.
+            </p>
+            <Link
+              href="/dashboard"
+              className="workspace-button-text mt-6 inline-flex h-10 rounded-lg bg-primary px-5 text-white hover:bg-primary-hover"
+            >
+              Về trang luyện đề
+            </Link>
           </section>
-
-          {!hasAnalyticsData ? <section className="rounded-xl border border-border bg-surface p-8 text-center shadow-card"><h2 className="workspace-section-title text-text-primary">Chưa đủ dữ liệu để phân tích chuyên đề</h2><p className="workspace-page-description mx-auto mt-2 max-w-xl">Hoàn thành thêm một đề để ManMath xác định điểm mạnh và phần cần ôn.</p><Link href="/dashboard" className="workspace-button-text mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm một đề ngay</Link></section> : <>
-            <section className="grid overflow-hidden rounded-xl border border-border bg-surface shadow-card lg:grid-cols-12">
-              <div className="p-5 lg:col-span-7 lg:border-r lg:border-border">
-                <p className="workspace-eyebrow">Phần cần ưu tiên</p>
-                <h2 className="workspace-section-title mt-1 text-text-primary">Ôn đúng phần trước lần làm tiếp theo.</h2>
-                {priorityTopics.length === 0 ? <p className="workspace-page-description mt-4">Chưa có chuyên đề đủ dữ liệu để ưu tiên. Hãy hoàn thành thêm đề để xem gợi ý sát hơn.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{priorityTopics.map((topic) => { const accuracy = clampAccuracy(getTopicPerformancePercentage(topic)); return <div key={topic.topicId ?? topic.topicName} className="py-3 first:pt-3 last:pb-3"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><span className="workspace-badge-text shrink-0 text-text-secondary">{accuracy}%</span></div><p className="workspace-metadata mt-2">{topic.reason}</p>{topic.topicSlug ? <Link href={`/practice/topic/${topic.topicSlug}`} className="workspace-button-text mt-3 inline-flex h-9 items-center text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Luyện chuyên đề này</Link> : null}</div>; })}</div>}
+        )}
+        {status === "error" && (
+          <section className="rounded-xl border border-error-border bg-surface p-6 shadow-card">
+            <h2 className="workspace-section-title text-error">
+              Không tải được analytics
+            </h2>
+            <p className="workspace-page-description mt-2">{errorMessage}</p>
+          </section>
+        )}
+        {status === "ready" && (
+          <>
+            <section className="grid gap-4 rounded-xl border border-border bg-surface p-4 shadow-card sm:grid-cols-[minmax(0,1fr)_minmax(220px,.7fr)] sm:items-center sm:p-5">
+              <div className="flex items-center gap-3">
+                <MetricIcon>
+                  <span aria-hidden="true">▥</span>
+                </MetricIcon>
+                <div className="min-w-0 flex-1">
+                  <h2 className="workspace-item-title text-text-primary">
+                    Hồ sơ năng lực đang được xây dựng
+                  </h2>
+                  <p className="workspace-metadata mt-1">
+                    {complete}/{PROFILE_TARGET_ATTEMPTS} bài hoàn thành
+                  </p>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-background-alt">
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${profilePercent}%` }}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="p-5 lg:col-span-5">
-                <p className="workspace-eyebrow">Bước tiếp theo</p>
-                <h2 className="workspace-section-title mt-1 text-text-primary">Một đề phù hợp để tiếp tục.</h2>
-                {nextExam ? <><div className="mt-5 border-y border-border py-4"><p className="workspace-item-title text-text-primary">{nextExam.title}</p><p className="workspace-metadata mt-2">{nextExam.durationMinutes} phút</p><p className="workspace-metadata mt-3">{nextExam.reason}</p></div><Link href={getExamTakingHref(nextExam.examId)} className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Làm đề này</Link></> : <><p className="workspace-page-description mt-5">Chưa có đề gợi ý riêng. Bạn vẫn có thể chọn một đề trong kho để tiếp tục luyện tập.</p><Link href="/dashboard" className="workspace-button-text mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-primary transition-colors hover:bg-background-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem kho đề</Link></>}
-                {recommendedExams.length > 1 ? <Link href="/dashboard" className="workspace-button-text mt-4 inline-flex text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem thêm gợi ý</Link> : null}
+              <p className="border-t border-border pt-3 text-sm leading-5 text-text-secondary sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+                {summary.attemptCount < PROFILE_TARGET_ATTEMPTS
+                  ? `Cần thêm ${PROFILE_TARGET_ATTEMPTS - summary.attemptCount} bài để mở phân tích xu hướng đáng tin cậy.`
+                  : "Đã có đủ dữ liệu cơ bản để xem tiến độ học tập."}
+              </p>
+            </section>
+            <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {metrics.map(([label, value, icon]) => (
+                <article
+                  key={String(label)}
+                  className="flex min-h-[88px] items-center gap-3 rounded-xl border border-border bg-surface p-4 shadow-card"
+                >
+                  <MetricIcon>
+                    <span aria-hidden="true">{icon}</span>
+                  </MetricIcon>
+                  <div>
+                    <p className="workspace-metadata">{label}</p>
+                    <p className="mt-1 text-2xl font-bold tracking-tight text-text-primary">
+                      {value}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </section>
+            <section className="grid gap-5 lg:grid-cols-2">
+              <article className="min-h-[360px] rounded-xl border border-border bg-surface p-5 shadow-card">
+                <div className="flex items-center justify-between">
+                  <h2 className="workspace-section-title text-text-primary">
+                    Chỉ số năng lực
+                  </h2>
+                  <span
+                    className="text-text-muted"
+                    title="Chỉ số sơ bộ, không phải đánh giá năng lực tuyệt đối."
+                    aria-label="Thông tin về chỉ số năng lực"
+                  >
+                    ⓘ
+                  </span>
+                </div>
+                <RadarChart groups={capabilityScores} />
+              </article>
+              <article className="flex min-h-[360px] flex-col rounded-xl border border-border bg-surface p-5 shadow-card">
+                <h2 className="workspace-section-title text-text-primary">
+                  Đề xuất cho bạn
+                </h2>
+                {recommendedExams.length ? (
+                  <div className="mt-4 divide-y divide-border border-y border-border">
+                    {recommendedExams.slice(0, 3).map((exam) => (
+                      <Link
+                        key={exam.examId}
+                        href={getExamTakingHref(exam.examId)}
+                        className="flex items-center gap-3 py-3 hover:text-primary"
+                      >
+                        <MetricIcon>
+                          <span aria-hidden="true">◎</span>
+                        </MetricIcon>
+                        <span className="min-w-0 flex-1">
+                          <span className="workspace-item-title block truncate text-text-primary">
+                            {exam.title}
+                          </span>
+                          <span className="workspace-metadata mt-1 block">
+                            {exam.durationMinutes} phút
+                          </span>
+                        </span>
+                        <span className="text-text-muted" aria-hidden="true">
+                          ›
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="workspace-page-description mt-5">
+                    Hoàn thành thêm đề để ManMath đưa ra gợi ý phù hợp hơn.
+                  </p>
+                )}
+                <Link
+                  href={
+                    nextExam ? getExamTakingHref(nextExam.examId) : "/dashboard"
+                  }
+                  className="workspace-button-text mt-auto inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-white hover:bg-primary-hover"
+                >
+                  {nextExam ? "Làm bài ngay" : "Chọn một đề"}{" "}
+                  <span className="ml-2" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              </article>
+            </section>
+            <section className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+              <div className="border-b border-border px-5 py-4">
+                <h2 className="workspace-section-title text-text-primary">
+                  Chuyên đề cần chú ý
+                </h2>
+              </div>
+              {priorityTopics.length ? (
+                <div className="divide-y divide-border">
+                  {priorityTopics.map((topic) => {
+                    const accuracy = clamp(performance(topic));
+                    const state =
+                      topic.total < 3
+                        ? "Cần thêm dữ liệu"
+                        : accuracy < 60
+                          ? "Cần ôn"
+                          : "Đang củng cố";
+                    return (
+                      <div
+                        key={topic.topicId ?? topic.topicName}
+                        className="grid gap-3 px-5 py-4 md:grid-cols-[minmax(0,1fr)_72px_130px_112px_64px] md:items-center"
+                      >
+                        <div className="min-w-0">
+                          <p className="workspace-item-title truncate text-text-primary">
+                            {topic.topicName}
+                          </p>
+                          <p className="workspace-metadata mt-1">
+                            {topic.reason}
+                          </p>
+                        </div>
+                        <span className="workspace-metadata">
+                          {topic.correct}/{topic.total}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-background-alt">
+                            <div
+                              className="h-full rounded-full bg-primary"
+                              style={{ width: `${accuracy}%` }}
+                            />
+                          </div>
+                          <span className="workspace-badge-text text-text-secondary">
+                            {accuracy}%
+                          </span>
+                        </div>
+                        <span
+                          className={`workspace-badge-text w-fit rounded-md px-2 py-1 ${accuracy < 60 ? "bg-warning-light text-warning" : "bg-primary-50 text-primary"}`}
+                        >
+                          {state}
+                        </span>
+                        {topic.topicSlug ? (
+                          <Link
+                            href={`/practice/topic/${topic.topicSlug}`}
+                            className="workspace-button-text text-primary hover:text-primary-hover"
+                          >
+                            Luyện →
+                          </Link>
+                        ) : (
+                          <span className="workspace-metadata">—</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="workspace-page-description px-5 py-8">
+                  Chưa có đủ dữ liệu theo chuyên đề để hiển thị phần cần chú ý.
+                </p>
+              )}
+              <div className="border-t border-border px-5 py-3 text-center">
+                <Link
+                  href="/dashboard"
+                  className="workspace-button-text text-primary hover:text-primary-hover"
+                >
+                  Làm thêm đề để mở rộng phân tích →
+                </Link>
               </div>
             </section>
-
-            <section className="border-t border-border pt-6">
-              <div><p className="workspace-eyebrow">Năng lực theo chuyên đề</p><h2 className="workspace-section-title mt-1 text-text-primary">Kết quả có dữ liệu thực.</h2></div>
-              {topicPerformance.length === 0 ? <p className="workspace-page-description mt-5">Chưa có dữ liệu theo chuyên đề. Hoàn thành thêm đề để xem kết quả tại đây.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{topicPerformance.map((topic) => { const accuracy = clampAccuracy(getTopicPerformancePercentage(topic)); return <div key={topic.topicId ?? topic.topicName} className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_96px_72px] sm:items-center"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{topic.topicName}</p><p className="workspace-metadata mt-1">{topic.correct}/{topic.total} câu đúng</p></div><div className="h-1.5 overflow-hidden rounded-full bg-background-alt"><div className="h-full rounded-full bg-primary" style={{ width: `${accuracy}%` }} /></div><div className="flex items-center justify-between gap-3 sm:justify-end"><span className="workspace-badge-text text-text-secondary">{accuracy}%</span><span className="workspace-badge-text text-text-secondary">{getTopicState(topic)}</span></div></div>; })}</div>}
-            </section>
-
-            <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-12">
-              <section className="lg:col-span-7"><p className="workspace-eyebrow">Xu hướng điểm số</p><h2 className="workspace-section-title mt-1 text-text-primary">Điểm qua các lượt làm gần đây.</h2><TrendChart attempts={progressByAttempt} averageScore={progressSummary.averageScore} /></section>
-              <section className="lg:col-span-5"><div className="flex items-end justify-between gap-3"><div><p className="workspace-eyebrow">Lần làm gần nhất</p><h2 className="workspace-section-title mt-1 text-text-primary">Xem lại khi cần.</h2></div><Link href="/history" className="workspace-button-text shrink-0 text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem toàn bộ lịch sử</Link></div>{recentAttemptRows.length === 0 ? <p className="workspace-page-description mt-5">Chưa có lượt làm nào để hiển thị.</p> : <div className="mt-5 divide-y divide-border border-y border-border">{recentAttemptRows.map((attempt) => <Link key={attempt.attemptId} href={getAttemptDetailHref(attempt)} className="block py-3 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="workspace-item-title truncate text-text-primary">{attempt.examTitle}</p><p className="workspace-metadata mt-1">{formatSubmittedAt(attempt.submittedAt)}</p></div><div className="shrink-0 text-right"><p className="workspace-item-title tabular-nums text-text-primary">{attempt.score.toFixed(1)} điểm</p><p className="workspace-metadata mt-1">{attempt.correctCount}/{attempt.totalQuestions} đúng</p></div></div></Link>)}</div>}</section>
-            </div>
-          </>}
-        </>}
+          </>
+        )}
       </div>
     </main>
   );

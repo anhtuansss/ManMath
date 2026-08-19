@@ -152,88 +152,49 @@ export function ExamList({
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <main id="main-content" tabIndex={-1} className="flex-1 bg-background pb-16 text-text-primary">
-        <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <header className="relative pb-7">
-            <div
-              className="pointer-events-none absolute -top-10 right-0 -z-10 h-[300px] w-[300px] rounded-full bg-primary/5 blur-3xl"
-              aria-hidden="true"
-            />
-
-            <div className="flex flex-col gap-5 pt-1 sm:flex-row sm:items-end sm:justify-between">
-              <div className="min-w-0 max-w-2xl">
-                <div>
-                  <p className="workspace-eyebrow text-[13px] font-medium leading-5">
-                    {isAuthenticated ? 'Không gian luyện tập' : 'Luyện đề Toán THPT'}
-                  </p>
-                  <h1 className="workspace-page-title mt-1 text-[26px] font-bold leading-[1.2] tracking-[-0.025em] text-text-primary sm:text-[28px] lg:text-[32px]">
-                    {isAuthenticated ? 'Tiếp tục nhịp luyện tập của bạn' : 'Chọn một đề để bắt đầu'}
-                  </h1>
-                  <p className="workspace-page-description mt-2 text-[15px] font-normal leading-6">
-                    {isAuthenticated ? 'Xem đề phù hợp hoặc tiếp tục bài đang dở.' : 'Bạn có thể làm đề ngay, không cần đăng nhập.'}
-                  </p>
-                </div>
+        <div className="mx-auto w-full max-w-[1440px] px-4 py-7 sm:px-6 lg:px-8">
+          <header className="pb-6">
+            <p className="workspace-eyebrow">{isAuthenticated ? 'Xin chào, chúc bạn học tốt' : 'Luyện đề Toán THPT'}</p>
+            <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="min-w-0">
+                <h1 className="workspace-page-title text-text-primary">Chọn đề để chinh phục hôm nay</h1>
+                <p className="workspace-page-description mt-2">Luyện tập mỗi ngày để tiến bộ vững vàng hơn.</p>
               </div>
-              <Link
-                href="#exam-library"
-                className="workspace-button-text inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Khám phá kho đề
-              </Link>
+              <Link href="#exam-library" className="workspace-button-text inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-secondary transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Khám phá kho đề <span className="ml-2" aria-hidden="true">→</span></Link>
             </div>
           </header>
 
-          <div className="grid gap-7 xl:grid-cols-[minmax(0,72fr)_minmax(280px,28fr)] xl:gap-8">
-            <div className="space-y-7">
+          <div className="space-y-6">
               {draftExam && (
-                <section className="animate-fade-in flex flex-col justify-between gap-4 rounded-xl border border-warning-border bg-warning-light p-5 shadow-card sm:flex-row sm:items-center">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-warning-dark"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                      <h2 className="workspace-section-title text-warning-dark">
-                        Bạn có bài làm chưa hoàn thành
-                      </h2>
+                <section className="animate-fade-in flex min-h-[80px] flex-col justify-between gap-3 rounded-xl border border-primary/25 bg-primary-50 px-4 py-4 shadow-card sm:flex-row sm:items-center sm:px-5">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary" aria-hidden="true">▤</span>
+                    <div className="min-w-0">
+                      <p className="workspace-badge-text text-primary">Tiếp tục bài đang làm</p>
+                      <h2 className="workspace-item-title mt-0.5 truncate text-text-primary">{draftExam.title}</h2>
+                      <p className="workspace-metadata mt-0.5">Bài làm của bạn đang được lưu tự động</p>
                     </div>
-                    <p className="workspace-metadata mt-1 text-warning-dark/80">
-                      {draftExam.title}
-                    </p>
                   </div>
                   <Link
                     href={draftExam.href}
-                    className="workspace-button-text inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-warning px-5 text-white transition-colors duration-200 hover:bg-warning/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2"
+                    className="workspace-button-text inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-primary px-4 text-white transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
-                    Tiếp tục làm bài
+                    Tiếp tục <span className="ml-2" aria-hidden="true">→</span>
                   </Link>
                 </section>
               )}
 
-              {!isAuthenticated && quickStartExams.length > 0 && (
+              {quickStartExams.length > 0 && (
               <section>
-                <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <h2 className="workspace-section-title text-text-primary">
-                      Bắt đầu nhanh
-                    </h2>
-                    <p className="workspace-page-description mt-1">Chọn một trong các đề đang có trong kho để bắt đầu.</p>
+                    <div className="flex items-center gap-2"><h2 className="workspace-section-title text-text-primary">Đề luyện đề xuất</h2></div>
+                    <p className="workspace-page-description mt-1">Chọn nhanh từ các đề đang có trong kho để bắt đầu luyện tập.</p>
                   </div>
-                    <span className="workspace-metadata shrink-0">
-                    {quickStartExams.length} đề
-                  </span>
+                  <Link href="#exam-library" className="workspace-button-text shrink-0 text-primary hover:text-primary-hover">Xem tất cả <span className="ml-1" aria-hidden="true">→</span></Link>
                 </div>
 
-                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {quickStartExams.map((exam) => (
                     <ExamCard key={exam.id} exam={exam} />
                   ))}
@@ -241,14 +202,13 @@ export function ExamList({
               </section>
               )}
 
+              <div className="grid gap-6 xl:grid-cols-[minmax(0,68fr)_minmax(300px,32fr)]">
               <section id="exam-library" className="overflow-hidden rounded-xl border border-border bg-surface">
                 <div className="border-b border-border px-5 py-5">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <h2 className="workspace-section-title text-text-primary">
-                        Kho đề luyện tập
-                      </h2>
-                      <p className="workspace-page-description mt-1">Chọn đề, xem thông tin và bắt đầu ngay.</p>
+                      <h2 className="workspace-section-title text-text-primary">Danh sách đề thi</h2>
+                      <p className="workspace-page-description mt-1">Duyệt, lọc và bắt đầu đề phù hợp.</p>
                     </div>
                     <span className="workspace-badge-text shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-text-secondary">
                       {exams.length} đề khả dụng
@@ -432,8 +392,7 @@ export function ExamList({
                   </div>
                 )}
               </section>
-            </div>
-            <aside className="space-y-5 xl:sticky xl:top-24 xl:self-start">
+              <aside className="space-y-5 xl:sticky xl:top-24 xl:self-start">
               {isAuthenticated ? (
                 <RecommendationCard />
               ) : (
@@ -442,7 +401,8 @@ export function ExamList({
                   <p className="workspace-page-description mt-2">Đăng nhập khi bạn muốn theo dõi các lượt làm và chuyên đề cần ôn.</p>
                 </section>
               )}
-            </aside>
+              </aside>
+              </div>
           </div>
         </div>
       </main>
