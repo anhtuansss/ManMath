@@ -70,12 +70,13 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
   }
 
   return (
-    <article className="group flex min-h-[176px] cursor-pointer flex-col rounded-xl border border-border bg-surface p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-card-hover">
+    <article className="group flex min-h-[220px] cursor-pointer flex-col rounded-xl border border-border bg-surface p-5 shadow-card transition-all duration-200 hover:border-primary/30 hover:shadow-card-hover">
       <div className="flex-1 min-w-0">
         <h3 className="workspace-item-title line-clamp-2 text-text-primary transition-colors duration-200 group-hover:text-primary">
           {exam.title}
         </h3>
         <p className="workspace-metadata mt-1.5">{getExamMeta(exam)}</p>
+        <span className="workspace-badge-text mt-3 inline-flex rounded-md bg-primary-50 px-2.5 py-1 text-primary">Sẵn sàng để luyện tập</span>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="workspace-badge-text rounded-md bg-background-alt px-2 py-1 text-text-secondary">{exam.totalQuestions} câu</span>
@@ -86,7 +87,7 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 border-t border-border pt-4">
         <Link
           href={exam.href}
           aria-label={`Bắt đầu làm bài ${exam.title}`}

@@ -40,7 +40,8 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   const links = [
-    { href: '/dashboard', label: 'Luyện đề', icon: HomeIcon, aliases: ['/exams'] },
+    { href: '/dashboard', label: 'Trang chủ', icon: HomeIcon },
+    { href: '/exams', label: 'Kho đề', icon: HomeIcon },
     { href: '/analytics', label: 'Phân tích', icon: ChartBarIcon },
     { href: '/history', label: 'Lịch sử', icon: ClockIcon },
     { href: '/profile', label: 'Hồ sơ', icon: UserIcon },
@@ -48,7 +49,7 @@ export function AppSidebar() {
 
   return (
     <>
-      <aside className="sticky top-0 z-40 hidden h-[100dvh] w-64 shrink-0 flex-col border-r border-border bg-surface lg:flex">
+      <aside className="sticky top-0 z-40 hidden h-[100dvh] w-60 shrink-0 flex-col border-r border-border bg-surface lg:flex">
         <div className="flex h-16 shrink-0 items-center px-6">
           <Link href="/dashboard" className="group flex items-center gap-3" aria-label="ManMath workspace">
             <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
@@ -58,9 +59,9 @@ export function AppSidebar() {
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-6" aria-label="Điều hướng workspace">
+        <nav className="flex-1 space-y-1 px-3 py-7" aria-label="Điều hướng workspace">
           {links.map((link) => {
-            const isActive = pathname === link.href || link.aliases?.includes(pathname);
+            const isActive = pathname === link.href;
             const Icon = link.icon;
 
             return (
@@ -69,7 +70,7 @@ export function AppSidebar() {
                 href={link.href}
                 aria-current={isActive ? 'page' : undefined}
                 className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                    ? 'bg-primary/10 text-primary'
+                    ? 'border-l-2 border-primary bg-primary/10 text-primary'
                     : 'text-text-secondary hover:bg-background-alt hover:text-text-primary'
                   }`}
               >
@@ -84,7 +85,7 @@ export function AppSidebar() {
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-surface/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden" aria-label="Điều hướng workspace trên di động">
         {links.map((link) => {
-          const isActive = pathname === link.href || link.aliases?.includes(pathname);
+          const isActive = pathname === link.href;
           const Icon = link.icon;
 
           return (
