@@ -9,6 +9,8 @@
     "sync:canonical-taxonomy": "ts-node src/scripts/syncCanonicalTaxonomy.ts",
     "verify:canonical-taxonomy": "ts-node src/scripts/verifyCanonicalTaxonomy.ts",
     "audit:attempt-answer-v2-reference": "ts-node src/scripts/auditAttemptAnswerCanonicalReferences.ts",
+    "audit:practice-corpus": "ts-node src/scripts/auditPracticeCorpus.ts",
+    "verify:practice-assets": "ts-node src/scripts/verifyPracticeAssets.ts",
     "publish:exam-content": "ts-node src/scripts/publishExamVersion.ts",
     "verify:exam-domain": "ts-node src/scripts/verifyExamDomain.ts",
     "verify:exam-content-import": "ts-node src/scripts/verifyExamContentImport.ts",
