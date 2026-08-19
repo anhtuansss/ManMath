@@ -188,7 +188,7 @@ export function ExamList({
               <section>
                 <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <div className="flex items-center gap-2"><span className="text-lg text-warning" aria-hidden="true">ϟ</span><h2 className="workspace-section-title text-text-primary">Đề luyện đề xuất</h2></div>
+                    <div className="flex items-center gap-2"><h2 className="workspace-section-title text-text-primary">Đề luyện đề xuất</h2></div>
                     <p className="workspace-page-description mt-1">Chọn nhanh từ các đề đang có trong kho để bắt đầu luyện tập.</p>
                   </div>
                   <Link href="#exam-library" className="workspace-button-text shrink-0 text-primary hover:text-primary-hover">Xem tất cả <span className="ml-1" aria-hidden="true">→</span></Link>

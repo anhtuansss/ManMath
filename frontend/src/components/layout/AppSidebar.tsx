@@ -41,7 +41,6 @@ export function AppSidebar() {
 
   const links = [
     { href: '/dashboard', label: 'Trang chủ', icon: HomeIcon },
-    { href: '/exams', label: 'Kho đề', icon: HomeIcon },
     { href: '/analytics', label: 'Phân tích', icon: ChartBarIcon },
     { href: '/history', label: 'Lịch sử', icon: ClockIcon },
     { href: '/profile', label: 'Hồ sơ', icon: UserIcon },
@@ -68,6 +67,7 @@ export function AppSidebar() {
               <Link
                 key={link.href}
                 href={link.href}
+                scroll={false}
                 aria-current={isActive ? 'page' : undefined}
                 className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
                     ? 'border-l-2 border-primary bg-primary/10 text-primary'
@@ -92,6 +92,7 @@ export function AppSidebar() {
             <Link
               key={link.href}
               href={link.href}
+              scroll={false}
               aria-current={isActive ? 'page' : undefined}
               className={`flex min-h-11 min-w-[64px] flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 transition-colors ${isActive
                   ? 'text-primary'

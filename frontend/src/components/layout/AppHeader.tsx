@@ -15,16 +15,7 @@ export function AppHeader() {
         </Link>
       </div>
 
-      {/* Desktop search affordance links to the working search in the exam list. */}
-      <div className="hidden flex-1 items-center lg:flex">
-        <Link
-          href="/dashboard#exam-library"
-          className="ml-auto mr-6 flex h-10 w-full max-w-[340px] items-center rounded-lg border border-border bg-surface px-3 text-sm text-text-muted transition-colors hover:border-primary/30 hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-        >
-          <svg className="mr-2 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" /></svg>
-          Tìm đề thi, trường, chuyên đề...
-        </Link>
-      </div>
+      <div className="hidden flex-1 lg:block" />
 
       {/* Right side (Auth) */}
       <div className="flex items-center gap-4">
