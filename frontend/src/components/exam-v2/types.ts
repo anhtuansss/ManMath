@@ -160,6 +160,37 @@ export type V2PracticeGradeResponseDto = {
   readonly results: readonly V2PracticeGradingResultDto[];
 };
 
+/** Persistent authenticated practice; intentionally contains no answer keys. */
+export type V2PracticeSessionQuestionDto = {
+  readonly sessionQuestionId: string;
+  readonly order: number;
+  readonly question: V2PublicQuestionDto;
+  readonly response: V2SubmittedResponse | null;
+  readonly responseRevision: number;
+  readonly result?: { readonly isFullyCorrect: boolean; readonly awardedScoreUnits: number; readonly maxScoreUnits: number };
+};
+
+export type V2PracticeSessionDto = {
+  readonly id: string;
+  readonly status: 'in_progress' | 'completed' | 'cancelled';
+  readonly topic: { readonly slug: string; readonly name: string };
+  readonly startedAt: string;
+  readonly submittedAt: string | null;
+  readonly scoreUnits: number | null;
+  readonly maxScoreUnits: number | null;
+  readonly fullyCorrectCount: number | null;
+  readonly totalQuestions: number;
+  readonly unansweredCount: number | null;
+  readonly configuration: {
+    readonly topicSlug: string;
+    readonly subtopicSlug: string | null;
+    readonly requestedQuestionCount: number;
+    readonly actualQuestionCount: number;
+    readonly questionTypes: readonly V2PublicQuestionDto['type'][];
+  };
+  readonly questions: readonly V2PracticeSessionQuestionDto[];
+};
+
 export type V2AttemptReceiptAnswerDto = {
   readonly questionExternalId: string;
   readonly questionOrder: number;

@@ -17,6 +17,17 @@ import {
   PracticeRequestError,
 } from '../services/examContentPracticeService';
 import {
+  getPracticeSession,
+  getActivePracticeSession,
+  cancelPracticeSession,
+  openPracticeSession,
+  PracticeSessionConflictError,
+  PracticeSessionRequestError,
+  PracticeSessionNoMatchingQuestionsError,
+  savePracticeSessionResponse,
+  submitPracticeSession,
+} from '../services/practiceSessionService';
+import {
   submitExamContentAttempt,
   ExamContentAttemptIdempotencyConflictError,
   ExamContentAttemptIntegrityError,
@@ -370,6 +381,62 @@ export const gradeTopicPracticeV2 = async (
     }
     console.error('Failed to grade V2 topic practice:', error);
     res.status(500).json({ message: 'Khong the cham luyen tap V2' });
+  }
+};
+
+export const openPracticeSessionV2 = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await openPracticeSession(req.body, req.user!.userId);
+    res.status(result.created ? 201 : 200).json(result.session);
+  } catch (error) {
+    if (error instanceof PracticeSessionNoMatchingQuestionsError) { res.status(422).json({ code: error.code, message: error.message }); return; }
+    if (error instanceof PracticeSessionRequestError) { res.status(400).json({ message: error.message }); return; }
+    console.error('Failed to open practice session:', error); res.status(500).json({ message: 'Khong the mo phien luyen tap' });
+  }
+};
+
+export const getActivePracticeSessionV2 = async (req: Request, res: Response): Promise<void> => {
+  const topicSlug = typeof req.query.topicSlug === 'string' ? req.query.topicSlug.trim() : '';
+  if (!topicSlug) { res.status(400).json({ message: 'topicSlug is invalid' }); return; }
+  try { res.json({ session: await getActivePracticeSession(topicSlug, req.user!.userId) }); }
+  catch (error) { console.error('Failed to read active practice session:', error); res.status(500).json({ message: 'Khong the tai phien luyen tap' }); }
+};
+
+export const cancelPracticeSessionV2 = async (req: Request, res: Response): Promise<void> => {
+  try { await cancelPracticeSession(req.params.sessionId, req.user!.userId); res.status(204).end(); }
+  catch (error) { if (error instanceof PracticeSessionConflictError) { res.status(409).json({ message: error.message }); return; } console.error('Failed to cancel practice session:', error); res.status(500).json({ message: 'Khong the huy phien luyen tap' }); }
+};
+
+export const getPracticeSessionV2 = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const session = await getPracticeSession(req.params.sessionId, req.user!.userId);
+    if (session === null) { res.status(404).json({ message: 'Khong tim thay phien luyen tap' }); return; }
+    res.json(session);
+  } catch (error) { console.error('Failed to read practice session:', error); res.status(500).json({ message: 'Khong the tai phien luyen tap' }); }
+};
+
+export const savePracticeSessionResponseV2 = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await savePracticeSessionResponse(req.params.sessionId, req.params.sessionQuestionId, req.user!.userId, req.body?.response, req.body?.expectedRevision);
+    res.json(result);
+  } catch (error) {
+    if (error instanceof PracticeSessionConflictError) { res.status(409).json({ message: error.message }); return; }
+    if (error instanceof PracticeSessionRequestError) { res.status(400).json({ message: error.message }); return; }
+    console.error('Failed to save practice response:', error); res.status(500).json({ message: 'Khong the luu cau tra loi' });
+  }
+};
+
+export const submitPracticeSessionV2 = async (req: Request, res: Response): Promise<void> => {
+  const key = req.header('Idempotency-Key');
+  if (key === undefined || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)) { res.status(400).json({ message: 'Idempotency-Key khong hop le' }); return; }
+  try {
+    const result = await submitPracticeSession(req.params.sessionId, req.user!.userId, key.toLowerCase());
+    if (result.replayed) res.setHeader('Idempotency-Replayed', 'true');
+    res.status(result.replayed ? 200 : 201).json(result.session);
+  } catch (error) {
+    if (error instanceof PracticeSessionConflictError) { res.status(409).json({ message: error.message }); return; }
+    if (error instanceof PracticeSessionRequestError) { res.status(404).json({ message: error.message }); return; }
+    console.error('Failed to submit practice session:', error); res.status(500).json({ message: 'Khong the nop phien luyen tap' });
   }
 };
 

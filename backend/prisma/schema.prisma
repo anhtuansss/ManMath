@@ -17,6 +17,7 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   attempts     Attempt[]
+  practiceSessions PracticeSession[]
 }
 
 model Topic {
@@ -28,6 +29,7 @@ model Topic {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   subtopics   Subtopic[]
+  practiceSessions PracticeSession[]
 }
 
 model Subtopic {
@@ -38,6 +40,7 @@ model Subtopic {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  practiceSessions PracticeSession[]
 
   @@unique([topicId, name])
   @@index([topicId])
@@ -140,6 +143,7 @@ model ExamVersionQuestion {
   updatedAt     DateTime     @updatedAt
   examVersion    ExamVersion     @relation(fields: [examVersionId], references: [id], onDelete: Cascade)
   attemptAnswers AttemptAnswer[]
+  practiceSessionQuestions PracticeSessionQuestion[]
 
   @@unique([examVersionId, externalId])
   @@unique([examVersionId, order])
@@ -167,6 +171,59 @@ model AttemptAnswer {
   @@index([examVersionQuestionId])
 }
 
+model PracticeSession {
+  id                    String                @id @default(cuid())
+  userId                String
+  topicId               String
+  subtopicId            String?
+  requestedQuestionCount Int
+  selectedQuestionTypes QuestionType[]
+  selectionSeed         String
+  status                PracticeSessionStatus @default(in_progress)
+  startedAt             DateTime              @default(now())
+  submittedAt           DateTime?
+  scoreUnits            Int?
+  maxScoreUnits         Int?
+  fullyCorrectCount     Int?
+  totalQuestions        Int
+  unansweredCount       Int?
+  submitIdempotencyKey  String?               @unique
+  submissionFingerprint String?
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic                 Topic                 @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  subtopic              Subtopic?             @relation(fields: [subtopicId], references: [id], onDelete: Restrict)
+  questions             PracticeSessionQuestion[]
+
+  @@index([userId, status])
+  @@index([topicId, status])
+  @@index([subtopicId, status])
+}
+
+model PracticeSessionQuestion {
+  id                    String                 @id @default(cuid())
+  practiceSessionId     String
+  examVersionQuestionId String
+  order                 Int
+  practiceSession       PracticeSession        @relation(fields: [practiceSessionId], references: [id], onDelete: Cascade)
+  examVersionQuestion   ExamVersionQuestion    @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+  answer                PracticeSessionAnswer?
+
+  @@unique([practiceSessionId, order])
+  @@unique([practiceSessionId, examVersionQuestionId])
+}
+
+model PracticeSessionAnswer {
+  id                       String                  @id @default(cuid())
+  practiceSessionQuestionId String                 @unique
+  response                 Json?
+  responseRevision         Int                     @default(0)
+  updatedAt                DateTime                @updatedAt
+  isFullyCorrect           Boolean?
+  awardedScoreUnits        Int?
+  maxScoreUnits            Int?
+  practiceSessionQuestion  PracticeSessionQuestion @relation(fields: [practiceSessionQuestionId], references: [id], onDelete: Cascade)
+}
+
 enum ExamDifficulty {
   easy
   medium
@@ -181,6 +238,12 @@ enum QuestionType {
 
 enum AttemptScoringPolicy {
   vietnam_thpt_math_2025
+}
+
+enum PracticeSessionStatus {
+  in_progress
+  completed
+  cancelled
 }
 
 enum ExamVersionStatus {

@@ -376,3 +376,37 @@ test('internal draft preview renders safe V2 content without a taking flow', asy
   await page.getByRole('button', { name: '3', exact: true }).click();
   await expect(page.getByRole('button', { name: '3', exact: true })).toHaveAttribute('aria-current', 'true');
 });
+
+test('authenticated practice resumes a persistent session, autosaves, and submits with one stored key', async ({ page }) => {
+  const session: any = {
+    id: 'persistent-practice-session', status: 'in_progress', topic: { slug: 'ham-so-va-do-thi-nen-tang', name: 'Hàm số' },
+    startedAt: new Date().toISOString(), submittedAt: null, scoreUnits: null, maxScoreUnits: null, fullyCorrectCount: null, totalQuestions: 1, unansweredCount: null,
+    configuration: { topicSlug: 'ham-so-va-do-thi-nen-tang', subtopicSlug: null, requestedQuestionCount: 5, actualQuestionCount: 1, questionTypes: ['single_choice'] },
+    questions: [{ sessionQuestionId: 'persistent-sc', order: 1, question: sessionQuestions[0], response: null, responseRevision: 0 }],
+  };
+  let activeSession: any = null;
+  const submissionKeys: string[] = [];
+  await page.addInitScript(() => window.localStorage.setItem('manmath-auth-token', 'persistent-practice-test-token'));
+  await page.route('**/api/v2/practice/sessions/active?topicSlug=ham-so-va-do-thi-nen-tang', async (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify({ session: activeSession }) }));
+  await page.route('**/api/v2/practice/sessions', async (route) => { activeSession = session; await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(session) }); });
+  await page.route('**/api/v2/practice/sessions/persistent-practice-session/questions/persistent-sc/response', async (route) => {
+    const body = route.request().postDataJSON() as { response: { choiceId?: string } | null; expectedRevision: number };
+    session.questions[0] = { ...session.questions[0], response: body.response === null ? null : { type: 'single_choice', choiceId: body.response.choiceId ?? '' }, responseRevision: body.expectedRevision + 1 };
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ response: body.response === null ? null : { type: 'single_choice', choiceId: body.response.choiceId }, responseRevision: body.expectedRevision + 1 }) });
+  });
+  await page.route('**/api/v2/practice/sessions/persistent-practice-session/submit', async (route) => {
+    submissionKeys.push(route.request().headers()['idempotency-key'] ?? '');
+    await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ ...session, status: 'completed', submittedAt: new Date().toISOString(), scoreUnits: 50, maxScoreUnits: 50, fullyCorrectCount: 1, unansweredCount: 0, questions: [{ ...session.questions[0], response: { type: 'single_choice', choiceId: 'a' }, responseRevision: 1, result: { isFullyCorrect: true, awardedScoreUnits: 50, maxScoreUnits: 50 } }] }) });
+  });
+  await page.goto('/practice/topic/ham-so-va-do-thi-nen-tang');
+  await page.getByRole('button', { name: 'Bắt đầu luyện', exact: true }).click();
+  await page.getByRole('radio').first().click();
+  await page.waitForTimeout(450);
+  await page.reload();
+  await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
+  await page.getByRole('button', { name: 'Nộp bài', exact: true }).click();
+  await expect(page.getByText('Kết quả:', { exact: false })).toBeVisible();
+  expect(submissionKeys).toHaveLength(1);
+  expect(submissionKeys[0]).toMatch(/^[0-9a-f-]{36}$/);
+  await expect(page.getByRole('radio').first()).toBeDisabled();
+});

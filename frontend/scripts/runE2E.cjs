@@ -32,7 +32,8 @@ function run(command, args, cwd, env) {
 }
 
 function verificationEnvironment() {
-  const primaryDatabaseUrl = process.env.DATABASE_URL?.trim()
+  const primaryDatabaseUrl = process.env.MANMATH_PRIMARY_DATABASE_URL?.trim()
+    || process.env.DATABASE_URL?.trim()
     || backendEnvironment.parsed?.DATABASE_URL?.trim();
   const verifyDatabaseUrl = process.env.VERIFY_DATABASE_URL;
   const confirmation = process.env.VERIFY_DATABASE_CONFIRM;

@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { API_BASE_URL } from '../../config/api';
+import { getAuthToken } from '../../lib/authStorage';
+import { PersistentPracticeClient } from './PersistentPracticeClient';
 import { V2QuestionCard } from '../exam-v2/ExamContentTakingClient';
 import { Button, Modal } from '../ui';
 import type {
@@ -37,7 +39,7 @@ function buildResponses(questions: readonly V2PublicPracticeQuestionDto[], answe
   return { responses, error: null };
 }
 
-export function PracticeClient({ topicSlug }: PracticeClientProps) {
+function EphemeralPracticeClient({ topicSlug }: PracticeClientProps) {
   const [practice, setPractice] = useState<V2PublicPracticeTopicDto | null>(null);
   const [answers, setAnswers] = useState<V2AnswersByQuestionId>({});
   const [remainingSeconds, setRemainingSeconds] = useState(0);
@@ -103,4 +105,12 @@ export function PracticeClient({ topicSlug }: PracticeClientProps) {
       {practice.questions.length === 0 ? <section className="rounded-xl border border-border bg-surface p-8 text-center text-text-secondary">Chuyên đề này chưa có câu hỏi V2 đã publish.</section> : <div className="space-y-5">{practice.questions.map((question, index) => <div key={question.id}><V2QuestionCard question={question} index={index} answer={answers[question.id]} isTimeUp={submitted || remainingSeconds === 0} onAnswerChange={(answer) => updateAnswer(question.id, answer)} />{result ? <p className={`mt-2 rounded-lg border px-4 py-2 text-sm font-semibold ${resultsByQuestionId.get(question.id)?.isCorrect ? 'border-success-border bg-success-light text-success' : 'border-error-border bg-error-light text-error'}`}>{resultsByQuestionId.get(question.id)?.isCorrect ? 'Trả lời đúng' : resultsByQuestionId.get(question.id)?.response === null ? 'Chưa trả lời' : 'Chưa đúng'} · {resultsByQuestionId.get(question.id)?.awardedScoreUnits ?? 0}/{resultsByQuestionId.get(question.id)?.maxScoreUnits ?? 0} điểm đơn vị</p> : null}</div>)}</div>}
     </main>
   </div>;
+}
+
+/** Guests retain the old ephemeral flow; authenticated learners use a saved session. */
+export function PracticeClient({ topicSlug }: PracticeClientProps) {
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  useEffect(() => setAuthenticated(getAuthToken() !== null), []);
+  if (authenticated === null) return <main className="min-h-[100dvh] bg-background" />;
+  return authenticated ? <PersistentPracticeClient topicSlug={topicSlug} /> : <EphemeralPracticeClient topicSlug={topicSlug} />;
 }
