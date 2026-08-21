@@ -37,9 +37,9 @@ Các biến môi trường bắt buộc được mô tả trong [AUTH.md](AUTH.m
 
 ```powershell
 cd backend
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json --write
-npm run publish:exam-content -- thpt-math-2026-001
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json --write
+npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 ```
 
 Xem [IMPORT_JSON.md](IMPORT_JSON.md) và [CONTENT_IMPORT.md](CONTENT_IMPORT.md).

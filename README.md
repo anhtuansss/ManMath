@@ -97,13 +97,13 @@ Chi tiết guard và target verification nằm trong [Testing](docs/TESTING.md).
 
 ## Content import
 
-Production example: `backend/src/data/import/thpt-math-2026-001.json`.
+Production example: `backend/src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json`.
 
 ```powershell
 cd backend
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json --write
-npm run publish:exam-content -- thpt-math-2026-001
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json --write
+npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 ```
 
 Đọc [Import JSON](docs/IMPORT_JSON.md) và [Content lifecycle](docs/CONTENT_IMPORT.md) trước khi publish.

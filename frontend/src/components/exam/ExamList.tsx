@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ExamCard } from './ExamCard';
 import { RecommendationCard } from './RecommendationCard';
@@ -49,6 +49,8 @@ const durationFilterLabels: Record<ExamDurationFilter, string> = {
   long: '> 90 phút',
 };
 
+const EXAMS_PER_PAGE = 5;
+
 export function ExamList({
   exams,
   draftExamId,
@@ -74,7 +76,18 @@ export function ExamList({
   isAuthenticated,
 }: ExamListProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const quickStartExams = exams.slice(0, 3);
+  const totalPages = Math.max(1, Math.ceil(exams.length / EXAMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const visibleExams = exams.slice(
+    (safeCurrentPage - 1) * EXAMS_PER_PAGE,
+    safeCurrentPage * EXAMS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [exams]);
 
   const draftExam = draftExamId ? exams.find((e) => e.id === draftExamId) : null;
   const selectedTopicData = topics.find((topic) => topic.slug === selectedTopic) ?? null;
@@ -385,10 +398,21 @@ export function ExamList({
                 ) : (
                   <div className="px-5 pb-2 pt-1">
                     <div className="divide-y divide-border">
-                      {exams.map((exam) => (
+                      {visibleExams.map((exam) => (
                         <ExamCard key={exam.id} exam={exam} variant="compact" />
                       ))}
                     </div>
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-between border-t border-border py-3">
+                        <p className="workspace-metadata">
+                          Hiển thị {(safeCurrentPage - 1) * EXAMS_PER_PAGE + 1}–{Math.min(safeCurrentPage * EXAMS_PER_PAGE, exams.length)} trên {exams.length} đề
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safeCurrentPage === 1} className="workspace-button-text h-9 rounded-md border border-border px-3 text-text-secondary transition-colors hover:bg-background-alt disabled:cursor-not-allowed disabled:opacity-50">Trước</button>
+                          <button type="button" onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} disabled={safeCurrentPage === totalPages} className="workspace-button-text h-9 rounded-md border border-border px-3 text-text-secondary transition-colors hover:bg-background-alt disabled:cursor-not-allowed disabled:opacity-50">Sau</button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </section>

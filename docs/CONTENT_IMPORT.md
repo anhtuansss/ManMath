@@ -17,12 +17,12 @@ soạn JSON V2
 Các lệnh chạy từ `backend`:
 
 ```powershell
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json --write
-npm run publish:exam-content -- thpt-math-2026-001
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json --write
+npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 ```
 
-Tuyến xem trước: `/exam-v2-preview/thpt-math-2026-001`. Tuyến này yêu cầu JWT đã xác minh có email nằm trong `DRAFT_PREVIEW_AUTHORIZED_EMAILS`. Chế độ xem trước vô hiệu hóa nộp bài, lưu bài làm và hành vi lưu trữ của luồng làm đề công khai.
+Tuyến xem trước: `/exam-v2-preview/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001`. Tuyến này yêu cầu JWT đã xác minh có email nằm trong `DRAFT_PREVIEW_AUTHORIZED_EMAILS`. Chế độ xem trước vô hiệu hóa nộp bài, lưu bài làm và hành vi lưu trữ của luồng làm đề công khai.
 
 ## Quy tắc chỉnh sửa
 

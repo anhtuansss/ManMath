@@ -1,6 +1,6 @@
 # Thêm đề thi Toán chính thức
 
-Dùng `backend/src/data/import/thpt-math-2026-001.json` làm ví dụ cấu trúc hiện tại.
+Dùng `backend/src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json` làm ví dụ cấu trúc hiện tại.
 
 1. Chọn `exam.id` logic và ổn định; không dùng số phiên bản có thể thay đổi để thay thế định danh này.
 2. Đặt `publishProfile` thành `official_full_exam`, thời lượng thành 90 phút và dùng chính sách chấm điểm mặc định của trình nhập hiện có.

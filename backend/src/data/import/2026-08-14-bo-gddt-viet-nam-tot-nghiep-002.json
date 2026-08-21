@@ -2,12 +2,12 @@
   "schemaVersion": 2,
   "publishProfile": "official_full_exam",
   "exam": {
-    "id": "thpt-math-2026-002",
-    "title": "Đề luyện tập Toán THPT 2026 — ManMath 002",
+    "id": "2026-08-14-bo-gddt-viet-nam-tot-nghiep-002",
+    "title": "Đề chính thức kỳ thi tốt nghiệp THPT năm 2026 lần 2 môn Toán",
     "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
     "durationMinutes": 90,
     "subject": "Toán",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "source": null,
     "year": 2026,
     "statusLabel": "Draft"
@@ -200,7 +200,7 @@
       "subtopicSlug": "cac-so-dac-trung-do-muc-do-phan-tan",
       "assets": [
         {
-          "src": "/images/2026_002_img/sc-02-bang-muc-luong-khoi-diem.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sc-02-bang-muc-luong-khoi-diem.png",
           "alt": "Bảng mức lương khởi điểm và tần số của 20 công nhân"
         }
       ],
@@ -356,7 +356,7 @@
       "subtopicSlug": "gia-tri-lon-nhat-gia-tri-nho-nhat",
       "assets": [
         {
-          "src": "/images/2026_002_img/sc-07-bang-bien-thien.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sc-07-bang-bien-thien.png",
           "alt": "Bảng biến thiên của hàm số bậc ba trên đoạn từ -1 đến 2"
         }
       ],
@@ -392,7 +392,7 @@
       "subtopicSlug": "so-dac-trung-do-xu-the-trung-tam",
       "assets": [
         {
-          "src": "/images/2026_002_img/sc-08-bang-so-gio-xem-truyen-hinh.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sc-08-bang-so-gio-xem-truyen-hinh.png",
           "alt": "Bảng số giờ xem truyền hình và tần số của 100 gia đình"
         }
       ],
@@ -428,7 +428,7 @@
       "subtopicSlug": "vecto-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2026_002_img/sc-09-hinh-hop-abcd-a-b-c-d.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sc-09-hinh-hop-abcd-a-b-c-d.png",
           "alt": "Hình hộp ABCD.A'B'C'D'"
         }
       ],
@@ -494,7 +494,7 @@
       "subtopicSlug": "quan-he-vuong-goc-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2026_002_img/sc-11-hinh-chop-s-abcd.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sc-11-hinh-chop-s-abcd.png",
           "alt": "Hình chóp S.ABCD có đáy ABCD là hình vuông"
         }
       ],
@@ -595,7 +595,7 @@
       "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
       "assets": [
         {
-          "src": "/images/2026_002_img/tf-02-do-thi-toc-do-bom-nuoc.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/tf-02-do-thi-toc-do-bom-nuoc.png",
           "alt": "Đồ thị parabol biểu diễn tốc độ bơm nước theo thời gian"
         }
       ],
@@ -732,7 +732,7 @@
       "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
       "assets": [
         {
-          "src": "/images/2026_002_img/sa-03-hinh-phang-h-va-khoi-tron-xoay.png",
+          "src": "/images/2026-08-14-bo-gddt-viet-nam-tot-nghiep-002/sa-03-hinh-phang-h-va-khoi-tron-xoay.png",
           "alt": "Hình phẳng H giới hạn bởi elip và đường tròn, dùng để tạo khối tròn xoay"
         }
       ],

@@ -2,8 +2,8 @@
     "schemaVersion": 2,
     "publishProfile": "official_full_exam",
     "exam": {
-        "id": "thpt-math-2026-001",
-        "title": "Đề luyện tập Toán THPT 2026 — ManMath 001",
+        "id": "2026-06-11-bo-gddt-viet-nam-tot-nghiep-001",
+        "title": "Đề chính thức kỳ thi tốt nghiệp THPT năm 2026 môn Toán",
         "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
         "durationMinutes": 90,
         "subject": "Toán",
@@ -240,7 +240,7 @@
             "subtopicSlug": "vecto-trong-khong-gian",
             "assets": [
                 {
-                "src": "/images/2026_001_img/sc-07-hinh-lap-phuong.png",
+                "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sc-07-hinh-lap-phuong.png",
                 "alt": "Hình lập phương ABCD.A'B'C'D'"
                 }
             ],
@@ -336,7 +336,7 @@
             "subtopicSlug": "duong-tiem-can",
             "assets": [
                 {
-                "src": "/images/2026_001_img/sc-10-bang-bien-thien.png",
+                "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sc-10-bang-bien-thien.png",
                 "alt": "Bảng biến thiên của hàm số phân thức"
                 }
             ],
@@ -402,7 +402,7 @@
             "subtopicSlug": "mau-so-lieu-ghep-nhom",
             "assets": [
                 {
-                "src": "/images/2026_001_img/sc-12-bang-so-lieu-ghep-nhom.png",
+                "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sc-12-bang-so-lieu-ghep-nhom.png",
                 "alt": "Bảng thời gian học trực tuyến và số học sinh tương ứng"
                 }
             ],
@@ -593,7 +593,7 @@
             "subtopicSlug": "hoan-vi-chinh-hop-to-hop",
             "assets": [ 
                 { 
-                    "src": "/images/2026_001_img/sa-02-luoi-15-o.png", 
+                    "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sa-02-luoi-15-o.png", 
                     "alt": "Sơ đồ 15 ô vuông gồm 5 hàng và 5 cột xếp thành hình bậc thang" 
                 } 
                 ], 
@@ -612,7 +612,7 @@
             "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
             "assets": [ 
                 { 
-                    "src": "/images/2026_001_img/sa-03-hat-cuom.png", 
+                    "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sa-03-hat-cuom.png", 
                     "alt": "Hình minh họa khối tròn xoay tạo bởi elip và lỗ khoan hình trụ bán kính 0,2 cm" 
                 } 
             ], 
@@ -631,7 +631,7 @@
             "subtopicSlug": "xac-suat-co-dien", 
             "assets": [ 
                 { 
-                    "src": "/images/2026_001_img/sa-04-da-giac-deu-12-canh.png", 
+                    "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sa-04-da-giac-deu-12-canh.png", 
                     "alt": "Đa giác đều 12 cạnh với các đỉnh A1 đến A12" 
                 }
             ], 
@@ -650,7 +650,7 @@
             "subtopicSlug": "bai-toan-thuc-te-tong-hop",
             "assets": [ 
                 { 
-                    "src": "/images/2026_001_img/sa-05-bang-ban-hang.png", 
+                    "src": "/images/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001/sa-05-bang-ban-hang.png", 
                     "alt": "Bảng số liệu khối lượng rau muống, bí xanh, cà chua và tổng số tiền bán được trong bốn ngày" 
                 } 
             ], 
