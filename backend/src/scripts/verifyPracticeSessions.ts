@@ -63,10 +63,12 @@ async function main(): Promise<void> {
   assert.equal(cleared.response, null);
 
   const membership = await prisma.practiceSessionQuestion.findUniqueOrThrow({ where: { id: first.sessionQuestionId } });
+  assert.ok(membership.examVersionQuestionId, 'fixture session must pin an exam question');
+  const pinnedExamQuestionId = membership.examVersionQuestionId;
   await assert.rejects(() => prisma.practiceSessionQuestion.update({ where: { id: membership.id }, data: { order: 99 } }));
-  await assert.rejects(() => prisma.examVersionQuestion.delete({ where: { id: membership.examVersionQuestionId } }), 'pinned FK is RESTRICT');
+  await assert.rejects(() => prisma.examVersionQuestion.delete({ where: { id: pinnedExamQuestionId } }), 'pinned FK is RESTRICT');
 
-  await prisma.examVersion.update({ where: { id: (await prisma.examVersionQuestion.findUniqueOrThrow({ where: { id: membership.examVersionQuestionId } })).examVersionId }, data: { status: 'archived' } });
+  await prisma.examVersion.update({ where: { id: (await prisma.examVersionQuestion.findUniqueOrThrow({ where: { id: pinnedExamQuestionId } })).examVersionId }, data: { status: 'archived' } });
   assert.ok(await getPracticeSession(opened.session.id, owner), 'archived source remains readable');
 
   const key = randomUUID();
