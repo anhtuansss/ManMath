@@ -1,0 +1,761 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-05-28-so-gddt-ninh-binh-khao-sat-lan-4",
+    "title": "Đề khảo sát Toán 12 lần 4 năm 2025 – 2026 sở GD&ĐT Ninh Bình",
+    "description": "Đề khảo sát, đánh giá chất lượng giáo dục lớp 12 THPT lần thứ tư năm học 2025–2026 của Sở GD&ĐT Ninh Bình.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "Sở GD&ĐT Ninh Bình",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Khối tròn xoay",
+        "slug": "khoi-tron-xoay"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Hoán vị, chỉnh hợp, tổ hợp",
+        "slug": "hoan-vi-chinh-hop-to-hop",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Đường tiệm cận",
+        "slug": "duong-tiem-can",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Hệ tọa độ Oxyz và tọa độ điểm",
+        "slug": "he-toa-do-oxyz-va-toa-do-diem",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Cấp số nhân",
+        "slug": "cap-so-nhan",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Phương trình mặt cầu",
+        "slug": "phuong-trinh-mat-cau",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Tích phân và tính chất",
+        "slug": "tich-phan-va-tinh-chat",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Phương trình mặt phẳng",
+        "slug": "phuong-trinh-mat-phang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Nguyên hàm cơ bản",
+        "slug": "nguyen-ham-co-ban",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Bất phương trình mũ và logarit",
+        "slug": "bat-phuong-trinh-mu-va-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Các số đặc trưng đo mức độ phân tán",
+        "slug": "cac-so-dac-trung-do-muc-do-phan-tan",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Cực trị của hàm số",
+        "slug": "cuc-tri-cua-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Thể tích khối chóp",
+        "slug": "the-tich-khoi-chop",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Logarit và các tính chất",
+        "slug": "logarit-va-cac-tinh-chat",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Góc trong không gian",
+        "slug": "goc-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Mặt cầu và khối cầu",
+        "slug": "mat-cau-va-khoi-cau",
+        "topicSlug": "khoi-tron-xoay"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Có bao nhiêu cách chọn 2 học sinh từ một tổ gồm 8 học sinh nam và 10 học sinh nữ để một học sinh làm tổ trưởng và một học sinh làm tổ phó?",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "hoan-vi-chinh-hop-to-hop",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$C_8^1C_{10}^1$."
+        },
+        {
+          "id": "b",
+          "content": "$18!$."
+        },
+        {
+          "id": "c",
+          "content": "$C_{18}^2$."
+        },
+        {
+          "id": "d",
+          "content": "$A_{18}^2$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Cho hàm số $y=\\dfrac{ax^2+bx+c}{mx+n}$ với $a\\ne0$, $m\\ne0$ có đồ thị như hình vẽ dưới đây. Phương trình đường tiệm cận xiên của đồ thị hàm số đã cho là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "duong-tiem-can",
+      "assets": [
+        {
+          "src": "/images/2026-05-28-so-gddt-ninh-binh-khao-sat-lan-4-0101/sc-02-do-thi-ham-phan-thuc.png",
+          "alt": "Đồ thị hàm phân thức có tiệm cận xiên"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=x+1$."
+        },
+        {
+          "id": "b",
+          "content": "$y=-x-1$."
+        },
+        {
+          "id": "c",
+          "content": "$x=-1$."
+        },
+        {
+          "id": "d",
+          "content": "$y=x-1$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Trong không gian với hệ trục tọa độ $Oxyz$, cho hình hộp $ABCD.A'B'C'D'$ có $A(1;2;-1)$, $B(3;1;-2)$, $C(4;-2;1)$ và $D'(2;1;5)$. Tọa độ của điểm $A'$ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "he-toa-do-oxyz-va-toa-do-diem",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(1;0;-4)$."
+        },
+        {
+          "id": "b",
+          "content": "$(1;4;2)$."
+        },
+        {
+          "id": "c",
+          "content": "$(-3;6;4)$."
+        },
+        {
+          "id": "d",
+          "content": "$(4;0;4)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Cho cấp số nhân $(u_n)$ với $u_1=8$ và $u_2=2$. Công bội của cấp số nhân đã cho là",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-nhan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$q=4$."
+        },
+        {
+          "id": "b",
+          "content": "$q=\\dfrac14$."
+        },
+        {
+          "id": "c",
+          "content": "$q=2$."
+        },
+        {
+          "id": "d",
+          "content": "$q=\\dfrac12$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Trong không gian với hệ trục tọa độ $Oxyz$, tâm của mặt cầu $(S):x^2+y^2+z^2-2x+4y+2z-3=0$ có tọa độ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-cau",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(-2;4;2)$."
+        },
+        {
+          "id": "b",
+          "content": "$(1;-2;-1)$."
+        },
+        {
+          "id": "c",
+          "content": "$(-1;2;1)$."
+        },
+        {
+          "id": "d",
+          "content": "$(2;-4;-2)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Biết $\\displaystyle\\int_{-1}^{3}f(x)\\,dx=-2$ và $\\displaystyle\\int_{-1}^{3}g(x)\\,dx=1$. Khi đó $\\displaystyle\\int_{-1}^{3}[f(x)-g(x)]\\,dx$ bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "tich-phan-va-tinh-chat",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3$."
+        },
+        {
+          "id": "b",
+          "content": "$-1$."
+        },
+        {
+          "id": "c",
+          "content": "$1$."
+        },
+        {
+          "id": "d",
+          "content": "$-3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Trong không gian với hệ trục tọa độ $Oxyz$, phương trình của mặt phẳng đi qua $M(1;3;-2)$ và có một vectơ pháp tuyến $\\vec n=(2;-1;3)$ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-phang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$2(x+1)-(y-3)+3(z+2)=0$."
+        },
+        {
+          "id": "b",
+          "content": "$2(x-1)-(y-3)+3(z+2)=0$."
+        },
+        {
+          "id": "c",
+          "content": "$(x+2)+(y+3)-3(z+1)=0$."
+        },
+        {
+          "id": "d",
+          "content": "$(x-2)+(y+3)-3(z-1)=0$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Họ tất cả các nguyên hàm của hàm số $y=\\sin x$ là",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\cos x+C$."
+        },
+        {
+          "id": "b",
+          "content": "$-\\sin x+C$."
+        },
+        {
+          "id": "c",
+          "content": "$\\sin x+C$."
+        },
+        {
+          "id": "d",
+          "content": "$-\\cos x+C$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Tập nghiệm của bất phương trình $\\log_{0{,}5}x>\\log_{0{,}5}9$ là",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bat-phuong-trinh-mu-va-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(-\\infty;9)$."
+        },
+        {
+          "id": "b",
+          "content": "$(0;9)$."
+        },
+        {
+          "id": "c",
+          "content": "$(0;+\\infty)$."
+        },
+        {
+          "id": "d",
+          "content": "$(9;+\\infty)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Một bác tài xế thống kê độ dài quãng đường (đơn vị: km) bác đã lái xe mỗi ngày trong một tháng (30 ngày) ở bảng số liệu ghép nhóm sau. Độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả làm tròn đến hàng phần trăm) bằng",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "cac-so-dac-trung-do-muc-do-phan-tan",
+      "assets": [
+        {
+          "src": "/images/2026-05-28-so-gddt-ninh-binh-khao-sat-lan-4-0101/sc-10-bang-quang-duong-lai-xe.png",
+          "alt": "Bảng số liệu ghép nhóm về quãng đường lái xe mỗi ngày trong 30 ngày"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3206{,}90$."
+        },
+        {
+          "id": "b",
+          "content": "$56{,}63$."
+        },
+        {
+          "id": "c",
+          "content": "$55{,}68$."
+        },
+        {
+          "id": "d",
+          "content": "$55{,}67$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Cho hàm số $y=f(x)$ có đồ thị như hình vẽ dưới đây. Điểm cực tiểu của hàm số đã cho là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "cuc-tri-cua-ham-so",
+      "assets": [
+        {
+          "src": "/images/2026-05-28-so-gddt-ninh-binh-khao-sat-lan-4-0101/sc-11-do-thi-ham-so.png",
+          "alt": "Đồ thị hàm số dùng để xác định điểm cực tiểu"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$1$."
+        },
+        {
+          "id": "b",
+          "content": "$2$."
+        },
+        {
+          "id": "c",
+          "content": "$-1$."
+        },
+        {
+          "id": "d",
+          "content": "$-4$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Nếu khối lăng trụ $ABC.A'B'C'$ có thể tích bằng $60$ thì khối chóp $A'.ABC$ có thể tích bằng",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "the-tich-khoi-chop",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$60$."
+        },
+        {
+          "id": "b",
+          "content": "$40$."
+        },
+        {
+          "id": "c",
+          "content": "$180$."
+        },
+        {
+          "id": "d",
+          "content": "$20$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Cho hàm số $f(x)=\\dfrac{x^2+3}{x-1}$ có đồ thị là đường cong $(C)$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Có 2 tiếp tuyến của $(C)$ song song với đường thẳng $d:y=5x-3$."
+        },
+        {
+          "id": "b",
+          "content": "Đồ thị hàm số có tiệm cận đứng là $x=2$ và tiệm cận ngang là $y=1$."
+        },
+        {
+          "id": "c",
+          "content": "Hàm số nghịch biến trên $\\mathbb R\\setminus\\{1\\}$."
+        },
+        {
+          "id": "d",
+          "content": "$f'(x)=\\dfrac{x^2-2x-3}{(x-1)^2}$, với mọi $x\\ne1$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Tại bang Oklahoma, Hoa Kỳ, $70\\%$ số coyote bị mắc bệnh Ehrlichiosis. Nếu coyote bị bệnh, xác suất xét nghiệm dương tính là $97\\%$; nếu không bị bệnh, xác suất xét nghiệm âm tính là $95\\%$. Các bác sĩ thú y bắt ngẫu nhiên 1 con coyote ở Oklahoma và tiến hành xét nghiệm.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Xác suất để con coyote bị bắt không bị bệnh và có kết quả xét nghiệm dương tính là $0{,}05$."
+        },
+        {
+          "id": "b",
+          "content": "Xác suất để con coyote bị bắt có kết quả xét nghiệm âm tính là $30{,}6\\%$."
+        },
+        {
+          "id": "c",
+          "content": "Giá trị dự đoán âm của xét nghiệm này lớn hơn $95\\%$."
+        },
+        {
+          "id": "d",
+          "content": "Bắt ngẫu nhiên 3 con coyote ở Oklahoma, xác suất để có đúng 2 con có kết quả xét nghiệm dương tính bằng $44{,}2\\%$ (làm tròn đến hàng phần chục)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Trong một dự án khảo sát địa chất, một túi khí tự nhiên có dạng khối cầu $(S): (x-1)^2+(y-2)^2+(z+11)^2=25$. Lớp đá móng là mặt phẳng $(P):2x-y+2z+22=0$. Mũi khoan bắt đầu từ $A(-3;8;0)$ và tiến theo phương của vectơ $\\vec u=(4;-3;-7)$. Mỗi đơn vị trên trục tương ứng 10 m.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Trong suốt thời gian mũi khoan di chuyển bên trong túi khí $(S)$, khoảng cách từ mũi khoan đến lớp đá móng $(P)$ không nhỏ hơn 5 m; phương án khoan đáp ứng yêu cầu kỹ thuật đó."
+        },
+        {
+          "id": "b",
+          "content": "Theo quỹ đạo chuyển động, mũi khoan sẽ đi xuyên qua túi khí $(S)$ tạo thành một đoạn đường ống có độ dài 100 m ngay trong lòng túi khí."
+        },
+        {
+          "id": "c",
+          "content": "Túi khí $(S)$ bị lớp đá móng $(P)$ chia thành hai phần có thể tích bằng nhau."
+        },
+        {
+          "id": "d",
+          "content": "Quỹ đạo của mũi khoan được mô tả bởi một phần đường thẳng có phương trình chính tắc $\\dfrac{x+3}{4}=\\dfrac{y-8}{-3}=\\dfrac{z}{-7}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Trên một đoạn đường thẳng, hai xe ô tô đang chạy ngược chiều nhau. Khi hai xe cách nhau 110 m, hai người lái xe đạp phanh. Xe 1 có gia tốc $a_1(t)=-4t$ và xe 2 có gia tốc $a_2(t)=-3t$ (m/s²). Vận tốc ban đầu của hai xe lần lượt là 18 m/s và 24 m/s.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Nếu người lái xe 1 đạp phanh ngay lập tức, quãng đường xe 1 đi được từ lúc đạp phanh đến khi dừng hẳn là 40 m."
+        },
+        {
+          "id": "b",
+          "content": "Nếu người lái xe 2 đạp phanh ngay lập tức, xe 2 cần 4 giây để dừng hẳn."
+        },
+        {
+          "id": "c",
+          "content": "Nếu người lái xe 1 đạp phanh ngay lập tức, vận tốc của xe 1 là $v_1(t)=18-2t^2$ (m/s)."
+        },
+        {
+          "id": "d",
+          "content": "Nếu xe 1 đạp phanh ngay còn xe 2 mất 0,5 giây mới bắt đầu đạp phanh, thì hai xe sẽ xảy ra va chạm."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Giáo viên chuẩn bị hai hộp thăm chứa câu hỏi ôn tập. Hộp thứ nhất gồm 7 thăm Giải tích và 3 thăm Hình học; hộp thứ hai gồm 6 thăm Giải tích và 4 thăm Hình học. Giáo viên rút ngẫu nhiên 2 thăm từ hộp thứ nhất và 4 thăm từ hộp thứ hai để tạo thành một tổ hợp 6 câu hỏi. Một học sinh bốc ngẫu nhiên 2 thăm từ tổ hợp đó. Tính xác suất để học sinh bốc được ít nhất một câu hỏi Giải tích. (Làm tròn đến hàng phần trăm)",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "0,88"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Độ cao $h$ (km) so với mặt nước biển của một vị trí trong không trung tính theo áp suất không khí $P$ tại điểm đó và áp suất $P_0$ ở mặt nước biển bởi công thức $h=-19{,}4\\log\\dfrac{P}{P_0}$. Một máy bay đang bay ngang ở độ cao 10 km thì bắt đầu hạ độ cao. Khi hạ xuống đến vị trí có áp suất không khí gấp đôi so với lúc ở độ cao 10 km, hỏi máy bay đã hạ xuống bao nhiêu km theo phương thẳng đứng? (Làm tròn đến hàng phần chục)",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "logarit-va-cac-tinh-chat",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "5,8"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Trạm kiểm soát không lưu theo dõi hai chuyến bay trong hệ tọa độ $Oxyz$ (đơn vị km). Tại $t=0$, máy bay thứ nhất ở $A_0(0;0;10)$ và có vectơ vận tốc $\\vec v_1=(15;0;0)$; máy bay thứ hai ở $B_0(10;-5;10)$ và có vectơ vận tốc $\\vec v_2=(13;5;0)$, vận tốc tính bằng km/phút. Hệ thống cảnh báo kích hoạt khi khoảng cách giữa hai máy bay chạm mốc 10 km. Sau bao nhiêu giây kể từ lúc bắt đầu theo dõi thì còi báo động bắt đầu kêu? (Làm tròn đến hàng phần chục)",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "18,5"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Khi xây dựng một căn nhà, chủ đầu tư dự định thi công lớp tường rỗng cách ẩm có tuổi thọ 10 năm. Chi phí thi công là 5 triệu đồng cho mỗi cm độ dày. Chi phí điện năng trung bình mỗi năm cho máy hút ẩm là $C(x)=\\dfrac{k}{x^2+2}$ (triệu đồng), với $0\\le x\\le10$. Nếu không thi công lớp tường rỗng, chi phí điện năng là 18 triệu đồng/năm. Gọi $f(x)$ là tổng chi phí thi công và chi phí vận hành máy hút ẩm trong 10 năm. Cần thiết kế lớp tường rỗng dày bao nhiêu cm để $f(x)$ nhỏ nhất?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "5"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Cho hình lăng trụ đứng $ABCD.A'B'C'D'$ có đáy là hình vuông cạnh $2a$, $AA'=a\\sqrt3$. Gọi $I$ là tâm hình chữ nhật $ABB'A'$. Tính tang của góc nhị diện $[I,AC,D]$. (Làm tròn đến hàng phần chục)",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "goc-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "-2,1"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Một cơ sở sản xuất làm những chiếc bể cá bằng thủy tinh có dạng một phần hình cầu như hình vẽ. Mặt trong của bể là một phần mặt cầu bán kính 2 dm, khoảng cách từ tâm mặt cầu mặt trong đến mặt phẳng miệng bể là 1 dm. Thành thủy tinh dày không đổi 0,3 cm và mặt cắt ở miệng bể được mài bằng phẳng. Tính thể tích thủy tinh cần sử dụng để làm một chiếc bể cá (cm³; chỉ làm tròn kết quả cuối cùng đến hàng đơn vị).",
+      "topicSlug": "khoi-tron-xoay",
+      "subtopicSlug": "mat-cau-va-khoi-cau",
+      "assets": [
+        {
+          "src": "/images/2026-05-28-so-gddt-ninh-binh-khao-sat-lan-4-0101/sa-06-be-ca-phan-hinh-cau.png",
+          "alt": "Bể cá bằng thủy tinh có dạng một phần hình cầu"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1145"
+      }
+    }
+  ]
+}

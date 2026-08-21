@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "publishProfile": "official_full_exam",
   "exam": {
-    "id": "thpt-math-2025-001",
-    "title": "Đề luyện tập Toán THPT 2025 — ManMath 001",
+    "id": "2025-06-26-bo-gddt-viet-nam-tot-nghiep-001",
+    "title": "Đề chính thức kỳ thi tốt nghiệp THPT năm 2025 môn Toán",
     "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
     "durationMinutes": 90,
     "subject": "Toán",
@@ -187,7 +187,7 @@
       "subtopicSlug": "vecto-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2025_001_img/sc-01-hinh-lang-tru-abc-a-b-c.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sc-01-hinh-lang-tru-abc-a-b-c.png",
           "alt": "Hình lăng trụ ABC.A'B'C'"
         }
       ],
@@ -223,7 +223,7 @@
       "subtopicSlug": "quan-he-song-song-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2025_001_img/sc-02-hinh-hop-abcd-a-b-c-d.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sc-02-hinh-hop-abcd-a-b-c-d.png",
           "alt": "Hình hộp ABCD.A'B'C'D'"
         }
       ],
@@ -259,7 +259,7 @@
       "subtopicSlug": "tu-phan-vi",
       "assets": [
         {
-          "src": "/images/2025_001_img/sc-03-bang-tan-so-thoi-luong-cuoc-goi.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sc-03-bang-tan-so-thoi-luong-cuoc-goi.png",
           "alt": "Bảng tần số ghép nhóm thời lượng các cuộc gọi điện thoại"
         }
       ],
@@ -505,7 +505,7 @@
       "subtopicSlug": "duong-tiem-can",
       "assets": [
         {
-          "src": "/images/2025_001_img/sc-11-do-thi-ham-phan-thuc.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sc-11-do-thi-ham-phan-thuc.png",
           "alt": "Đồ thị hàm phân thức với các đường tiệm cận"
         }
       ],
@@ -711,7 +711,7 @@
       "subtopicSlug": "xac-suat-co-dien",
       "assets": [
         {
-          "src": "/images/2025_001_img/sa-01-so-do-vi-tri-mat-thu.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sa-01-so-do-vi-tri-mat-thu.png",
           "alt": "Sơ đồ sáu vị trí A, B, C, M, N, P của bài toán mật thư"
         }
       ],
@@ -782,7 +782,7 @@
       "subtopicSlug": "mat-cau-va-khoi-cau",
       "assets": [
         {
-          "src": "/images/2025_001_img/sa-06-chan-de-va-phan-khoi-cau-h.png",
+          "src": "/images/2025-06-26-bo-gddt-viet-nam-tot-nghiep-001/sa-06-chan-de-va-phan-khoi-cau-h.png",
           "alt": "Hình khối chóp cụt tứ giác đều và phần khối cầu H bị khoét"
         }
       ],

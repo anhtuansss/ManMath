@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "publishProfile": "official_full_exam",
   "exam": {
-    "id": "thpt-math-2026-003",
-    "title": "Đề khảo sát chất lượng Toán 12 năm 2025 – 2026 sở GD&ĐT Hà Nội",
+    "id": "2026-03-12-so-gddt-ha-noi-khao-sat-001",
+    "title": "Đề khảo sát chất lượng Toán 12 năm 2025–2026 Sở GD&ĐT Hà Nội",
     "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
     "durationMinutes": 90,
     "subject": "Toán",
@@ -169,7 +169,7 @@
       "subtopicSlug": "so-dac-trung-do-xu-the-trung-tam",
       "assets": [
         {
-          "src": "/images/2026_003_img/sc-01-bang-diem-kiem-tra-toan.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sc-01-bang-diem-kiem-tra-toan.png",
           "alt": "Bảng khoảng điểm và số học sinh của lớp 12A"
         }
       ],
@@ -265,7 +265,7 @@
       "subtopicSlug": "cuc-tri-cua-ham-so",
       "assets": [
         {
-          "src": "/images/2026_003_img/sc-04-bang-xet-dau-dao-ham.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sc-04-bang-xet-dau-dao-ham.png",
           "alt": "Bảng xét dấu của đạo hàm f'(x)"
         }
       ],
@@ -361,7 +361,7 @@
       "subtopicSlug": "vecto-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2026_003_img/sc-07-hinh-hop-abcd-a-b-c-d.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sc-07-hinh-hop-abcd-a-b-c-d.png",
           "alt": "Hình hộp ABCD.A'B'C'D'"
         }
       ],
@@ -517,7 +517,7 @@
       "subtopicSlug": "gia-tri-lon-nhat-gia-tri-nho-nhat",
       "assets": [
         {
-          "src": "/images/2026_003_img/sc-12-do-thi-ham-so.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sc-12-do-thi-ham-so.png",
           "alt": "Đồ thị hàm số y=f(x) trên đoạn [-2;2]"
         }
       ],
@@ -588,7 +588,7 @@
       "subtopicSlug": "duong-tiem-can",
       "assets": [
         {
-          "src": "/images/2026_003_img/tf-02-do-thi-ham-phan-thuc-va-tiem-can.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/tf-02-do-thi-ham-phan-thuc-va-tiem-can.png",
           "alt": "Đồ thị hàm phân thức cùng tiệm cận đứng và tiệm cận xiên"
         }
       ],
@@ -629,7 +629,7 @@
       "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
       "assets": [
         {
-          "src": "/images/2026_003_img/tf-03-hinh-hop-chu-nhat-he-truc-oxyz.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/tf-03-hinh-hop-chu-nhat-he-truc-oxyz.png",
           "alt": "Hình hộp chữ nhật ABCD.A'B'C'D' gắn với hệ trục Oxyz"
         }
       ],
@@ -718,7 +718,7 @@
       "subtopicSlug": "bai-toan-toi-uu-bang-mo-hinh-toan-hoc",
       "assets": [
         {
-          "src": "/images/2026_003_img/sa-02-hinh-vuong-cung-tron-tiep-tuyen.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sa-02-hinh-vuong-cung-tron-tiep-tuyen.png",
           "alt": "Hình vuông ABCD, cung tròn AC và tiếp tuyến qua P cắt AB, BC tại M, N"
         }
       ],
@@ -737,7 +737,7 @@
       "subtopicSlug": "quy-tac-dem",
       "assets": [
         {
-          "src": "/images/2026_003_img/sa-03-bang-4x4-ngoi-sao-bong-hoa.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sa-03-bang-4x4-ngoi-sao-bong-hoa.png",
           "alt": "Bảng ô vuông 4x4 và một cách trang trí bằng ngôi sao, bông hoa"
         }
       ],
@@ -756,7 +756,7 @@
       "subtopicSlug": "goc-trong-khong-gian",
       "assets": [
         {
-          "src": "/images/2026_003_img/sa-04-hinh-chop-s-abcd.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sa-04-hinh-chop-s-abcd.png",
           "alt": "Hình chóp S.ABCD có đáy là hình vuông"
         }
       ],
@@ -775,7 +775,7 @@
       "subtopicSlug": "dien-tich-hinh-phang",
       "assets": [
         {
-          "src": "/images/2026_003_img/sa-05-hai-parabol-va-phan-gach-cheo.png",
+          "src": "/images/2026-03-12-so-gddt-ha-noi-khao-sat-001/sa-05-hai-parabol-va-phan-gach-cheo.png",
           "alt": "Lưới ô vuông với hai parabol và phần hình phẳng gạch chéo"
         }
       ],

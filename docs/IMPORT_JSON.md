@@ -6,7 +6,7 @@ ManMath có một đường ống nội dung đang hoạt động: JSON theo lư
 
 Các file chính tắc:
 
-- Ví dụ dùng cho môi trường thật: `backend/src/data/import/thpt-math-2026-001.json`
+- Ví dụ dùng cho môi trường thật: `backend/src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json`
 - Dữ liệu kiểm thử xác minh: `backend/src/test-fixtures/v2-minimal-exam.json`
 
 Không còn trình nhập V1, trình nhập hàng loạt bằng manifest, OCR, bộ phân tích AI, chức năng tải lên web hoặc trình nhập Word/PDF/Excel đang hoạt động.
@@ -18,9 +18,9 @@ Taxonomy canonical được mô tả trong [TAXONOMY.md](TAXONOMY.md). Trường
 Chạy từ `backend`:
 
 ```powershell
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json
-npm run import:exam-content -- ./src/data/import/thpt-math-2026-001.json --write
-npm run publish:exam-content -- thpt-math-2026-001
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json
+npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot-nghiep-001.json --write
+npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 ```
 
 Không có `--write`, thao tác nhập chỉ chạy thử: đọc, kiểm tra và in tóm tắt mà không ghi cơ sở dữ liệu. Có `--write`, thao tác nhập cập nhật bản nháp mới nhất hoặc tạo phiên bản nháp tiếp theo trong một giao dịch cơ sở dữ liệu. Nó không bao giờ sửa nội dung đã xuất bản.
@@ -32,8 +32,8 @@ Không có `--write`, thao tác nhập chỉ chạy thử: đọc, kiểm tra v�
   "schemaVersion": 2,
   "publishProfile": "official_full_exam",
   "exam": {
-    "id": "thpt-math-2026-001",
-    "title": "Đề luyện tập Toán THPT 2026 — ManMath 001",
+    "id": "2026-06-11-bo-gddt-viet-nam-tot-nghiep-001",
+    "title": "Đề chính thức kỳ thi tốt nghiệp THPT năm 2026 môn Toán",
     "description": "Đề luyện tập theo cấu trúc THPT môn Toán.",
     "durationMinutes": 90,
     "subject": "Toán",
