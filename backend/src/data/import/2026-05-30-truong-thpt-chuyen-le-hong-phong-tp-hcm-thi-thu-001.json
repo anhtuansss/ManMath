@@ -1,0 +1,789 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001",
+    "title": "Đề thi thử TN THPT 2026 môn Toán trường THPT chuyên Lê Hồng Phong – TP HCM",
+    "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "Trường THPT chuyên Lê Hồng Phong – TP HCM",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Lượng giác",
+        "slug": "luong-giac"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Chuyên đề học tập và Toán ứng dụng",
+        "slug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Các số đặc trưng đo mức độ phân tán",
+        "slug": "cac-so-dac-trung-do-muc-do-phan-tan",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Nguyên hàm cơ bản",
+        "slug": "nguyen-ham-co-ban",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Thể tích khối chóp",
+        "slug": "the-tich-khoi-chop",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Góc trong không gian",
+        "slug": "goc-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Diện tích hình phẳng",
+        "slug": "dien-tich-hinh-phang",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Cấp số cộng",
+        "slug": "cap-so-cong",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Phương trình logarit",
+        "slug": "phuong-trinh-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Phương trình lượng giác cơ bản",
+        "slug": "phuong-trinh-luong-giac-co-ban",
+        "topicSlug": "luong-giac"
+      },
+      {
+        "name": "Đường tiệm cận",
+        "slug": "duong-tiem-can",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Khoảng cách trong Oxyz",
+        "slug": "khoang-cach-trong-oxyz",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Bài toán tối ưu tuyến tính và bất phương trình",
+        "slug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+        "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Thể tích vật thể và khối tròn xoay bằng tích phân",
+        "slug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Xác suất cổ điển",
+        "slug": "xac-suat-co-dien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Quy tắc đếm",
+        "slug": "quy-tac-dem",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Khoảng cách trong không gian",
+        "slug": "khoang-cach-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Cân nặng của một số quả mít trong một khu vườn được thống kê ở bảng sau:\n\nPhương sai của mẫu số liệu ghép nhóm trên gần nhất với giá trị nào dưới đây?",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "cac-so-dac-trung-do-muc-do-phan-tan",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sc-01-bang-can-nang.png",
+          "alt": "Bảng thống kê cân nặng của quả mít"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$4,9$."
+        },
+        {
+          "id": "b",
+          "content": "$4,8$."
+        },
+        {
+          "id": "c",
+          "content": "$4,7$."
+        },
+        {
+          "id": "d",
+          "content": "$4,6$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Biết $F(x)$ là một nguyên hàm của hàm số $f(x)=\\sin x+\\cos x$ thỏa mãn $F(0)=1$. Hàm số $F(x)$ là",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\cos x-\\sin x+1$."
+        },
+        {
+          "id": "b",
+          "content": "$-\\cos x+\\sin x+2$."
+        },
+        {
+          "id": "c",
+          "content": "$-\\cos x+\\sin x+1$."
+        },
+        {
+          "id": "d",
+          "content": "$-\\cos x+\\sin x-2$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình chữ nhật, $AB=a$, $AD=2a$, $SA$ vuông góc với đáy và $SA=a\\sqrt{3}$. Thể tích của khối chóp $S.ABCD$ bằng",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "the-tich-khoi-chop",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\frac{4\\sqrt{3}a^{3}}{3}$."
+        },
+        {
+          "id": "b",
+          "content": "$2\\sqrt{3}a^{3}$."
+        },
+        {
+          "id": "c",
+          "content": "$4\\sqrt{3}a^{3}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{2\\sqrt{3}a^{3}}{3}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Cho hình chóp $S.ABC$ có $SA, AB, AC$ đôi một vuông góc với nhau và $SA=AB=AC$. Tính số đo góc giữa đường thẳng $SC$ và mặt phẳng $(ABC)$.",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "goc-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sc-04-hinh-chop.png",
+          "alt": "Hình chóp S.ABC có các cạnh góc vuông"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$135^{\\circ}$."
+        },
+        {
+          "id": "b",
+          "content": "$90^{\\circ}$."
+        },
+        {
+          "id": "c",
+          "content": "$60^{\\circ}$."
+        },
+        {
+          "id": "d",
+          "content": "$45^{\\circ}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Diện tích phần gạch sọc trong hình vẽ bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "dien-tich-hinh-phang",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sc-05-do-thi-gach-soc.png",
+          "alt": "Hình phẳng giới hạn bởi đường cong và đường thẳng"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\int_{-3}^{1}|-x^{2}-2x-3|dx$."
+        },
+        {
+          "id": "b",
+          "content": "$\\int_{-3}^{1}(x^{2}-2x-3)dx$."
+        },
+        {
+          "id": "c",
+          "content": "$\\int_{-3}^{1}(-x^{2}-2x+3)dx$."
+        },
+        {
+          "id": "d",
+          "content": "$\\int_{-3}^{1}(x^{2}+2x-3)dx$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Bảng biến thiên sau là của một trong bốn hàm số sau. Hỏi hàm số đó là hàm số nào?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sc-06-bang-bien-thien.png",
+          "alt": "Bảng biến thiên của một hàm số phân thức"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=\\frac{x^{2}-2x+1}{x+4}$."
+        },
+        {
+          "id": "b",
+          "content": "$y=\\frac{x^{2}-3x+2}{-x-4}$."
+        },
+        {
+          "id": "c",
+          "content": "$y=\\frac{x^{2}-4x+2}{x+4}$."
+        },
+        {
+          "id": "d",
+          "content": "$y=\\frac{x^{2}-x+2}{-x-4}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Cho cấp số cộng $(u_{n})$ có công sai $d=-2$ và tổng của $8$ số hạng đầu tiên $S_{8}=72$. Tìm số hạng đầu $u_{1}$.",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-cong",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$u_{1}=-\\frac{1}{16}$."
+        },
+        {
+          "id": "b",
+          "content": "$u_{1}=-16$."
+        },
+        {
+          "id": "c",
+          "content": "$u_{1}=\\frac{1}{16}$."
+        },
+        {
+          "id": "d",
+          "content": "$u_{1}=16$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Tìm tập nghiệm $S$ của phương trình: $\\log_{3}(2x+1)-\\log_{3}(x-1)=1$.",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "phuong-trinh-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$S=\\{1\\}$."
+        },
+        {
+          "id": "b",
+          "content": "$S=\\{3\\}$."
+        },
+        {
+          "id": "c",
+          "content": "$S=\\{4\\}$."
+        },
+        {
+          "id": "d",
+          "content": "$S=\\{2\\}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Tìm tất cả các nghiệm của phương trình $\\sin\\left(x+\\frac{\\pi}{6}\\right)=1$.",
+      "topicSlug": "luong-giac",
+      "subtopicSlug": "phuong-trinh-luong-giac-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$x=\\frac{5\\pi}{6}+k2\\pi (k\\in\\mathbb{Z})$."
+        },
+        {
+          "id": "b",
+          "content": "$x=\\frac{\\pi}{3}+k2\\pi (k\\in\\mathbb{Z})$."
+        },
+        {
+          "id": "c",
+          "content": "$x=-\\frac{\\pi}{6}+k2\\pi (k\\in\\mathbb{Z})$."
+        },
+        {
+          "id": "d",
+          "content": "$x=\\frac{\\pi}{3}+k\\pi (k\\in\\mathbb{Z})$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Biết đường tiệm cận xiên của đồ thị hàm số $y=\\frac{x^{3}+2}{x^{2}-2x}$ cắt các trục tọa độ tại hai điểm $A$ và $B$. Khi đó diện tích tam giác $OAB$ bằng",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "duong-tiem-can",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$8$."
+        },
+        {
+          "id": "b",
+          "content": "$4$."
+        },
+        {
+          "id": "c",
+          "content": "$2$."
+        },
+        {
+          "id": "d",
+          "content": "$3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Cho hình lập phương $ABCD.EFGH$. Hãy xác định số đo góc giữa hai véctơ $\\overrightarrow{FH}$ và $\\overrightarrow{CA}$.",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "goc-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sc-11-hinh-lap-phuong.png",
+          "alt": "Hình lập phương ABCD.EFGH"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$90^{\\circ}$."
+        },
+        {
+          "id": "b",
+          "content": "$60^{\\circ}$."
+        },
+        {
+          "id": "c",
+          "content": "$120^{\\circ}$."
+        },
+        {
+          "id": "d",
+          "content": "$45^{\\circ}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Trong không gian $Oxyz$, cho đường thẳng $d:\\frac{x}{1}=\\frac{y+1}{2}=\\frac{z+2}{3}$ và mặt phẳng $(P): x+2y-2z+3=0$. Gọi $M$ là điểm thuộc đường thẳng $d$ sao cho khoảng cách từ $M$ đến mặt phẳng $(P)$ bằng $2$. Nếu điểm $M$ có hoành độ âm thì tung độ của điểm $M$ bằng",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "khoang-cach-trong-oxyz",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3$."
+        },
+        {
+          "id": "b",
+          "content": "$-1$."
+        },
+        {
+          "id": "c",
+          "content": "$-3$."
+        },
+        {
+          "id": "d",
+          "content": "$-21$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Cho hàm số $y=\\frac{2x^{2}-2x+2}{-x+1}$ có đồ thị $(C)$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Cực tiểu của hàm số là $y=-6$."
+        },
+        {
+          "id": "b",
+          "content": "Tọa độ giao điểm của tiệm cận đứng và tiệm cận xiên của $(C)$ là $I(1, -2)$."
+        },
+        {
+          "id": "c",
+          "content": "Hàm số nghịch biến trên khoảng $(-\\infty, 0)\\cup(2;+\\infty)$."
+        },
+        {
+          "id": "d",
+          "content": "Từ điểm $M$ kẻ hai tiếp tuyến vuông góc với đồ thị $(C)$. Khi đó $M$ nằm trên đường tròn tâm $I$ có bán kính $R=4$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Một hệ thống lọc thư điện tử phân loại thư điện tử bằng cách đánh dấu các thư điện tử mà hệ thống cho là thư rác. Sau thời gian sử dụng có $80\\%$ các thư rác bị hệ thống đánh dấu và $10\\%$ số thư không phải thư rác bị hệ thống đánh dấu nhầm. Cho biết rằng $30\\%$ tổng số thư điện tử là thư rác.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Xác suất để một thư điện tử bị đánh dấu là $0,9$."
+        },
+        {
+          "id": "b",
+          "content": "Xác suất để một thư điện tử không phải thư rác là $0,7$."
+        },
+        {
+          "id": "c",
+          "content": "Xác suất để một thư điện tử là thư rác, biết rằng nó bị đánh dấu là $\\frac{24}{31}$."
+        },
+        {
+          "id": "d",
+          "content": "Xác suất để một thư điện tử không phải thư rác, biết rằng nó không bị đánh dấu là $\\frac{21}{23}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Một công ty TNHH trong một đợt quảng cáo và bán hàng khuyến mại hàng hóa (một sản phẩm mới của công ty) cần thuê xe để chở $140$ người và $9$ tấn hàng. Nơi thuê chỉ có hai loại xe A và B. Trong đó xe loại A có $10$ chiếc, xe loại B có $9$ chiếc. Một chiếc xe loại A cho thuê với giá $4$ triệu, loại B giá $3$ triệu. Biết rằng xe A chỉ chở tối đa $20$ người và $0,6$ tấn hàng; xe B chở tối đa $10$ người và $1,5$ tấn hàng. Gọi $x, y$ lần lượt là số xe loại A và loại B mà công ty thuê. Khi đó các mệnh đề sau đúng hay sai?",
+      "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung",
+      "subtopicSlug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Số tiền thuê xe là $4x+3y$ (triệu đồng)."
+        },
+        {
+          "id": "b",
+          "content": "$2x+y<14$."
+        },
+        {
+          "id": "c",
+          "content": "$2x+5y\\ge 30$."
+        },
+        {
+          "id": "d",
+          "content": "Số tiền thuê xe thấp nhất là $32$ triệu."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Trong không gian $Oxyz$ thuộc hệ thống định vị GPS, bề mặt Trái Đất được mô hình hoá bởi mặt cầu $(x-1)^{2}+(y-2)^{2}+(z-2)^{2}=9$. Hai vệ tinh truyền tín hiệu ở vị trí có tọa độ $M(4;-4;2)$, $N(6;0;6)$. Xét tính đúng sai các mệnh đề sau:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Vệ tinh ở vị trí $M$ gần tâm mặt cầu hơn so với vệ tinh ở vị trí $N$."
+        },
+        {
+          "id": "b",
+          "content": "Mặt phẳng đi qua tâm Trái Đất và hai điểm $M, N$ có phương trình $2x+y-2z=0$."
+        },
+        {
+          "id": "c",
+          "content": "Tín hiệu được truyền đi từ vệ tinh ở $M$ đến vệ tinh ở $N$ theo đường thẳng có phương trình chính tắc $\\frac{x-4}{1}=\\frac{y+4}{2}=\\frac{z-2}{2}$."
+        },
+        {
+          "id": "d",
+          "content": "Giả sử đơn vị trên mỗi trục là $2100\\text{ km}$, một tín hiệu có tốc độ $3.10^{5}\\text{ km/s}$ được truyền từ vệ tinh $M$ đến điểm gần nhất thuộc bề mặt Trái Đất mất khoảng $0,026$ giây (kết quả làm tròn đến hàng phần nghìn của giây)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Người ta bơm nước vào một cái thùng nhựa đựng nước như hình 1 với hai đáy là hai đường tròn có bán kính $30\\text{cm}, 15\\text{cm}$, chiều cao thùng là $30\\text{cm}$. Mặt phẳng cắt đi qua trục của chậu nước chứa đường kính bất kỳ hai đáy có thiết diện như hình 2 với phần đường cong là một parabol. Biết vận tốc bơm nước vào thùng là $20\\text{ lít/phút}$. Tính vận tốc nước dâng ở bề mặt cong của thùng nhựa khi độ cao mực nước là $10\\text{cm}$? (Kết quả làm tròn đến hàng đơn vị)",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sa-01-thung-nhua.png",
+          "alt": "Hình 1 và Hình 2 mô tả hình dạng thùng nhựa đựng nước và thiết diện của nó"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "14"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Một công ty dự định sản xuất không qua $600$ sản phẩm. Nếu công ty sản xuất $x$ sản phẩm $(1\\le x\\le 600)$ thì doanh thu nhận được khi bán hết số sản phẩm đó là $F(x)=0,001x^{3}-1,999x^{2}+1006x+250$ (đơn vị nghìn đồng), trong khi chi phí sản xuất bình quân cho mỗi sản phẩm là $G(x)=0,001x+\\frac{250}{x}+1$ (nghìn đồng). Ngoài ra, công ty còn phải nộp thuế bổ sung cho mỗi sản phẩm được bán ra là $5$ nghìn đồng. Khoản thuế này được gọi là thuế phụ thu. Công ty cần sản xuất bao nhiêu sản phẩm để lợi nhuận thu được là lớn nhất?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "333"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Một mô hình khối tròn xoay có trục là đường thẳng $MN$, khi ta cắt khối tròn xoay đó bởi một mặt phẳng đi qua trục của khối tròn xoay thì ta được mặt cắt có dạng như hình vẽ dưới đây\n\nBiết rằng $MN=24\\text{cm}$, $ABCD$ là hình chữ nhật có $AB=18\\text{cm}$, $AD=36\\text{cm}$, hai cung $APD$ và $BQC$ là một phần của các đường parabol với đỉnh lần lượt là $P, Q$ và $PQ=10\\text{cm}$. Thể tích mô hình đó bằng bao nhiêu xentimét khối (kết quả làm tròn đến hàng đơn vị)?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sa-03-mo-hinh-khoi-tron-xoay.png",
+          "alt": "Mặt cắt của một mô hình khối tròn xoay"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3679"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Cho tập hợp $X=\\{1,2,3,4,5,6,7,8\\}$. Gọi $S$ là tập hợp tất cả các số tự nhiên có $4$ chữ số được lập từ các chữ số thuộc tập $X$. Chọn ngẫu nhiên một số từ tập hợp $S$. Xác suất để chọn được một số chia hết cho $3$ bằng $\\frac{a}{b}$ (với $a, b\\in\\mathbb{N}^{*}$, $\\frac{a}{b}$ là phân số tối giản). Tính $T=b-a$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1365"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Có $11$ thí sinh, mỗi thí sinh ngồi vào một ô trong phòng thi như hình vẽ. Giám thị có $4$ mã đề khác nhau (giả sử số lượng đề mỗi mã là nhiều tùy ý). Số cách phát đề cho các thí sinh, mỗi thí sinh $1$ đề sao cho $2$ thí sinh ngồi ở $2$ ô kề nhau ($2$ ô có chung một cạnh) thì khác mã đề là $p$. Tính $\\frac{p}{49}$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "quy-tac-dem",
+      "assets": [
+        {
+          "src": "/images/2026-05-30-truong-thpt-chuyen-le-hong-phong-tp-hcm-thi-thu-001/sa-05-so-do-phong-thi.png",
+          "alt": "Sơ đồ bố trí chỗ ngồi của 11 thí sinh trong phòng thi"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1764"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Cho hình chóp $S.ABC$ có đáy là tam giác vuông cân tại $A$, $SH \\perp (ABC)$ với $H$ là trung điểm $BC$. Biết $AB=SC=1$. Tính khoảng cách từ $B$ đến mặt phẳng $(SAC)$ (làm tròn kết quả đến hàng phần trăm).",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "khoang-cach-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "0,82"
+      }
+    }
+  ]
+}
