@@ -123,3 +123,20 @@ export type UserAttemptsResponse = {
   totalPages: number;
   summary: HistorySummary;
 };
+
+export type LearningAggregate = {
+  topicSlug: string; topicName: string; subtopicSlug: string | null; subtopicName: string | null;
+  answeredCount: number; fullyCorrectCount: number; earnedScoreUnits: number; maxScoreUnits: number;
+  masteryPercent: number | null; confidence: 'insufficient' | 'low' | 'usable';
+  status: 'insufficient_data' | 'developing' | 'proficient' | 'strong'; isWeak: boolean;
+  examQuestionCount: number; practiceQuestionCount: number; lastPracticedAt: string | null;
+  corpusAvailableQuestionCount: number; corpusStatus: 'available' | 'insufficient';
+};
+export type LearningOverviewResponse = {
+  overall: Omit<LearningAggregate, 'topicSlug' | 'topicName' | 'subtopicSlug' | 'subtopicName' | 'corpusAvailableQuestionCount' | 'corpusStatus'>;
+  topics: LearningAggregate[]; subtopics: LearningAggregate[];
+  recentActivity: { sourceType: 'exam' | 'practice'; id: string; title: string; completedAt: string; earnedScoreUnits: number; maxScoreUnits: number; fullyCorrectCount: number; totalQuestions: number }[];
+  continueItems: { sourceType: 'practice'; sessionId: string; title: string; topicSlug: string; subtopicSlug: string | null; startedAt: string }[];
+  nextAction: { topicSlug: string; subtopicSlug: string; title: string; reason: string; corpusAvailableQuestionCount: number; kind: 'needs_practice' | 'assess' | 'starter' } | null;
+  coverage: { scoreUnitAttemptCount: number; unavailableV2AttemptCount: number; examFactCount: number; practiceFactCount: number };
+};

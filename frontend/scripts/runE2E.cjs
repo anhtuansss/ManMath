@@ -91,15 +91,13 @@ async function waitFor(url, label) {
 }
 
 function stop(child) {
-  if (!child?.pid || child.exitCode !== null) return;
+  if (!child?.pid || child.exitCode !== null) return Promise.resolve();
   if (process.platform === 'win32') {
-    // Do not await taskkill: on Windows a killed dev-server tree can keep the
-    // taskkill handle open, while this runner itself must be able to exit.
     const killer = spawn('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true });
-    killer.unref();
-    return;
+    return new Promise((resolve) => killer.once('close', resolve));
   }
   child.kill('SIGTERM');
+  return new Promise((resolve) => child.once('close', resolve));
 }
 
 async function main() {
@@ -113,15 +111,14 @@ async function main() {
     await syncCanonicalTaxonomy(env);
     await prepareVerificationDatabase(env);
     backend = start(process.execPath, [tsNodePath(), 'server.ts'], backendDir, env);
-    frontend = start(process.execPath, [path.join(frontendDir, 'node_modules', 'next', 'dist', 'bin', 'next'), 'dev', '--hostname', '127.0.0.1'], frontendDir, { ...env, NEXT_PUBLIC_API_BASE_URL: 'http://127.0.0.1:5000' });
+    frontend = start(process.execPath, [path.join(frontendDir, 'node_modules', 'next', 'dist', 'bin', 'next'), 'dev', '--hostname', '127.0.0.1'], frontendDir, { ...env, PORT: '3000', NEXT_PUBLIC_API_BASE_URL: 'http://127.0.0.1:5000' });
     await waitFor('http://127.0.0.1:5000/api/health', 'Backend');
     await waitFor('http://127.0.0.1:3000', 'Frontend');
     const test = start(process.execPath, [path.join(frontendDir, 'node_modules', '@playwright', 'test', 'cli.js'), 'test', ...process.argv.slice(2)], frontendDir);
     const exitCode = await new Promise((resolve) => test.once('close', (code) => resolve(code ?? 1)));
     process.exitCode = exitCode;
   } finally {
-    stop(frontend);
-    stop(backend);
+    await Promise.all([stop(frontend), stop(backend)]);
     if (resetStarted) await resetVerificationDatabase(env);
   }
 }
