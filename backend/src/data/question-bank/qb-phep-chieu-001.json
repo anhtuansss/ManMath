@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-phep-chieu-001",
+  "title": "Phép chiếu song song và phép chiếu vuông góc",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-phep-chieu-001"
+  },
+  "taxonomy": {
+    "topicSlug": "hinh-hoc-khong-gian",
+    "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc"
+  },
+  "questions": [
+    {
+      "id": "qb-phep-chieu-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Phép chiếu song song (hoặc phép chiếu vuông góc) trong không gian không nhất thiết bảo toàn đại lượng hay tính chất nào sau đây?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc",
+      "choices": [
+        {
+          "id": "a",
+          "content": "Tính thẳng hàng của ba điểm."
+        },
+        {
+          "id": "b",
+          "content": "Tỉ số độ dài của hai đoạn thẳng cùng nằm trên một đường thẳng."
+        },
+        {
+          "id": "c",
+          "content": "Độ lớn của góc giữa hai đường thẳng cắt nhau."
+        },
+        {
+          "id": "d",
+          "content": "Tính đồng phẳng của một tứ giác phẳng."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "qb-phep-chieu-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Cho đoạn thẳng $AB$ có độ dài bằng $10$. Biết góc tạo bởi đường thẳng $AB$ và mặt phẳng $(P)$ bằng $60^\\circ$. Chiều dài hình chiếu vuông góc của đoạn thẳng $AB$ trên mặt phẳng $(P)$ bằng bao nhiêu?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$5$"
+        },
+        {
+          "id": "b",
+          "content": "$5\\sqrt{3}$"
+        },
+        {
+          "id": "c",
+          "content": "$10$"
+        },
+        {
+          "id": "d",
+          "content": "$10\\sqrt{3}$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phep-chieu-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Xét phép chiếu vuông góc lên một mặt phẳng bất kỳ. Hình chiếu vuông góc của một tam giác đều trong không gian không thể là hình nào dưới đây?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc",
+      "choices": [
+        {
+          "id": "a",
+          "content": "Một đoạn thẳng."
+        },
+        {
+          "id": "b",
+          "content": "Một tam giác đều."
+        },
+        {
+          "id": "c",
+          "content": "Một tam giác cân nhưng không đều."
+        },
+        {
+          "id": "d",
+          "content": "Một đường tròn."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "qb-phep-chieu-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Xét tính đúng sai của các mệnh đề sau về phép chiếu song song và phép chiếu vuông góc trong không gian:",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Phép chiếu vuông góc là một trường hợp đặc biệt của phép chiếu song song khi phương chiếu vuông góc với mặt phẳng chiếu."
+        },
+        {
+          "id": "b",
+          "content": "Hình chiếu song song của hai đường thẳng chéo nhau luôn là hai đường thẳng cắt nhau."
+        },
+        {
+          "id": "c",
+          "content": "Qua phép chiếu vuông góc lên một mặt phẳng, hình chiếu của một góc vuông luôn là một góc vuông."
+        },
+        {
+          "id": "d",
+          "content": "Tỉ số độ dài của hai đoạn thẳng cùng nằm trên một đường thẳng được bảo toàn qua mọi phép chiếu song song (với điều kiện đường thẳng đó không song song với phương chiếu)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "qb-phep-chieu-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Cho tam giác $ABC$ có diện tích bằng $24$ nằm trong mặt phẳng $(P)$. Hình chiếu vuông góc của tam giác $ABC$ lên mặt phẳng $(Q)$ là tam giác $A'B'C'$ có diện tích bằng $12$. Biết góc giữa hai mặt phẳng $(P)$ và $(Q)$ là một góc nhọn, tính số đo của góc đó (nhập đáp án bằng số, đơn vị: độ).",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "phep-chieu-song-song-va-phep-chieu-vuong-goc",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "60"
+      }
+    }
+  ]
+}

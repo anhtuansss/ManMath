@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-nhi-thuc-newton-001",
+  "title": "Nhị thức Newton",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-nhi-thuc-newton-001"
+  },
+  "taxonomy": {
+    "topicSlug": "xac-suat-va-to-hop",
+    "subtopicSlug": "nhi-thuc-newton"
+  },
+  "questions": [
+    {
+      "id": "qb-nhi-thuc-newton-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Tìm hệ số của số hạng chứa $x^3$ trong khai triển nhị thức $(x+2)^5$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "nhi-thuc-newton",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$10$"
+        },
+        {
+          "id": "b",
+          "content": "$20$"
+        },
+        {
+          "id": "c",
+          "content": "$40$"
+        },
+        {
+          "id": "d",
+          "content": "$80$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "qb-nhi-thuc-newton-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Số hạng không chứa $x$ trong khai triển biểu thức $\\left( x - \\dfrac{2}{x^2} \\right)^9$ (với $x \\ne 0$) là:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "nhi-thuc-newton",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$672$"
+        },
+        {
+          "id": "b",
+          "content": "$-672$"
+        },
+        {
+          "id": "c",
+          "content": "$5376$"
+        },
+        {
+          "id": "d",
+          "content": "$-5376$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-nhi-thuc-newton-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Biết tổng các hệ số trong khai triển nhị thức $(x+1)^n$ bằng $1024$. Tìm hệ số của số hạng chứa $x^7$ trong khai triển đó.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "nhi-thuc-newton",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$120$"
+        },
+        {
+          "id": "b",
+          "content": "$210$"
+        },
+        {
+          "id": "c",
+          "content": "$252$"
+        },
+        {
+          "id": "d",
+          "content": "$45$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-nhi-thuc-newton-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Xét tính đúng sai của các mệnh đề sau về nhị thức Newton:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "nhi-thuc-newton",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Khai triển $(a+b)^n$ (với $n \\in \\mathbb{N}^*$) có đúng $n$ số hạng."
+        },
+        {
+          "id": "b",
+          "content": "Trong khai triển $(x+1)^{2026}$, hệ số của số hạng chứa $x^k$ đạt giá trị lớn nhất khi $k = 1013$."
+        },
+        {
+          "id": "c",
+          "content": "Tổng các hệ số của các số hạng chứa lũy thừa bậc chẵn của $x$ trong khai triển $(x+1)^n$ (với $n \\ge 2$) bằng $2^{n-1}$."
+        },
+        {
+          "id": "d",
+          "content": "Với mọi số nguyên dương $n$, ta luôn có đẳng thức: $C_n^0 - C_n^1 + C_n^2 - \\dots + (-1)^n C_n^n = 1$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "qb-nhi-thuc-newton-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Tìm hệ số của $x^5$ trong khai triển thành đa thức của biểu thức $P(x) = (1+x)^4 + (1+x)^5 + (1+x)^6 + (1+x)^7$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "nhi-thuc-newton",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "28"
+      }
+    }
+  ]
+}
