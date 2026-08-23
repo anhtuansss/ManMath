@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-mau-so-lieu-001",
+  "title": "Mẫu số liệu không ghép nhóm",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-mau-so-lieu-001"
+  },
+  "taxonomy": {
+    "topicSlug": "thong-ke",
+    "subtopicSlug": "mau-so-lieu-khong-ghep-nhom"
+  },
+  "questions": [
+    {
+      "id": "qb-mau-so-lieu-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Điểm kiểm tra 15 phút của 7 học sinh tổ 1 là: $6, 8, 5, 9, 7, 10, 6$. Số trung vị của mẫu số liệu trên là:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "mau-so-lieu-khong-ghep-nhom",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$6$"
+        },
+        {
+          "id": "b",
+          "content": "$7$"
+        },
+        {
+          "id": "c",
+          "content": "$8$"
+        },
+        {
+          "id": "d",
+          "content": "$7,5$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-mau-so-lieu-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Đo chiều cao (đơn vị: cm) của 8 cây mầm trong một thí nghiệm sinh học, ta được kết quả: $110, 115, 120, 125, 130, 135, 140, 145$. Khoảng tứ phân vị (IQR) của mẫu số liệu này bằng:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "mau-so-lieu-khong-ghep-nhom",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$25$"
+        },
+        {
+          "id": "b",
+          "content": "$15$"
+        },
+        {
+          "id": "c",
+          "content": "$20$"
+        },
+        {
+          "id": "d",
+          "content": "$30$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "qb-mau-so-lieu-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Cho mẫu số liệu gồm 5 giá trị: $2, 4, 6, 8, 10$. Phương sai của mẫu số liệu này là:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "mau-so-lieu-khong-ghep-nhom",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$4$"
+        },
+        {
+          "id": "b",
+          "content": "$10$"
+        },
+        {
+          "id": "c",
+          "content": "$\\sqrt{8}$"
+        },
+        {
+          "id": "d",
+          "content": "$8$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "qb-mau-so-lieu-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Xét tính đúng sai của các mệnh đề sau liên quan đến các số đặc trưng đo xu thế trung tâm và mức độ phân tán của mẫu số liệu không ghép nhóm:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "mau-so-lieu-khong-ghep-nhom",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Khoảng tứ phân vị (IQR) không bị ảnh hưởng nhiều bởi các giá trị bất thường (outliers) như khoảng biến thiên."
+        },
+        {
+          "id": "b",
+          "content": "Nếu nhân mọi giá trị trong mẫu số liệu với $2$ thì phương sai của mẫu số liệu mới sẽ tăng gấp $2$ lần so với phương sai cũ."
+        },
+        {
+          "id": "c",
+          "content": "Số trung vị của một mẫu số liệu luôn phải là một giá trị có mặt trong mẫu số liệu đã cho."
+        },
+        {
+          "id": "d",
+          "content": "Khoảng biến thiên là hiệu số giữa giá trị lớn nhất và giá trị nhỏ nhất trong mẫu số liệu."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "qb-mau-so-lieu-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Cho mẫu số liệu về thời gian hoàn thành một công việc (đơn vị: phút) của 10 công nhân: $5, 8, 10, 12, 14, 15, 18, 20, 36, 40$. Một giá trị $x$ trong mẫu được gọi là giá trị bất thường (outlier) nếu $x < Q_1 - 1,5 \\cdot IQR$ hoặc $x > Q_3 + 1,5 \\cdot IQR$ (trong đó $Q_1, Q_3$ là các tứ phân vị, $IQR$ là khoảng tứ phân vị). Hỏi mẫu số liệu trên có bao nhiêu giá trị bất thường?",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "mau-so-lieu-khong-ghep-nhom",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "2"
+      }
+    }
+  ]
+}

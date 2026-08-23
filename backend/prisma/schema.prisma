@@ -30,6 +30,7 @@ model Topic {
   updatedAt   DateTime   @updatedAt
   subtopics   Subtopic[]
   practiceSessions PracticeSession[]
+  questionBankItems QuestionBankItem[]
 }
 
 model Subtopic {
@@ -41,6 +42,7 @@ model Subtopic {
   updatedAt DateTime   @updatedAt
   topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
   practiceSessions PracticeSession[]
+  questionBankItems QuestionBankItem[]
 
   @@unique([topicId, name])
   @@index([topicId])
@@ -202,14 +204,63 @@ model PracticeSession {
 model PracticeSessionQuestion {
   id                    String                 @id @default(cuid())
   practiceSessionId     String
-  examVersionQuestionId String
+  examVersionQuestionId String?
+  questionBankItemId    String?
   order                 Int
   practiceSession       PracticeSession        @relation(fields: [practiceSessionId], references: [id], onDelete: Cascade)
-  examVersionQuestion   ExamVersionQuestion    @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+  examVersionQuestion   ExamVersionQuestion?   @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+  questionBankItem      QuestionBankItem?      @relation(fields: [questionBankItemId], references: [id], onDelete: Restrict)
   answer                PracticeSessionAnswer?
 
   @@unique([practiceSessionId, order])
-  @@unique([practiceSessionId, examVersionQuestionId])
+  @@index([examVersionQuestionId])
+  @@index([questionBankItemId])
+}
+
+model QuestionBankImportBatch {
+  id                String             @id @default(cuid())
+  externalId        String             @unique
+  title             String
+  sourceName        String
+  sourceType        QuestionSourceType
+  sourceYear        Int?
+  sourceDocumentRef String
+  createdAt         DateTime           @default(now())
+  items             QuestionBankItem[]
+}
+
+model QuestionBankItem {
+  id                    String                 @id @default(cuid())
+  logicalKey            String
+  revision              Int
+  status                QuestionBankItemStatus @default(draft)
+  importBatchId         String
+  topicId               String
+  subtopicId            String
+  sourceQuestionRef     String?
+  assetSource           String?
+  provenanceFingerprint String
+  contentFingerprint    String
+  type                  QuestionType
+  section               Int
+  sourceOrder           Int
+  content               String
+  assets                Json?
+  choices               Json?
+  statements            Json?
+  answerKey             Json
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  importBatch           QuestionBankImportBatch @relation(fields: [importBatchId], references: [id], onDelete: Restrict)
+  topic                 Topic                  @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  subtopic              Subtopic               @relation(fields: [subtopicId], references: [id], onDelete: Restrict)
+  practiceSessionQuestions PracticeSessionQuestion[]
+
+  @@unique([logicalKey, revision])
+  @@index([topicId, status, type])
+  @@index([subtopicId, status, type])
+  @@index([provenanceFingerprint])
+  @@index([contentFingerprint])
 }
 
 model PracticeSessionAnswer {
@@ -244,6 +295,18 @@ enum PracticeSessionStatus {
   in_progress
   completed
   cancelled
+}
+
+enum QuestionBankItemStatus {
+  draft
+  published
+  archived
+}
+
+enum QuestionSourceType {
+  official
+  mock
+  curated
 }
 
 enum ExamVersionStatus {

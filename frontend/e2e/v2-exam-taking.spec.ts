@@ -379,16 +379,24 @@ test('internal draft preview renders safe V2 content without a taking flow', asy
 
 test('authenticated practice resumes a persistent session, autosaves, and submits with one stored key', async ({ page }) => {
   const session: any = {
-    id: 'persistent-practice-session', status: 'in_progress', topic: { slug: 'ham-so-va-do-thi-nen-tang', name: 'Hàm số' },
-    startedAt: new Date().toISOString(), submittedAt: null, scoreUnits: null, maxScoreUnits: null, fullyCorrectCount: null, totalQuestions: 1, unansweredCount: null,
+    id: 'persistent-practice-session', status: 'in_progress',
+    topic: { slug: 'ham-so-va-do-thi-nen-tang', name: 'Hàm số' },
+    startedAt: new Date().toISOString(), submittedAt: null,
+    scoreUnits: null, maxScoreUnits: null, fullyCorrectCount: null,
+    totalQuestions: 1, unansweredCount: null,
     configuration: { topicSlug: 'ham-so-va-do-thi-nen-tang', subtopicSlug: null, requestedQuestionCount: 5, actualQuestionCount: 1, questionTypes: ['single_choice'] },
     questions: [{ sessionQuestionId: 'persistent-sc', order: 1, question: sessionQuestions[0], response: null, responseRevision: 0 }],
   };
   let activeSession: any = null;
   const submissionKeys: string[] = [];
   await page.addInitScript(() => window.localStorage.setItem('manmath-auth-token', 'persistent-practice-test-token'));
-  await page.route('**/api/v2/practice/sessions/active?topicSlug=ham-so-va-do-thi-nen-tang', async (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify({ session: activeSession }) }));
-  await page.route('**/api/v2/practice/sessions', async (route) => { activeSession = session; await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(session) }); });
+  await page.route('**/api/v2/practice/sessions/active?topicSlug=ham-so-va-do-thi-nen-tang', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ session: activeSession }) });
+  });
+  await page.route('**/api/v2/practice/sessions', async (route) => {
+    activeSession = session;
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(session) });
+  });
   await page.route('**/api/v2/practice/sessions/persistent-practice-session/questions/persistent-sc/response', async (route) => {
     const body = route.request().postDataJSON() as { response: { choiceId?: string } | null; expectedRevision: number };
     session.questions[0] = { ...session.questions[0], response: body.response === null ? null : { type: 'single_choice', choiceId: body.response.choiceId ?? '' }, responseRevision: body.expectedRevision + 1 };
@@ -409,4 +417,45 @@ test('authenticated practice resumes a persistent session, autosaves, and submit
   expect(submissionKeys).toHaveLength(1);
   expect(submissionKeys[0]).toMatch(/^[0-9a-f-]{36}$/);
   await expect(page.getByRole('radio').first()).toBeDisabled();
+});
+
+test('persistent practice remains source-agnostic for mixed exam and question-bank pins', async ({ page }) => {
+  const questions = [
+    {
+      sessionQuestionId: 'exam-source-sc', order: 1,
+      question: sessionQuestions[0], response: null, responseRevision: 0,
+    },
+    {
+      sessionQuestionId: 'bank-source-sc', order: 2,
+      question: { ...sessionQuestions[0], id: 'bank-source-sc-question', content: 'Câu hỏi từ ngân hàng câu hỏi.' },
+      response: null, responseRevision: 0,
+    },
+  ];
+  let session: any = {
+    id: 'mixed-source-practice-session', status: 'in_progress',
+    topic: { slug: 'ham-so-va-do-thi-nen-tang', name: 'Hàm số' },
+    startedAt: new Date().toISOString(), submittedAt: null,
+    scoreUnits: null, maxScoreUnits: null, fullyCorrectCount: null,
+    totalQuestions: 2, unansweredCount: null,
+    configuration: { topicSlug: 'ham-so-va-do-thi-nen-tang', subtopicSlug: null, requestedQuestionCount: 5, actualQuestionCount: 2, questionTypes: ['single_choice'] },
+    questions,
+  };
+  await page.addInitScript(() => window.localStorage.setItem('manmath-auth-token', 'mixed-source-test-token'));
+  await page.route('**/api/v2/practice/sessions/active?topicSlug=ham-so-va-do-thi-nen-tang', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ session }) });
+  });
+  await page.route('**/api/topics', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ topics: [] }) });
+  });
+  await page.route('**/api/v2/practice/sessions/mixed-source-practice-session/questions/*/response', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ response: route.request().postDataJSON().response, responseRevision: 1 }) });
+  });
+  await page.goto('/practice/topic/ham-so-va-do-thi-nen-tang');
+  await expect(page.getByText('Câu hỏi từ ngân hàng câu hỏi.')).toHaveCount(0);
+  await page.getByRole('radio').first().click();
+  await page.waitForTimeout(450);
+  await page.getByRole('button', { name: '2', exact: true }).click();
+  await expect(page.getByText('Câu hỏi từ ngân hàng câu hỏi.')).toBeVisible();
+  await page.getByRole('radio').first().click();
+  await page.waitForTimeout(450);
 });

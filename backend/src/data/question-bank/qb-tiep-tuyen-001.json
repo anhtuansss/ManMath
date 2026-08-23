@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-tiep-tuyen-001",
+  "title": "Bài toán: Tiếp tuyến của đồ thị hàm số",
+  "source": {
+    "name": "Phần Hàm số - Giải tích 12",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "Sribd"
+  },
+  "taxonomy": {
+    "topicSlug": "dao-ham-va-khao-sat-ham-so",
+    "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so"
+  },
+  "questions": [
+    {
+      "id": "qb-tiep-tuyen-001-q01",
+      "sourceQuestionRef": "Câu 1",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Tìm phương trình tiếp tuyến của đồ thị hàm số $y=x^3-3x^2+2$ tại điểm $M(-1;-2)$?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so",
+      "choices": [{ "id": "a", "content": "$y=9x+11$." }, { "id": "b", "content": "$y=9x-11$." }, { "id": "c", "content": "$y=9x-7$." }, { "id": "d", "content": "$y=9x+7$." }],
+      "answerKey": { "correctChoiceId": "d" }
+    },
+    {
+      "id": "qb-tiep-tuyen-001-q02",
+      "sourceQuestionRef": "Câu 2",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Cho hàm số $y=\\dfrac{2x-1}{x+1}$. Phương trình tiếp tuyến của đồ thị hàm số tại điểm $M(0;-1)$ là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so",
+      "choices": [{ "id": "a", "content": "$y=3x+1$." }, { "id": "b", "content": "$y=3x-1$." }, { "id": "c", "content": "$y=-3x-1$." }, { "id": "d", "content": "$y=-3x+1$." }],
+      "answerKey": { "correctChoiceId": "b" }
+    },
+    {
+      "id": "qb-tiep-tuyen-001-q03",
+      "sourceQuestionRef": "Câu 3",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Tìm phương trình tiếp tuyến của đồ thị hàm số $y=x^3-x^2+x+1$ tại điểm có tung độ bằng $2$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so",
+      "choices": [{ "id": "a", "content": "$y=2x$." }, { "id": "b", "content": "$y=9x-11$." }, { "id": "c", "content": "$y=2x$ và $y=2x+\\dfrac{32}{27}$." }, { "id": "d", "content": "$y=2x+4$." }],
+      "answerKey": { "correctChoiceId": "a" }
+    },
+    {
+      "id": "qb-tiep-tuyen-001-q04",
+      "sourceQuestionRef": "Câu 4",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Viết phương trình tiếp tuyến của đồ thị hàm số $y=x^3-3x^2+2$ tại điểm thuộc đồ thị có hoành độ $x_0$ thỏa điều kiện $y''(x_0)=0$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so",
+      "choices": [{ "id": "a", "content": "$y=-3x+3$." }, { "id": "b", "content": "$y=9x+7$." }, { "id": "c", "content": "$y=0$." }, { "id": "d", "content": "$y=-3x-3$." }],
+      "answerKey": { "correctChoiceId": "a" }
+    },
+    {
+      "id": "qb-tiep-tuyen-001-q05",
+      "sourceQuestionRef": "Câu 5",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Hỏi có bao nhiêu tiếp tuyến với đồ thị hàm số $y=\\dfrac{2x+3}{2x-1}$, biết tiếp tuyến vuông góc với đường thẳng $y=\\dfrac{1}{2}x$?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tiep-tuyen-cua-do-thi-ham-so",
+      "choices": [{ "id": "a", "content": "$0$." }, { "id": "b", "content": "$1$." }, { "id": "c", "content": "$2$." }, { "id": "d", "content": "$3$." }],
+      "answerKey": { "correctChoiceId": "c" }
+    }
+  ]
+}
