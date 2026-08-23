@@ -236,6 +236,7 @@ test('anonymous learner can answer all three V2 types, restore draft, submit, an
   // The draft uses the versioned V2 local-storage key. Reload proves that the
   // three discriminated response shapes restore without client-side grading.
   await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
+  await page.waitForTimeout(250);
   await page.reload();
   await expect(page.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
   await expect(page.getByLabel('Câu trả lời').first()).toHaveValue('1,5');
@@ -419,6 +420,13 @@ test('authenticated practice resumes a persistent session, autosaves, and submit
   await expect(page.getByRole('radio').first()).toBeDisabled();
 });
 
+test('dashboard remains the exam discovery workspace and exposes Learning in navigation', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  await expect(page.getByRole('heading', { name: 'Chọn đề để chinh phục hôm nay' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Học tập' })).toHaveAttribute('href', '/learning');
+});
+
 test('persistent practice remains source-agnostic for mixed exam and question-bank pins', async ({ page }) => {
   const questions = [
     {
@@ -459,7 +467,7 @@ test('persistent practice remains source-agnostic for mixed exam and question-ba
   await page.waitForTimeout(450);
 });
 
-test('dashboard renders backend-owned learning overview and its practice recommendation', async ({ page }) => {
+test('learning renders backend-owned overview and its practice recommendation', async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem('manmath-auth-token', 'learning-overview-test-token'));
   await page.route('**/api/auth/me', async (route) => {
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ user: { id: 'learning-user', email: 'learner@example.com', fullName: 'Learner', avatarUrl: null } }) });
@@ -475,9 +483,13 @@ test('dashboard renders backend-owned learning overview and its practice recomme
       coverage: { scoreUnitAttemptCount: 3, unavailableV2AttemptCount: 0, examFactCount: 2, practiceFactCount: 1 },
     }) });
   });
-  await page.goto('/dashboard');
+  await page.goto('/learning');
   await expect(page.getByRole('heading', { name: 'Tiến độ luyện thi của bạn' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Trang chủ' })).toHaveAttribute('href', '/dashboard');
   await expect(page.getByText('3 câu đã trả lời')).toBeVisible();
   await expect(page.getByText('Câu bỏ trống làm giảm mastery nhưng không tăng mẫu đánh giá.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Luyện 5 câu' })).toHaveAttribute('href', '/practice/topic/dao-ham-va-khao-sat-ham-so?subtopic=tiep-tuyen-cua-do-thi-ham-so');
+  await page.goto('/analytics');
+  await expect(page.getByRole('heading', { name: 'Tổng quan học tập' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Nguồn dữ liệu mastery' })).toBeVisible();
 });

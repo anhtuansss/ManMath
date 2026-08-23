@@ -20,6 +20,14 @@ function ChartBarIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function AcademicCapIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.26 10.147 7.49-4.15a.5.5 0 0 1 .5 0l7.49 4.15a.5.5 0 0 1 0 .876l-7.49 4.15a.5.5 0 0 1-.5 0l-7.49-4.15a.5.5 0 0 1 0-.876ZM5.25 12.75v4.125c0 .621.504 1.125 1.125 1.125h11.25c.621 0 1.125-.504 1.125-1.125V12.75" />
+    </svg>
+  );
+}
+
 function ClockIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -41,6 +49,7 @@ export function AppSidebar() {
 
   const links = [
     { href: '/dashboard', label: 'Trang chủ', icon: HomeIcon },
+    { href: '/learning', label: 'Học tập', icon: AcademicCapIcon },
     { href: '/analytics', label: 'Phân tích', icon: ChartBarIcon },
     { href: '/history', label: 'Lịch sử', icon: ClockIcon },
     { href: '/profile', label: 'Hồ sơ', icon: UserIcon },

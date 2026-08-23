@@ -1,5 +1,5 @@
-import { LearningDashboardClient } from '../../../components/dashboard/LearningDashboardClient';
+import { ExamListClient } from '../../../components/exam/ExamListClient';
 
 export default function DashboardPage() {
-  return <LearningDashboardClient />;
+  return <ExamListClient />;
 }
