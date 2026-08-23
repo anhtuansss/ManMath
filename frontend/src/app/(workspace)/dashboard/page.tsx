@@ -1,8 +1,5 @@
-import { ExamListClient } from '../../../components/exam/ExamListClient';
+import { LearningDashboardClient } from '../../../components/dashboard/LearningDashboardClient';
 
-/**
- * Guest-capable exam workspace. The full workspace layout is added in Phase 0B.
- */
 export default function DashboardPage() {
-  return <ExamListClient />;
+  return <LearningDashboardClient />;
 }

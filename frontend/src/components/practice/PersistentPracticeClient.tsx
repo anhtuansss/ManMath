@@ -6,16 +6,16 @@ import { V2QuestionCard } from '../exam-v2/ExamContentTakingClient';
 import { Button } from '../ui';
 import type { V2AnswerState, V2AnswersByQuestionId, V2PracticeSessionDto, V2SubmittedResponse } from '../exam-v2/types';
 
-type Props = { topicSlug: string };
+type Props = { topicSlug: string; initialSubtopicSlug?: string };
 type Type = 'single_choice' | 'true_false_group' | 'short_answer';
 type TopicDto = { readonly slug: string; readonly name: string; readonly subtopics: readonly { readonly slug: string; readonly name: string }[] };
 const auth = (): HeadersInit => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken() ?? ''}` });
 const key = (id: string): string => { const name = `manmath-practice-submit:${id}`; const old = sessionStorage.getItem(name); if (old) return old; const fresh = crypto.randomUUID(); sessionStorage.setItem(name, fresh); return fresh; };
 const answer = (value: V2SubmittedResponse | null): V2AnswerState | undefined => value === null ? undefined : value.type === 'short_answer' ? { type: 'short_answer', value: value.response } : value;
 
-export function PersistentPracticeClient({ topicSlug }: Props) {
+export function PersistentPracticeClient({ topicSlug, initialSubtopicSlug }: Props) {
   const [session, setSession] = useState<V2PracticeSessionDto | null>(null); const [ready, setReady] = useState(false); const [error, setError] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<V2AnswersByQuestionId>({}); const [subtopicSlug, setSubtopicSlug] = useState(''); const [count, setCount] = useState<5 | 10>(5); const [types, setTypes] = useState<readonly Type[]>(['single_choice']); const [topic, setTopic] = useState<TopicDto | null>(null);
+  const [answers, setAnswers] = useState<V2AnswersByQuestionId>({}); const [subtopicSlug, setSubtopicSlug] = useState(initialSubtopicSlug ?? ''); const [count, setCount] = useState<5 | 10>(5); const [types, setTypes] = useState<readonly Type[]>(['single_choice']); const [topic, setTopic] = useState<TopicDto | null>(null);
   const revisions = useRef(new Map<string, number>()); const timers = useRef(new Map<string, number>()); const chains = useRef(new Map<string, Promise<void>>()); const pending = useRef(new Map<string, V2AnswerState | null>());
   const hydrate = (value: V2PracticeSessionDto): void => { setSession(value); revisions.current = new Map(value.questions.map((item) => [item.sessionQuestionId, item.responseRevision])); setAnswers(Object.fromEntries(value.questions.flatMap((item) => { const saved = answer(item.response); return saved ? [[item.sessionQuestionId, saved]] : []; }))); };
   useEffect(() => { let alive = true; void (async () => { try { const [active, taxonomy] = await Promise.all([fetch(`${API_BASE_URL}/api/v2/practice/sessions/active?topicSlug=${encodeURIComponent(topicSlug)}`, { headers: auth() }), fetch(`${API_BASE_URL}/api/topics`)]); const body = await active.json() as { session: V2PracticeSessionDto | null; message?: string }; const taxonomyBody = await taxonomy.json() as { topics?: readonly TopicDto[] }; if (!active.ok) throw new Error(body.message); if (alive && body.session) hydrate(body.session); if (alive) setTopic(taxonomyBody.topics?.find((item) => item.slug === topicSlug) ?? null); } catch (e) { if (alive) setError(e instanceof Error ? e.message : 'Không thể tải phiên luyện tập.'); } finally { if (alive) setReady(true); } })(); return () => { alive = false; for (const timer of timers.current.values()) clearTimeout(timer); }; }, [topicSlug]);

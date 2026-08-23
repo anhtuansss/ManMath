@@ -6,6 +6,17 @@ import {
   getUserSubtopicAnalytics,
   getUserTopicAnalytics,
 } from '../services/analyticsService';
+import { getLearningOverview } from '../services/learningOverviewService';
+
+export const getMyLearningOverview = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.user) { res.status(401).json({ message: 'Unauthorized' }); return; }
+    res.json(await getLearningOverview(req.user.userId));
+  } catch (error) {
+    console.error('Failed to load learning overview:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 export const getMyTopicStats = async (
   req: Request,

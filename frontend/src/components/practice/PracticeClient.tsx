@@ -12,7 +12,7 @@ import type {
   V2PublicPracticeQuestionDto, V2PublicPracticeTopicDto, V2RawSubmittedResponse,
 } from '../exam-v2/types';
 
-type PracticeClientProps = { topicSlug: string };
+type PracticeClientProps = { topicSlug: string; initialSubtopicSlug?: string };
 
 function isAnswered(question: V2PublicPracticeQuestionDto, answer: V2AnswerState | undefined): boolean {
   if (answer === undefined || answer.type !== question.type) return false;
@@ -108,9 +108,9 @@ function EphemeralPracticeClient({ topicSlug }: PracticeClientProps) {
 }
 
 /** Guests retain the old ephemeral flow; authenticated learners use a saved session. */
-export function PracticeClient({ topicSlug }: PracticeClientProps) {
+export function PracticeClient({ topicSlug, initialSubtopicSlug }: PracticeClientProps) {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   useEffect(() => setAuthenticated(getAuthToken() !== null), []);
   if (authenticated === null) return <main className="min-h-[100dvh] bg-background" />;
-  return authenticated ? <PersistentPracticeClient topicSlug={topicSlug} /> : <EphemeralPracticeClient topicSlug={topicSlug} />;
+  return authenticated ? <PersistentPracticeClient topicSlug={topicSlug} initialSubtopicSlug={initialSubtopicSlug} /> : <EphemeralPracticeClient topicSlug={topicSlug} />;
 }

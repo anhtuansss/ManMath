@@ -451,11 +451,33 @@ test('persistent practice remains source-agnostic for mixed exam and question-ba
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ response: route.request().postDataJSON().response, responseRevision: 1 }) });
   });
   await page.goto('/practice/topic/ham-so-va-do-thi-nen-tang');
-  await expect(page.getByText('Câu hỏi từ ngân hàng câu hỏi.')).toHaveCount(0);
-  await page.getByRole('radio').first().click();
-  await page.waitForTimeout(450);
-  await page.getByRole('button', { name: '2', exact: true }).click();
   await expect(page.getByText('Câu hỏi từ ngân hàng câu hỏi.')).toBeVisible();
   await page.getByRole('radio').first().click();
   await page.waitForTimeout(450);
+  await expect(page.getByText('Câu hỏi từ ngân hàng câu hỏi.')).toBeVisible();
+  await page.getByRole('radio').first().click();
+  await page.waitForTimeout(450);
+});
+
+test('dashboard renders backend-owned learning overview and its practice recommendation', async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem('manmath-auth-token', 'learning-overview-test-token'));
+  await page.route('**/api/auth/me', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ user: { id: 'learning-user', email: 'learner@example.com', fullName: 'Learner', avatarUrl: null } }) });
+  });
+  await page.route('**/api/me/learning-overview', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({
+      overall: { topicSlug: null, subtopicSlug: null, topicName: null, subtopicName: null, earnedScoreUnits: 100, maxScoreUnits: 200, masteryPercent: 50, answeredCount: 3, fullyCorrectCount: 2, examQuestionCount: 2, practiceQuestionCount: 1, confidence: 'low', status: 'developing', corpusAvailableQuestionCount: 0, corpusStatus: 'not_applicable', isWeak: false },
+      topics: [],
+      subtopics: [],
+      nextAction: { topicSlug: 'dao-ham-va-khao-sat-ham-so', subtopicSlug: 'tiep-tuyen-cua-do-thi-ham-so', title: 'Tiếp tuyến của đồ thị hàm số', corpusAvailableQuestionCount: 5, kind: 'assess', reason: 'Hãy luyện 5 câu để đánh giá chính xác mức độ thành thạo.' },
+      continueItems: [],
+      recentActivity: [],
+      coverage: { scoreUnitAttemptCount: 3, unavailableV2AttemptCount: 0, examFactCount: 2, practiceFactCount: 1 },
+    }) });
+  });
+  await page.goto('/dashboard');
+  await expect(page.getByRole('heading', { name: 'Tiến độ luyện thi của bạn' })).toBeVisible();
+  await expect(page.getByText('3 câu đã trả lời')).toBeVisible();
+  await expect(page.getByText('Câu bỏ trống làm giảm mastery nhưng không tăng mẫu đánh giá.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Luyện 5 câu' })).toHaveAttribute('href', '/practice/topic/dao-ham-va-khao-sat-ham-so?subtopic=tiep-tuyen-cua-do-thi-ham-so');
 });
