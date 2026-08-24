@@ -1,5 +1,5 @@
-import { ExamListClient } from '../../../components/exam/ExamListClient';
+import { DashboardHomeClient } from '../../../components/dashboard/DashboardHomeClient';
 
 export default function DashboardPage() {
-  return <ExamListClient />;
+  return <DashboardHomeClient />;
 }
