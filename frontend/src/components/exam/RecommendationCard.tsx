@@ -35,7 +35,7 @@ type RecommendationStatus = 'loading' | 'empty' | 'ready' | 'error' | 'unauthent
 
 const clampAccuracy = (accuracy: number): number => Math.min(Math.max(accuracy, 0), 100);
 
-export function RecommendationCard() {
+export function RecommendationCard({ className = '' }: { className?: string }) {
   const [status, setStatus] = useState<RecommendationStatus>('loading');
   const [weakTopics, setWeakTopics] = useState<WeakTopicRecommendation[]>([]);
   const [recommendedExams, setRecommendedExams] = useState<RecommendedExam[]>([]);
@@ -98,7 +98,7 @@ export function RecommendationCard() {
   if (status === 'unauthenticated') return null;
 
   return (
-    <section className="rounded-xl border border-border bg-surface p-5 shadow-card" aria-labelledby="personal-guidance-title">
+    <section className={`flex flex-col rounded-xl border border-border bg-surface p-5 shadow-card ${className}`} aria-labelledby="personal-guidance-title">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-primary" aria-hidden="true">
@@ -126,7 +126,7 @@ export function RecommendationCard() {
       {status === 'error' && <p className="workspace-page-description mt-4">Chưa tải được gợi ý. Kho đề vẫn sẵn sàng để bạn tiếp tục luyện tập.</p>}
 
       {status === 'ready' && (
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 flex flex-1 flex-col gap-5">
           {visibleTopics.length > 0 && (
             <div>
               <h3 className="workspace-sidebar-label">Chuyên đề cần ôn</h3>
@@ -157,7 +157,7 @@ export function RecommendationCard() {
             </div>
           )}
 
-          <Link href="/analytics" className="workspace-button-text inline-flex h-10 w-full items-center justify-center rounded-lg border border-border text-primary hover:border-primary/30 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem phân tích chi tiết →</Link>
+          <Link href="/analytics" className="workspace-button-text mt-auto inline-flex h-10 w-full items-center justify-center rounded-lg border border-border text-primary hover:border-primary/30 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Xem phân tích chi tiết →</Link>
         </div>
       )}
     </section>

@@ -38,8 +38,8 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
   if (variant === 'compact') {
     return (
       <article className="group border-b border-border py-3 last:border-b-0 transition-colors hover:bg-background-alt">
-        <div className="grid gap-3 px-1 md:grid-cols-[minmax(0,1fr)_112px_92px] md:items-center md:gap-4">
-          <div className="min-w-0">
+        <div className="flex flex-col gap-3 px-1 md:flex-row md:items-center md:gap-4">
+          <div className="min-w-0 flex-1">
             <h3 className="workspace-item-title text-text-primary transition-colors duration-200 group-hover:text-primary">
               {exam.title}
             </h3>
@@ -48,16 +48,16 @@ export function ExamCard({ exam, variant = 'featured' }: ExamCardProps) {
             </p>
           </div>
 
-          <div className="flex items-center justify-between md:block">
-            <span className="workspace-metadata md:hidden">Độ khó</span>
-            <span className={`workspace-badge-text inline-flex whitespace-nowrap rounded-md border px-2.5 py-1 ${difficultyStyles[exam.difficulty]}`}>
-              {difficultyLabels[exam.difficulty]}
-            </span>
-          </div>
-          <div className="flex justify-end">
+          <div className="flex shrink-0 items-center justify-between gap-3 md:justify-end">
+            <div className="flex items-center gap-2">
+              <span className="workspace-metadata md:hidden">Độ khó</span>
+              <span className={`workspace-badge-text inline-flex min-w-[52px] justify-center whitespace-nowrap rounded-md border px-3 py-1.5 ${difficultyStyles[exam.difficulty]}`}>
+                {difficultyLabels[exam.difficulty]}
+              </span>
+            </div>
             <Link
               href={exam.href}
-              className="workspace-button-text inline-flex h-9 items-center justify-center rounded-md bg-primary-light px-3 text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="workspace-button-text inline-flex h-9 min-w-[76px] items-center justify-center rounded-md bg-primary-light px-3 text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Vào đề
             </Link>
