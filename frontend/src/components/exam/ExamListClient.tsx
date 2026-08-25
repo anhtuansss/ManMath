@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ExamList } from './ExamList';
+import { ExamLibrary } from '../exam-library/ExamLibrary';
 import type {
   ExamDifficulty,
   ExamDurationFilter,
@@ -516,9 +516,8 @@ export function ExamListClient() {
   }
 
   return (
-    <ExamList
+    <ExamLibrary
       exams={exams}
-      draftExamId={draftExamId}
       searchInput={searchInput}
       selectedTopic={selectedTopic}
       selectedSubtopic={selectedSubtopic}
@@ -541,7 +540,6 @@ export function ExamListClient() {
       onYearChange={setSelectedYear}
       onSourceChange={setSelectedSource}
       onClearFilters={handleClearFilters}
-      isAuthenticated={isAuthenticated}
     />
   );
 }

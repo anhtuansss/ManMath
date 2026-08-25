@@ -1,8 +1,5 @@
-import { redirect } from 'next/navigation';
+import { ExamListClient } from '../../../components/exam/ExamListClient';
 
-/**
- * Compatibility route. The workspace now lives at /dashboard.
- */
 export default function ExamsPage() {
-  redirect('/dashboard');
+  return <ExamListClient />;
 }

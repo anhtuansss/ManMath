@@ -420,10 +420,11 @@ test('authenticated practice resumes a persistent session, autosaves, and submit
   await expect(page.getByRole('radio').first()).toBeDisabled();
 });
 
-test('dashboard remains the exam discovery workspace and exposes Learning in navigation', async ({ page }) => {
+test('dashboard links to the full exam library from its compact list and exposes Learning in navigation', async ({ page }) => {
   await page.goto('/dashboard');
 
   await expect(page.getByRole('heading', { name: 'Chọn đề để chinh phục hôm nay' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Xem tất cả đề thi →' })).toHaveAttribute('href', '/exams');
   await expect(page.getByRole('link', { name: 'Học tập' })).toHaveAttribute('href', '/learning');
 });
 

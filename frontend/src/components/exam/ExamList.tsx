@@ -165,15 +165,14 @@ export function ExamList({
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <main id="main-content" tabIndex={-1} className="flex-1 bg-background pb-16 text-text-primary">
-        <div className="mx-auto w-full max-w-[1440px] px-4 py-7 sm:px-6 lg:px-8">
-          <header className="pb-6">
+        <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
+          <header className="pb-8">
             <p className="workspace-eyebrow">{isAuthenticated ? 'Xin chào, chúc bạn học tốt' : 'Luyện đề Toán THPT'}</p>
-            <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mt-1">
               <div className="min-w-0">
                 <h1 className="workspace-page-title text-text-primary">Chọn đề để chinh phục hôm nay</h1>
                 <p className="workspace-page-description mt-2">Luyện tập mỗi ngày để tiến bộ vững vàng hơn.</p>
               </div>
-              <Link href="#exam-library" className="workspace-button-text inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border bg-surface px-4 text-text-secondary transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Khám phá kho đề <span className="ml-2" aria-hidden="true">→</span></Link>
             </div>
           </header>
 
@@ -215,9 +214,9 @@ export function ExamList({
               </section>
               )}
 
-              <div className="grid gap-6 xl:grid-cols-[minmax(0,68fr)_minmax(300px,32fr)]">
+              <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_310px]">
               <section id="exam-library" className="overflow-hidden rounded-xl border border-border bg-surface">
-                <div className="border-b border-border px-5 py-5">
+                <div className="border-b border-border px-5 py-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <h2 className="workspace-section-title text-text-primary">Danh sách đề thi</h2>
@@ -229,13 +228,14 @@ export function ExamList({
                   </div>
 
                   <div className="mt-5 space-y-3">
-                    <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                       <div className="relative flex-1">
                         <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                         <input
                           type="text"
+                          id="exam-search"
                           aria-label="Tìm kiếm đề"
                           value={searchInput}
                           onChange={(event) => onSearchChange(event.target.value)}
@@ -397,6 +397,9 @@ export function ExamList({
                   </div>
                 ) : (
                   <div className="px-5 pb-2 pt-1">
+                    <div className="hidden grid-cols-[minmax(0,1fr)_112px_92px] gap-4 border-b border-border py-3 text-xs font-semibold text-text-muted md:grid">
+                      <span>Đề thi</span><span>Độ khó</span><span className="text-right">Thao tác</span>
+                    </div>
                     <div className="divide-y divide-border">
                       {visibleExams.map((exam) => (
                         <ExamCard key={exam.id} exam={exam} variant="compact" />

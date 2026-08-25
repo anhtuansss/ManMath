@@ -1,0 +1,3 @@
+import type { ExamListItem } from '../exam/types';
+import { ExamLibraryCard } from './ExamLibraryCard';
+export function ExamGrid({ exams, isFiltering }: { exams: ExamListItem[]; isFiltering: boolean }) { if (!exams.length) return <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center text-sm text-text-secondary">Không tìm thấy đề phù hợp. Hãy điều chỉnh bộ lọc hoặc từ khoá tìm kiếm.</div>; return <div className={`grid gap-5 sm:grid-cols-2 xl:grid-cols-4 ${isFiltering ? 'opacity-60' : ''}`}>{exams.map((exam, index) => <ExamLibraryCard key={exam.id} exam={exam} index={index} />)}</div>; }
