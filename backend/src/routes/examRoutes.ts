@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createExamContentAttemptV2, getAnonymousExamContentAttemptReceiptV2, getExamContentAttemptReceiptV2, getExamContentAttemptReviewV2, getExamContentDraftPreviewV2, getExamContentV2, getExamList, getHealth, getReadiness, getTopicList, getTopicPracticeV2, gradeExamContentV2, gradeTopicPracticeV2, getActivePracticeSessionV2, getPracticeSessionV2, openPracticeSessionV2, cancelPracticeSessionV2, savePracticeSessionResponseV2, submitPracticeSessionV2 } from '../controllers/examController';
+import { createExamContentAttemptV2, getAnonymousExamContentAttemptReceiptV2, getExamContentAttemptReceiptV2, getExamContentAttemptReviewV2, getExamContentDraftPreviewV2, getExamContentV2, getExamList, getHealth, getReadiness, getTopicList, getTopicPracticeV2, gradeTopicPracticeV2, getActivePracticeSessionV2, getPracticeSessionV2, openPracticeSessionV2, cancelPracticeSessionV2, savePracticeSessionResponseV2, startExamTimingSessionV2, getExamTimingSessionV2, submitPracticeSessionV2 } from '../controllers/examController';
 import { authMiddleware, draftPreviewAuthorizationMiddleware, optionalAuthMiddleware } from '../middleware/authMiddleware';
 import { attemptSubmissionRateLimitMiddleware } from '../middleware/attemptSubmissionRateLimitMiddleware';
 
@@ -13,7 +13,9 @@ examRouter.get('/v2/practice/sessions/:sessionId', authMiddleware, getPracticeSe
 examRouter.post('/v2/practice/sessions/:sessionId/cancel', authMiddleware, cancelPracticeSessionV2);
 examRouter.put('/v2/practice/sessions/:sessionId/questions/:sessionQuestionId/response', authMiddleware, savePracticeSessionResponseV2);
 examRouter.post('/v2/practice/sessions/:sessionId/submit', authMiddleware, submitPracticeSessionV2);
-examRouter.get('/v2/exams/:id', getExamContentV2); examRouter.post('/v2/exams/:id/grade', gradeExamContentV2);
+examRouter.get('/v2/exams/:id', getExamContentV2);
+examRouter.post('/v2/exams/:id/timing-sessions', optionalAuthMiddleware, startExamTimingSessionV2);
+examRouter.get('/v2/exam-timing-sessions/:sessionId', optionalAuthMiddleware, getExamTimingSessionV2);
 examRouter.post('/v2/exams/:id/attempts', optionalAuthMiddleware, attemptSubmissionRateLimitMiddleware, createExamContentAttemptV2);
 examRouter.get('/v2/internal/exam-previews/:id', authMiddleware, draftPreviewAuthorizationMiddleware, getExamContentDraftPreviewV2);
 examRouter.get('/v2/attempts/:attemptId', authMiddleware, getExamContentAttemptReceiptV2);

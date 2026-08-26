@@ -9,7 +9,6 @@ import {
 import { examDifficulties, type ExamDifficulty } from '../types/exam';
 import {
   ExamContentGradeRequestError,
-  gradeExamContent,
 } from '../services/examContentGradingService';
 import {
   getPracticeByTopicSlugV2,
@@ -38,6 +37,11 @@ import {
   getExamContentAttemptReviewById,
   ExamContentAttemptReviewUnavailableError,
 } from '../services/examContentAttemptService';
+import {
+  ExamTimingSessionError,
+  getExamTimingSession,
+  startExamTimingSession,
+} from '../services/examTimingSessionService';
 
 
 const parseOptionalInteger = (
@@ -196,36 +200,56 @@ export const getExamContentV2 = async (
   }
 };
 
-export const gradeExamContentV2 = async (
+export const startExamTimingSessionV2 = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const examVersionId = typeof req.body?.examVersionId === 'string'
+    ? req.body.examVersionId.trim()
+    : '';
+  if (!examVersionId) {
+    res.status(400).json({ message: 'examVersionId khong hop le' });
+    return;
+  }
+  try {
+    const session = await startExamTimingSession(req.params.id, examVersionId, req.user?.userId);
+    if (session === null) {
+      res.status(404).json({ message: 'Khong tim thay de thi' });
+      return;
+    }
+    res.status(201).json(session);
+  } catch (error) {
+    if (error instanceof ExamContentIntegrityError) {
+      console.error('V2 exam timing-session integrity error:', error.issues);
+      res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
+      return;
+    }
+    console.error('Failed to start V2 exam timing session:', error);
+    res.status(500).json({ message: 'Khong the bat dau bai thi V2' });
+  }
+};
+
+export const getExamTimingSessionV2 = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const result = await gradeExamContent(req.params.id, req.body);
-
-    if (result === null) {
-      res.status(404).json({ message: 'Khong tim thay de thi' });
+    const session = await getExamTimingSession(req.params.sessionId, {
+      userId: req.user?.userId,
+      anonymousToken: req.header('x-exam-timing-session-token') ?? undefined,
+    });
+    if (session === null) {
+      res.status(404).json({ message: 'Khong tim thay phien lam bai V2' });
       return;
     }
-
-    res.json(result);
+    res.json(session);
   } catch (error) {
-    if (error instanceof ExamContentGradeRequestError) {
-      res.status(400).json({
-        message: 'Du lieu nop bai V2 khong hop le',
-        issues: error.issues,
-      });
+    if (error instanceof ExamTimingSessionError) {
+      res.status(404).json({ message: 'Khong tim thay phien lam bai V2' });
       return;
     }
-
-    if (error instanceof ExamContentIntegrityError) {
-      console.error('V2 exam content integrity error:', error.issues);
-      res.status(500).json({ message: 'Noi dung de thi V2 khong hop le' });
-      return;
-    }
-
-    console.error('Failed to grade V2 exam content:', error);
-    res.status(500).json({ message: 'Khong the cham de thi V2' });
+    console.error('Failed to read V2 exam timing session:', error);
+    res.status(500).json({ message: 'Khong the tai phien lam bai V2' });
   }
 };
 
@@ -247,6 +271,7 @@ export const createExamContentAttemptV2 = async (
       req.params.id,
       req.body,
       req.user?.userId,
+      req.header('x-exam-timing-session-token') ?? undefined,
       idempotencyKey.toLowerCase(),
       req.user === undefined ? `anonymous:${req.ip}` : `user:${req.user.userId}`,
     );
@@ -259,6 +284,14 @@ export const createExamContentAttemptV2 = async (
     if (result.replayed) res.setHeader('Idempotency-Replayed', 'true');
     res.status(result.replayed ? 200 : 201).json(result.response);
   } catch (error) {
+    if (error instanceof ExamTimingSessionError) {
+      if (error.code === 'expired' || error.code === 'submitted') {
+        res.status(409).json({ message: 'Phien lam bai da het han hoac da nop' });
+        return;
+      }
+      res.status(404).json({ message: 'Khong tim thay phien lam bai V2' });
+      return;
+    }
     if (error instanceof ExamContentAttemptIdempotencyConflictError) {
       res.status(409).json({ message: 'Idempotency-Key da duoc dung cho du lieu khac' });
       return;

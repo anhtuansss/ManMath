@@ -46,21 +46,54 @@ async function main(): Promise<void> {
   const concurrent = await Promise.all([openPracticeSession(config, concurrentOwner), openPracticeSession(config, concurrentOwner)]);
   assert.equal(concurrent[0].session.id, concurrent[1].session.id, 'one active session wins concurrent start');
   assert.equal(await prisma.practiceSession.count({ where: { userId: concurrentOwner, status: 'in_progress' } }), 1);
+  const independent = await openPracticeSession(config, other);
+  assert.equal(independent.created, true, 'another user can independently start the same topic');
+  const cancelledOwner = await user('practice-cancelled-restart');
+  const cancelledSession = await openPracticeSession(config, cancelledOwner);
+  await prisma.practiceSession.updateMany({ where: { id: cancelledSession.session.id, userId: cancelledOwner, status: 'in_progress' }, data: { status: 'cancelled' } });
+  assert.equal((await openPracticeSession(config, cancelledOwner)).created, true, 'a cancelled session no longer blocks a new one');
 
   const first = opened.session.questions.find((item) => item.question.type === 'single_choice');
   assert.ok(first, 'fixture must contain a pinned single-choice question');
   if (!first) throw new Error('Pinned single-choice question is required');
-  const saved = await savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, { type: 'single_choice', choiceId: 'a' }, 0);
-  assert.equal(saved.responseRevision, 1);
-  assert.equal(saved.response?.type, 'single_choice');
-  const retry = await savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, { type: 'single_choice', choiceId: 'a' }, 0);
+  const concurrentSaves = await Promise.allSettled([
+    savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, { type: 'single_choice', choiceId: 'a' }, 0),
+    savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, { type: 'single_choice', choiceId: 'b' }, 0),
+  ]);
+  const saveSuccesses = concurrentSaves.filter((result): result is PromiseFulfilledResult<Awaited<ReturnType<typeof savePracticeSessionResponse>>> => result.status === 'fulfilled');
+  const saveConflicts = concurrentSaves.filter((result): result is PromiseRejectedResult => result.status === 'rejected' && result.reason instanceof PracticeSessionConflictError);
+  assert.equal(saveSuccesses.length, 1, 'only one same-revision save succeeds');
+  assert.equal(saveConflicts.length, 1, 'the other same-revision save conflicts');
+  assert.equal(saveSuccesses[0]!.value.responseRevision, 1);
+  const persistedConcurrentAnswer = await prisma.practiceSessionAnswer.findUniqueOrThrow({ where: { practiceSessionQuestionId: first.sessionQuestionId } });
+  assert.equal(persistedConcurrentAnswer.responseRevision, 1, 'revision increments exactly once');
+  assert.deepEqual(persistedConcurrentAnswer.response, saveSuccesses[0]!.value.response, 'the persisted response is the successful save');
+  const retry = await savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, saveSuccesses[0]!.value.response, 0);
   assert.equal(retry.responseRevision, 1, 'same response retry is idempotent');
-  await assert.rejects(
-    () => savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, { type: 'single_choice', choiceId: 'b' }, 0),
-    (error: unknown) => error instanceof PracticeSessionConflictError,
-  );
   const cleared = await savePracticeSessionResponse(opened.session.id, first.sessionQuestionId, owner, null, 1);
   assert.equal(cleared.response, null);
+
+  const raceOwner = await user('practice-save-submit');
+  const raceSession = await openPracticeSession(config, raceOwner);
+  const raceQuestion = raceSession.session.questions.find((item) => item.question.type === 'single_choice');
+  assert.ok(raceQuestion, 'fixture must contain a single-choice question for the save/submit race');
+  if (!raceQuestion) throw new Error('Pinned single-choice question is required');
+  const [raceSave, raceSubmit] = await Promise.allSettled([
+    savePracticeSessionResponse(raceSession.session.id, raceQuestion.sessionQuestionId, raceOwner, { type: 'single_choice', choiceId: 'a' }, 0),
+    submitPracticeSession(raceSession.session.id, raceOwner, randomUUID()),
+  ]);
+  assert.equal(raceSubmit.status, 'fulfilled', 'submission remains valid whichever operation wins');
+  const raceCompleted = await getPracticeSession(raceSession.session.id, raceOwner);
+  assert.equal(raceCompleted?.status, 'completed');
+  const completedRaceQuestion = raceCompleted?.questions.find((item) => item.sessionQuestionId === raceQuestion.sessionQuestionId);
+  if (raceSave.status === 'fulfilled') {
+    assert.deepEqual(completedRaceQuestion?.response, raceSave.value.response, 'submission grades the response that won the race');
+    assert.equal(completedRaceQuestion?.result?.isFullyCorrect, true, 'the saved correct response is reflected in grading');
+  } else {
+    assert.ok(raceSave.reason instanceof PracticeSessionConflictError, 'save loses only because submission completed first');
+    assert.equal(completedRaceQuestion?.response, null, 'submission grades the pre-save response when it wins');
+    assert.equal(completedRaceQuestion?.result?.isFullyCorrect, false);
+  }
 
   const membership = await prisma.practiceSessionQuestion.findUniqueOrThrow({ where: { id: first.sessionQuestionId } });
   assert.ok(membership.examVersionQuestionId, 'fixture session must pin an exam question');
