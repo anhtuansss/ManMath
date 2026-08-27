@@ -3,6 +3,11 @@ import { createHash, createHmac, randomUUID, timingSafeEqual } from 'crypto';
 import { JWT_SECRET } from '../config/env';
 import { prisma } from '../lib/prisma';
 import {
+  authorizeTimingSessionForSubmission,
+  ExamTimingSessionError,
+  startExamTimingSession,
+} from './examTimingSessionService';
+import {
   gradeValidatedExamContent,
 } from './examContentGradingService';
 import {
@@ -62,18 +67,16 @@ export class ExamContentAttemptReviewUnavailableError extends Error {
   }
 }
 
-function readDurationSeconds(rawPayload: unknown): number {
+function readRequiredTimingSessionId(rawPayload: unknown): string {
   if (!isRecord(rawPayload)) {
     throw new ExamContentAttemptRequestError('Attempt payload must be an object');
   }
 
-  const value = rawPayload.durationSeconds;
-  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
-    throw new ExamContentAttemptRequestError(
-      'durationSeconds must be a non-negative integer',
-    );
+  const value = rawPayload.timingSessionId;
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    throw new ExamContentAttemptRequestError('timingSessionId must be a non-empty string');
   }
-  return value;
+  return value.trim();
 }
 
 export class ExamContentAttemptIdempotencyConflictError extends Error {
@@ -119,16 +122,10 @@ function buildSubmissionFingerprint(input: {
   readonly identityScope: string;
   readonly examId: string;
   readonly examVersionId: string;
+  readonly timingSessionId: string;
   readonly responses: readonly { readonly questionId: string; readonly response: SubmittedResponse | undefined }[];
-  readonly durationSeconds: number;
 }): string {
   return createHash('sha256').update(canonicalJson(input)).digest('hex');
-}
-
-function validateDurationSecondsForExam(durationSeconds: number, exam: ValidatedExamContent): void {
-  if (durationSeconds > exam.durationMinutes * 60) {
-    throw new ExamContentAttemptRequestError('durationSeconds exceeds the exam duration');
-  }
 }
 
 function hasMatchingAnonymousReceiptToken(expectedHash: string, rawToken: string): boolean {
@@ -295,10 +292,12 @@ export async function submitExamContentAttempt(
   examId: string,
   rawPayload: unknown,
   userId: string | undefined,
+  anonymousTimingSessionToken: string | undefined,
   idempotencyKey: string,
   identityScope: string,
+  now = new Date(),
 ): Promise<ExamContentAttemptSubmissionResult | null> {
-  const durationSeconds = readDurationSeconds(rawPayload);
+  const timingSessionId = readRequiredTimingSessionId(rawPayload);
   const examVersionId = readRequiredExamVersionId(rawPayload);
   const exam = await getValidatedExamContentById(examId, examVersionId);
 
@@ -306,18 +305,16 @@ export async function submitExamContentAttempt(
     return null;
   }
 
-  validateDurationSecondsForExam(durationSeconds, exam);
-
   const grading = gradeValidatedExamContent(exam, rawPayload);
   const fingerprint = buildSubmissionFingerprint({
     identityScope,
     examId: exam.id,
     examVersionId: exam.versionId,
+    timingSessionId,
     responses: grading.results.map((result) => ({
       questionId: result.questionId,
       response: result.response,
     })),
-    durationSeconds,
   });
   const existing = await getIdempotentAttemptReplay(idempotencyKey, fingerprint);
   if (existing !== null) return existing;
@@ -336,6 +333,13 @@ export async function submitExamContentAttempt(
 
   try {
     return await prisma.$transaction(async (tx) => {
+    const timing = await authorizeTimingSessionForSubmission(tx, {
+      sessionId: timingSessionId,
+      examId: exam.id,
+      examVersionId: exam.versionId,
+      access: { userId, anonymousToken: anonymousTimingSessionToken },
+      now,
+    });
     const versionQuestions = await tx.examVersionQuestion.findMany({
       where: {
         examVersionId: exam.versionId,
@@ -370,7 +374,9 @@ export async function submitExamContentAttempt(
       data: {
         examId: exam.id,
         examVersionId: exam.versionId,
+        timingSessionId,
         userId: userId ?? null,
+        startedAt: timing.startedAt,
         score: toDisplayScore(grading.totalAwardedScore),
         scoringPolicy: 'vietnam_thpt_math_2025',
         scoreUnits: grading.totalAwardedScore,
@@ -382,7 +388,7 @@ export async function submitExamContentAttempt(
         unansweredCount: grading.results.filter(
           (result) => result.response === undefined,
         ).length,
-        durationSeconds,
+        durationSeconds: timing.durationSeconds,
         anonymousReceiptTokenHash: anonymousCredential?.hash ?? null,
         anonymousReceiptExpiresAt: anonymousCredential?.expiresAt ?? null,
         idempotencyKey,
@@ -426,6 +432,11 @@ export async function submitExamContentAttempt(
       },
     });
 
+    await tx.examTimingSession.update({
+      where: { id: timingSessionId },
+      data: { status: 'submitted', submittedAt: now },
+    });
+
     return {
       response: {
         attemptId: attempt.id,
@@ -439,7 +450,7 @@ export async function submitExamContentAttempt(
         unansweredCount: grading.results.filter(
           (result) => result.response === undefined,
         ).length,
-        durationSeconds,
+        durationSeconds: timing.durationSeconds,
         submittedAt: attempt.submittedAt.toISOString(),
         results: grading.results,
         ...(anonymousCredential === null ? {} : { anonymousReceiptToken: anonymousCredential.token }),
@@ -448,6 +459,14 @@ export async function submitExamContentAttempt(
     };
   });
   } catch (error) {
+    if (error instanceof ExamTimingSessionError && error.code === 'expired') {
+      // The transaction rolls back on expiry, so transition the session separately.
+      await prisma.examTimingSession.updateMany({
+        where: { id: timingSessionId, status: 'in_progress' },
+        data: { status: 'expired' },
+      });
+      throw error;
+    }
     if (!isPrismaUniqueConstraintError(error)) throw error;
     const replay = await getIdempotentAttemptReplay(idempotencyKey, fingerprint);
     if (replay === null) throw error;
@@ -461,13 +480,18 @@ export async function createExamContentAttempt(
   rawPayload: unknown,
   userId?: string,
 ): Promise<CreateExamContentAttemptResponseDto | null> {
-  const payload = isRecord(rawPayload) && rawPayload.durationSeconds === undefined
-    ? { ...rawPayload, durationSeconds: 0 }
-    : rawPayload;
+  if (!isRecord(rawPayload)) {
+    throw new ExamContentAttemptRequestError('Attempt payload must be an object');
+  }
+  const examVersionId = readRequiredExamVersionId(rawPayload);
+  const timingSession = await startExamTimingSession(examId, examVersionId, userId);
+  if (timingSession === null) return null;
+  const payload = { ...rawPayload, timingSessionId: timingSession.id };
   const result = await submitExamContentAttempt(
     examId,
     payload,
     userId,
+    timingSession.anonymousTimingSessionToken,
     randomUUID(),
     userId === undefined ? 'anonymous:internal-verification' : `user:${userId}`,
   );

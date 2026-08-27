@@ -40,8 +40,22 @@ export type GradeExamContentResponseDto = {
 
 export type CreateExamContentAttemptRequestDto = {
   readonly examVersionId: string;
+  readonly timingSessionId: string;
   readonly responses: readonly RawSubmittedResponse[];
-  readonly durationSeconds: number;
+};
+
+export type StartExamTimingSessionRequestDto = {
+  readonly examVersionId: string;
+};
+
+export type ExamTimingSessionResponseDto = {
+  readonly id: string;
+  readonly examId: string;
+  readonly examVersionId: string;
+  readonly status: 'in_progress' | 'submitted' | 'expired';
+  readonly startedAt: string;
+  readonly expiresAt: string;
+  readonly anonymousTimingSessionToken?: string;
 };
 
 export type CreateExamContentAttemptResponseDto = {

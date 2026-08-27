@@ -265,10 +265,11 @@ export type V2AttemptReviewDto = {
 };
 
 export type V2ExamDraft = {
-  readonly version: 3;
+  readonly version: 4;
   readonly examId: string;
   readonly examVersionId: string;
-  readonly startedAt: number;
+  readonly timingSessionId: string;
+  readonly anonymousTimingSessionToken?: string;
   readonly deadlineAt: number;
   readonly answers: V2AnswersByQuestionId;
   readonly currentQuestionId: string | null;

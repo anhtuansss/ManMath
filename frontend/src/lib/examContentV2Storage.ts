@@ -8,7 +8,7 @@ import type {
 export type V2ExamViewMode = 'all' | 'single';
 
 const draftKey = (examId: string, examVersionId: string): string =>
-  `manmath:v2:exam-draft:v3:${examId}:${examVersionId}`;
+  `manmath:v2:exam-draft:v4:${examId}:${examVersionId}`;
 const draftReferenceKey = (examId: string): string =>
   `manmath:v2:exam-draft-reference:v1:${examId}`;
 const resultKey = (examId: string): string => `manmath:v2:exam-result:${examId}`;
@@ -58,15 +58,16 @@ export const readV2ExamDraft = (
   const value = readJson(storage, draftKey(examId, examVersionId));
   if (
     !isRecord(value) ||
-    value.version !== 3 ||
+    value.version !== 4 ||
     value.examId !== examId ||
     value.examVersionId !== examVersionId ||
     !isRecord(value.answers) ||
-    typeof value.startedAt !== 'number' ||
-    !Number.isFinite(value.startedAt) ||
+    typeof value.timingSessionId !== 'string' ||
+    value.timingSessionId.length === 0 ||
+    (value.anonymousTimingSessionToken !== undefined && typeof value.anonymousTimingSessionToken !== 'string') ||
     typeof value.deadlineAt !== 'number' ||
     !Number.isFinite(value.deadlineAt) ||
-    value.deadlineAt < value.startedAt ||
+    value.deadlineAt < 0 ||
     (value.currentQuestionId !== null && typeof value.currentQuestionId !== 'string') ||
     (value.viewMode !== 'all' && value.viewMode !== 'single') ||
     (value.submissionKey !== undefined && !isUuidV4(value.submissionKey)) ||
@@ -81,17 +82,14 @@ export const readV2ExamDraft = (
     answers[questionId] = answer;
   }
 
-  // Checkpoint 2 drafts used the same v3 timer schema but predate submit
-  // idempotency. Upgrade them on read without losing learner state.
-  const submissionKey = value.submissionKey === undefined
-    ? crypto.randomUUID()
-    : value.submissionKey;
+  const submissionKey = value.submissionKey === undefined ? crypto.randomUUID() : value.submissionKey;
 
   return {
-    version: 3,
+    version: 4,
     examId,
     examVersionId,
-    startedAt: value.startedAt,
+    timingSessionId: value.timingSessionId,
+    ...(value.anonymousTimingSessionToken === undefined ? {} : { anonymousTimingSessionToken: value.anonymousTimingSessionToken }),
     deadlineAt: value.deadlineAt,
     answers: answers as V2AnswersByQuestionId,
     currentQuestionId: value.currentQuestionId,

@@ -300,7 +300,7 @@ test('switching display modes preserves the active full-exam question', async ({
         source: null,
         year: 2026,
         statusLabel: 'Draft',
-        questions,
+        questions, 
       }),
     });
   });

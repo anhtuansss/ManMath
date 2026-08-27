@@ -17,6 +17,7 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   attempts     Attempt[]
+  examTimingSessions ExamTimingSession[]
   practiceSessions PracticeSession[]
 }
 
@@ -61,6 +62,7 @@ model Exam {
   updatedAt       DateTime           @updatedAt
   source          String?
   attempts        Attempt[]
+  timingSessions  ExamTimingSession[]
   versions        ExamVersion[]
 }
 
@@ -85,9 +87,11 @@ model Attempt {
   anonymousReceiptExpiresAt DateTime?
   idempotencyKey            String?               @unique
   submissionFingerprint     String?
+  timingSessionId           String?               @unique
   exam                      Exam                  @relation(fields: [examId], references: [id])
   examVersion               ExamVersion?          @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
   user                      User?                 @relation(fields: [userId], references: [id])
+  timingSession             ExamTimingSession?    @relation(fields: [timingSessionId], references: [id], onDelete: Restrict)
   answers                   AttemptAnswer[]
 
   @@index([examId])
@@ -96,6 +100,26 @@ model Attempt {
   @@index([submittedAt])
   @@index([anonymousReceiptExpiresAt])
   @@index([submissionFingerprint])
+}
+
+model ExamTimingSession {
+  id                 String                  @id @default(cuid())
+  examId             String
+  examVersionId      String
+  userId             String?
+  anonymousTokenHash String?
+  status             ExamTimingSessionStatus @default(in_progress)
+  startedAt          DateTime                @default(now())
+  expiresAt          DateTime
+  submittedAt        DateTime?
+  exam               Exam                    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examVersion        ExamVersion             @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
+  user               User?                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempt            Attempt?
+
+  @@index([examId, examVersionId])
+  @@index([userId, status])
+  @@index([expiresAt])
 }
 
 model ExamVersion {
@@ -118,6 +142,7 @@ model ExamVersion {
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
   attempts        Attempt[]
+  timingSessions  ExamTimingSession[]
   exam            Exam                  @relation(fields: [examId], references: [id], onDelete: Cascade)
   questions       ExamVersionQuestion[]
 
@@ -295,6 +320,12 @@ enum PracticeSessionStatus {
   in_progress
   completed
   cancelled
+}
+
+enum ExamTimingSessionStatus {
+  in_progress
+  submitted
+  expired
 }
 
 enum QuestionBankItemStatus {

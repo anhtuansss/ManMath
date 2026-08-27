@@ -278,6 +278,8 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const [answers, setAnswers] = useState<V2AnswersByQuestionId>({});
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [deadlineAt, setDeadlineAt] = useState<number | null>(null);
+  const [timingSessionId, setTimingSessionId] = useState<string | null>(null);
+  const [anonymousTimingSessionToken, setAnonymousTimingSessionToken] = useState<string | null>(null);
   const [currentQuestionId, setCurrentQuestionId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<V2ExamViewMode>('all');
   const [submissionKey, setSubmissionKey] = useState('');
@@ -296,10 +298,27 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
     Math.floor((deadline - Date.now()) / 1000),
   );
 
-  const startFreshSession = (data: V2PublicExamDto): void => {
-    const startedAt = Date.now();
-    const nextDeadlineAt = startedAt + (data.durationMinutes * 60 * 1000);
+  const startFreshSession = async (data: V2PublicExamDto): Promise<void> => {
+    const token = getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/v2/exams/${examId}/timing-sessions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token === null ? {} : { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify({ examVersionId: data.examVersionId }),
+    });
+    if (!response.ok) throw new Error('KhÃ´ng thá»ƒ báº¯t Ä‘áº§u phiÃªn lÃ m bÃ i V2.');
+    const session = await response.json() as {
+      id: string;
+      expiresAt: string;
+      anonymousTimingSessionToken?: string;
+    };
+    const nextDeadlineAt = Date.parse(session.expiresAt);
+    if (!Number.isFinite(nextDeadlineAt)) throw new Error('PhiÃªn lÃ m bÃ i V2 khÃ´ng há»£p lá»‡.');
     setAnswers({});
+    setTimingSessionId(session.id);
+    setAnonymousTimingSessionToken(session.anonymousTimingSessionToken ?? null);
     setDeadlineAt(nextDeadlineAt);
     setRemainingSeconds(remainingSecondsAt(nextDeadlineAt));
     setCurrentQuestionId(data.questions[0]?.id ?? null);
@@ -323,10 +342,24 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
         setExam(data);
         const draft = readV2ExamDraft(localStorage, examId, data.examVersionId);
         if (draft !== null) {
+          const token = getAuthToken();
+          const timingResponse = await fetch(`${API_BASE_URL}/api/v2/exam-timing-sessions/${encodeURIComponent(draft.timingSessionId)}`, {
+            headers: {
+              ...(draft.anonymousTimingSessionToken === undefined
+                ? (token === null ? {} : { Authorization: `Bearer ${token}` })
+                : { 'X-Exam-Timing-Session-Token': draft.anonymousTimingSessionToken }),
+            },
+          });
+          if (!timingResponse.ok) throw new Error('KhÃ´ng thá»ƒ khÃ´i phá»¥c phiÃªn lÃ m bÃ i V2.');
+          const timing = await timingResponse.json() as { expiresAt: string; status: 'in_progress' | 'submitted' | 'expired' };
+          const serverDeadlineAt = Date.parse(timing.expiresAt);
+          if (!Number.isFinite(serverDeadlineAt) || timing.status === 'submitted') throw new Error('PhiÃªn lÃ m bÃ i V2 khÃ´ng cÃ²n kháº£ dá»¥ng.');
           const questionIds = new Set(data.questions.map((question) => question.id));
           setAnswers(draft.answers);
-          setDeadlineAt(draft.deadlineAt);
-          setRemainingSeconds(remainingSecondsAt(draft.deadlineAt));
+          setTimingSessionId(draft.timingSessionId);
+          setAnonymousTimingSessionToken(draft.anonymousTimingSessionToken ?? null);
+          setDeadlineAt(serverDeadlineAt);
+          setRemainingSeconds(remainingSecondsAt(serverDeadlineAt));
           setCurrentQuestionId(
             draft.currentQuestionId !== null && questionIds.has(draft.currentQuestionId)
               ? draft.currentQuestionId
@@ -348,7 +381,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
           return;
         }
 
-        startFreshSession(data);
+        await startFreshSession(data);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : 'Không thể tải đề thi V2.');
       } finally {
@@ -363,10 +396,11 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
     if (!exam || !isReady || deadlineAt === null) return;
     const timeout = window.setTimeout(() => {
       writeV2ExamDraft(localStorage, examId, exam.examVersionId, {
-        version: 3,
+        version: 4,
         examId,
         examVersionId: exam.examVersionId,
-        startedAt: deadlineAt - (exam.durationMinutes * 60 * 1000),
+        timingSessionId: timingSessionId!,
+        ...(anonymousTimingSessionToken === null ? {} : { anonymousTimingSessionToken }),
         deadlineAt,
         answers,
         currentQuestionId,
@@ -376,7 +410,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       });
     }, 200);
     return () => window.clearTimeout(timeout);
-  }, [answers, currentQuestionId, deadlineAt, exam, examId, isReady, submissionKey, viewMode]);
+  }, [anonymousTimingSessionToken, answers, currentQuestionId, deadlineAt, exam, examId, isReady, submissionKey, timingSessionId, viewMode]);
 
   useEffect(() => {
     if (!isReady || deadlineAt === null) return;
@@ -438,7 +472,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   };
 
   const handleSubmit = async (): Promise<void> => {
-    if (!exam || deadlineAt === null || submissionKey.length === 0) return;
+    if (!exam || deadlineAt === null || timingSessionId === null || submissionKey.length === 0) return;
     const submission = buildSubmission(exam.questions, answers);
     if (submission.error) {
       setSubmitError(submission.error);
@@ -449,15 +483,17 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const token = getAuthToken();
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
-      if (token) headers.Authorization = `Bearer ${token}`;
+      const token = getAuthToken();
+      if (anonymousTimingSessionToken === null && token) headers.Authorization = `Bearer ${token}`;
+      if (anonymousTimingSessionToken !== null) headers['X-Exam-Timing-Session-Token'] = anonymousTimingSessionToken;
       headers['Idempotency-Key'] = submissionKey;
       writeV2ExamDraft(localStorage, examId, exam.examVersionId, {
-        version: 3,
+        version: 4,
         examId,
         examVersionId: exam.examVersionId,
-        startedAt: deadlineAt - (exam.durationMinutes * 60 * 1000),
+        timingSessionId,
+        ...(anonymousTimingSessionToken === null ? {} : { anonymousTimingSessionToken }),
         deadlineAt,
         answers,
         currentQuestionId,
@@ -467,7 +503,7 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
       });
       const response = await fetch(`${API_BASE_URL}/api/v2/exams/${examId}/attempts`, {
         method: 'POST', headers,
-        body: JSON.stringify({ examVersionId: exam.examVersionId, responses: submission.responses, durationSeconds: Math.min(exam.durationMinutes * 60, Math.max(exam.durationMinutes * 60 - remainingSecondsAt(deadlineAt), 0)) }),
+        body: JSON.stringify({ examVersionId: exam.examVersionId, timingSessionId, responses: submission.responses }),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { message?: string } | null;
@@ -510,13 +546,13 @@ export function ExamContentTakingClient({ examId }: ExamContentTakingClientProps
   const discardStaleDraftAndStartFresh = (): void => {
     if (exam === null || staleDraftVersionId === null) return;
     clearV2ExamDraft(localStorage, examId, staleDraftVersionId);
-    startFreshSession(exam);
+    void startFreshSession(exam);
   };
 
   const discardCurrentDraftAndStartFresh = (): void => {
     if (exam === null) return;
     clearV2ExamDraft(localStorage, examId, exam.examVersionId);
-    startFreshSession(exam);
+    void startFreshSession(exam);
   };
 
   if (loading) return <main className="min-h-[100dvh] bg-background px-4 py-8 text-text-primary"><div className="mx-auto max-w-7xl animate-pulse space-y-5"><div className="h-16 rounded-xl bg-background-alt" /><div className="h-80 rounded-xl border border-border bg-surface" /></div></main>;

@@ -11,7 +11,8 @@
 | `GET` | `/api/exams` | Khám phá và lọc đề V2 đã xuất bản |
 | `GET` | `/api/topics` | Dữ liệu chủ đề/chủ đề con dùng để lọc |
 | `GET` | `/api/v2/exams/:id` | Nội dung đề đã xuất bản, không chứa đáp án |
-| `POST` | `/api/v2/exams/:id/grade` | Kiểm tra và chấm điểm nhưng không lưu dữ liệu |
+| `POST` | `/api/v2/exams/:id/timing-sessions` | Bắt đầu phiên làm bài có thời gian do máy chủ xác lập |
+| `GET` | `/api/v2/exam-timing-sessions/:sessionId` | Khôi phục phiên làm bài và thời hạn do máy chủ xác lập |
 | `GET` | `/api/v2/practice/topic/:topicSlug` | Câu hỏi luyện tập V2 đã xuất bản |
 | `POST` | `/api/v2/practice/grade` | Chấm bài luyện tập tại máy chủ mà không tạo `Attempt` |
 
@@ -23,12 +24,12 @@ DTO đề và luyện tập công khai dùng ID chuỗi ổn định cùng cấu
 
 | Phương thức | Endpoint | Xác thực | Mục đích |
 | --- | --- | --- | --- |
-| `POST` | `/api/v2/exams/:id/attempts` | JWT tùy chọn | Chấm và lưu bài làm được ghim vào một phiên bản |
+| `POST` | `/api/v2/exams/:id/attempts` | JWT hoặc token phiên ẩn danh | Chấm và lưu bài làm được ghim vào một phiên bản và phiên thời gian |
 | `GET` | `/api/v2/attempts/:attemptId` | JWT của chủ bài làm | Biên nhận an toàn dành cho chủ bài làm |
 | `GET` | `/api/v2/attempts/:attemptId/anonymous-receipt` | Token biên nhận trong phần đầu HTTP | Biên nhận an toàn cho người dùng ẩn danh |
 | `GET` | `/api/v2/attempts/:attemptId/review` | JWT của chủ bài làm | Xem lại dựa trên ảnh chụp dữ liệu, có đáp án đúng an toàn |
 
-Dữ liệu tạo bài làm gồm `examVersionId`, `responses` thô và `durationSeconds` không âm nếu có. Phiên bản phải là bản đang được xuất bản và khả dụng. Bài làm cùng các câu trả lời được lưu trong một giao dịch cơ sở dữ liệu.
+Dữ liệu tạo bài làm gồm `examVersionId`, `timingSessionId` và `responses` thô. Máy chủ tính `durationSeconds` từ thời điểm bắt đầu của phiên thời gian; trình khách không cung cấp giá trị thời gian có thẩm quyền. Phiên bản phải là bản đang được xuất bản và khả dụng. Bài làm cùng các câu trả lời được lưu trong một giao dịch cơ sở dữ liệu.
 
 Khi tạo bài làm ẩn danh, máy chủ chỉ trả token biên nhận thô đúng một lần. Cơ sở dữ liệu chỉ lưu giá trị băm và thời điểm hết hạn sau bảy ngày. Khi khôi phục, trình khách gửi token trong `X-Attempt-Receipt-Token`; tuyệt đối không đặt token vào URL hoặc nhật ký. Bài làm ẩn danh không được truy cập phần xem lại dành cho chủ bài làm.
 
