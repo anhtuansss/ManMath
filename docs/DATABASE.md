@@ -58,6 +58,17 @@ AttemptAnswer.questionExternalId
 
 Biên nhận an toàn ánh xạ dữ kiện câu trả lời đã lưu mà không lộ đáp án. Phần xem lại của chủ bài làm kiểm tra ảnh chụp dữ liệu và trả một DTO `correctAnswer` an toàn, tường minh.
 
+## Phiên thời gian, persistent practice và Question Bank
+
+- `ExamTimingSession` ghim `examId` và `examVersionId`, ghi `startedAt`/`expiresAt` do máy chủ xác lập. Nó thuộc `User` khi có JWT, hoặc lưu băm token ẩn danh; token thô không nằm trong database.
+- `Attempt.timingSessionId` là duy nhất khi có giá trị, nên một timing session chỉ tạo một attempt.
+- `PracticeSession` thuộc một `User`, ghim taxonomy/cấu hình, seed chọn câu, trạng thái `in_progress`, `completed` hoặc `cancelled`, và kết quả sau khi nộp.
+- `PracticeSessionQuestion` phải tham chiếu chính xác một nguồn: `ExamVersionQuestion` hoặc `QuestionBankItem`; hai FK nguồn dùng `RESTRICT`.
+- `PracticeSessionAnswer` lưu response đã chuẩn hóa, `responseRevision` cho optimistic concurrency và facts chấm điểm sau khi session hoàn tất.
+- `QuestionBankImportBatch` là biên nhận import theo `externalId`. `QuestionBankItem` có `logicalKey`, `revision`, provenance/content fingerprint và trạng thái `draft`, `published`, `archived`.
+
+Trigger cơ sở dữ liệu bảo vệ item Question Bank đã publish/archived và practice result đã chấm. Xem [QUESTION_BANK.md](QUESTION_BANK.md) và [LEARNING.md](LEARNING.md).
+
 ## Lưu điểm
 
 `scoreUnits`, `maxScoreUnits` và `scoringPolicy` là dữ kiện chấm điểm. `score` là giá trị trình bày/tổng hợp được suy ra (`scoreUnits / 100`) và còn được giữ trong mô hình hiện tại; chấm điểm và phân tích không suy luận tính đúng/sai từ số thực này.
@@ -73,6 +84,10 @@ JSON đã kiểm tra
 ```
 
 Trình nhập có thể thay câu hỏi của bản nháp trong một giao dịch cơ sở dữ liệu. Nó không bao giờ sửa câu hỏi đã xuất bản. Xem [CONTENT_IMPORT.md](CONTENT_IMPORT.md).
+
+## Vòng đời Question Bank
+
+Question Bank có vòng đời song song với ExamVersion: JSON đã validate → `QuestionBankImportBatch` + item draft → publish theo batch → item published/immutable → practice session ghim item. Import revision mới archive item published cùng `logicalKey`, không xóa item mà session đang tham chiếu.
 
 ## Bối cảnh lịch sử
 

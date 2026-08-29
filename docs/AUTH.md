@@ -24,15 +24,19 @@ JWT chỉ chứa định danh nội bộ tối thiểu (`userId`, `email`). Thô
 - biên nhận và phần xem lại dành cho chủ bài làm;
 - xem trước bản nháp nội bộ trước bước kiểm tra danh sách cho phép.
 
-`optionalAuthMiddleware` được dùng khi tạo bài làm V2. Token hợp lệ sẽ gán chủ sở hữu; khi không có token, luồng khách vẫn ẩn danh.
+`optionalAuthMiddleware` được dùng khi tạo timing session và bài làm V2. Token hợp lệ sẽ gán chủ sở hữu; khi không có token, luồng khách vẫn ẩn danh.
 
-Khám phá đề, đọc đề công khai, chấm điểm và luyện tập không yêu cầu JWT. Công khai không đồng nghĩa với việc đáp án bị lộ.
+Toàn bộ persistent practice API dùng `authMiddleware`: session, response và kết quả chỉ thuộc user tạo nó.
+
+Khám phá đề, đọc đề công khai và practice nhanh không yêu cầu JWT. Persistent practice luôn yêu cầu JWT. Công khai không đồng nghĩa với việc đáp án bị lộ.
 
 ## Quyền sở hữu và khôi phục bài làm ẩn danh
 
 Truy vấn biên nhận/xem lại của chủ bài làm dùng cả ID bài làm và ID người dùng đã xác thực. Người dùng khác nhận cùng phản hồi không khả dụng như khi bài làm không tồn tại.
 
 Bài làm ẩn danh nhận token biên nhận thô dùng một lần. PostgreSQL chỉ lưu giá trị băm và thời điểm hết hạn sau bảy ngày. Trình khách gửi token thô trong `X-Attempt-Receipt-Token`; token không được xuất hiện trong URL hoặc nhật ký. Khôi phục ẩn danh chỉ trả biên nhận an toàn và không được truy cập phần xem lại của chủ bài làm.
+
+Timing session ẩn danh có token khác: response khởi tạo chỉ trả `anonymousTimingSessionToken` một lần, database chỉ lưu băm. Trình khách phải gửi nó trong `X-Exam-Timing-Session-Token` khi khôi phục timing session hoặc nộp bài. Nó không thay thế token biên nhận và không được đặt trong URL/log.
 
 ## Xem trước bản nháp nội bộ
 
@@ -65,7 +69,7 @@ Không bao giờ đưa `DATABASE_URL`, `JWT_SECRET`, đáp án hoặc token biê
 ## Lưu ý bảo mật
 
 - Không đưa `.env` hoặc `.env.local` vào commit.
-- Không ghi thông tin xác thực, JWT, token biên nhận hoặc nội dung yêu cầu nộp bài vào nhật ký.
+- Không ghi thông tin xác thực, JWT, token biên nhận, token timing ẩn danh hoặc nội dung yêu cầu nộp bài vào nhật ký.
 - Phản hồi công khai/luyện tập luôn loại dữ liệu đáp án.
 - Xem lại của chủ bài làm là quyền có chủ đích và dựa trên ảnh chụp dữ liệu.
 - API chấm điểm công khai tiết lộ tính đúng/sai và điểm, nên tương lai có thể cần chính sách chống lạm dụng/giới hạn tần suất.

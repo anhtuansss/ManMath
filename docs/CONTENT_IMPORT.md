@@ -38,6 +38,28 @@ Tuyến xem trước: `/exam-v2-preview/2026-06-11-bo-gddt-viet-nam-tot-nghiep-0
 - `practice`: nội dung V2 hợp lệ, không bắt buộc cấu trúc chính thức 12/4/6.
 - `official_full_exam`: đúng cấu trúc đề THPT 90 phút và tối đa 1000 đơn vị điểm.
 
+## Luồng Question Bank
+
+Question Bank là luồng nội dung song song, không thay thế ExamVersion. Nó dùng cho persistent practice và có batch/revision riêng:
+
+```text
+soạn JSON Question Bank
+→ dry-run validation
+→ import item draft theo batch
+→ publish toàn bộ draft item của batch
+→ QuestionBankItem published/immutable
+→ persistent practice ghim nguồn câu hỏi
+```
+
+```powershell
+cd backend
+npm run import:question-bank -- <json-path>
+npm run import:question-bank -- <json-path> --write
+npm run publish:question-bank -- <batch-id>
+```
+
+Không có API upload hoặc giao diện admin. Xem contract, revision và cách kiểm tra corpus tại [QUESTION_BANK.md](QUESTION_BANK.md).
+
 ## Bối cảnh lịch sử
 
 Quy trình trước đây ghi các bản ghi `Question` bằng ID số có thể thay đổi và dùng công cụ phân loại bộ máy trong giai đoạn hai hệ thống cùng tồn tại. Các công cụ và bảng đó đã ngừng hoạt động. Bài học còn được giữ lại là phải kiểm tra dữ liệu mơ hồ và điền đầy đủ định danh trước khi dọn lược đồ theo cách phá hủy; thao tác nội dung hiện chỉ dùng `ExamVersion` và `ExamVersionQuestion`.

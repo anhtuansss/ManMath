@@ -44,6 +44,19 @@ npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 
 Xem [IMPORT_JSON.md](IMPORT_JSON.md) và [CONTENT_IMPORT.md](CONTENT_IMPORT.md).
 
+Question Bank là luồng riêng; dry-run trước khi ghi:
+
+```powershell
+cd backend
+npm run import:question-bank -- <json-path>
+npm run import:question-bank -- <json-path> --write
+npm run publish:question-bank -- <batch-id>
+npm run audit:practice-corpus
+npm run verify:practice-assets
+```
+
+Xem [QUESTION_BANK.md](QUESTION_BANK.md) về contract và revision.
+
 ## Quy trình Prisma
 
 ```powershell
@@ -86,7 +99,7 @@ Các lệnh đầy đủ và hành vi bảo vệ nằm trong [TESTING.md](TESTIN
 ## Các tuyến ứng dụng hiện tại
 
 - Công khai: `/`, `/about`.
-- Không gian làm việc: `/dashboard`, `/analytics`, `/history`, `/profile`.
+- Không gian làm việc: `/dashboard`, `/learning`, `/analytics`, `/history`, `/profile`.
 - Chuyển hướng tương thích: `/exams` → `/dashboard`.
 - Tập trung: `/exam-v2/[id]`, `/exam-v2/[id]/result`, `/exam-v2-preview/[id]`, `/practice/topic/[topicSlug]`.
 

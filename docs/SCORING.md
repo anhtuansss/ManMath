@@ -41,7 +41,7 @@ Câu trả lời đã chuẩn hóa có thể được lưu; đáp án thô khôn
 
 ## Ranh giới chấm điểm dùng chung
 
-Chấm đề, tạo bài làm được lưu và chấm luyện tập đều dùng chung bộ kiểm tra/chuẩn hóa/chấm điểm V2. Luyện tập chỉ khác ở việc không tạo bản ghi `Attempt` hoặc `AttemptAnswer`.
+Chấm đề, tạo bài làm được lưu, practice nhanh và persistent practice đều dùng chung bộ kiểm tra/chuẩn hóa/chấm điểm V2. Practice nhanh chỉ trả kết quả; persistent practice lưu `PracticeSession` và `PracticeSessionAnswer` sau khi nộp. Cả hai không tạo `Attempt` hay `AttemptAnswer`.
 
 Kết quả chấm công khai có tính đúng/sai và điểm được nhận nhưng không có đáp án. Sau đó, phần xem lại của chủ bài làm có thể trả DTO đáp án đúng theo từng loại câu, được phân quyền và lấy từ ảnh chụp dữ liệu bất biến.
 

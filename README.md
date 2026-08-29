@@ -6,11 +6,13 @@ ManMath là ứng dụng luyện đề Toán THPT bằng tiếng Việt. Hệ th
 
 - Khám phá, tìm kiếm và lọc đề đã publish.
 - Làm đề V2 theo chế độ toàn bộ câu hoặc từng câu, có timer và browser autosave.
+- Phiên thời gian làm đề do máy chủ xác lập; thời gian nộp bài không do trình duyệt quyết định.
 - Ba dạng câu hỏi: `single_choice`, `true_false_group`, `short_answer`.
 - Backend validation, normalization và server-side grading theo ScoreUnits.
 - Persisted attempt, safe receipt, owner review, history và progress.
-- Luyện tập theo chuyên đề từ published V2 content, không tạo `Attempt`.
-- Analytics topic/subtopic và recommendation rule-based.
+- Luyện tập nhanh theo chuyên đề và persistent practice API/client component cho người dùng đã đăng nhập (chưa gắn App Router page); cả hai không tạo `Attempt`.
+- Question Bank có batch import, revision, publish/archival và được dùng làm nguồn câu hỏi luyện tập cùng với câu hỏi từ đề đã publish.
+- Learning Overview, analytics topic/subtopic và recommendation rule-based.
 - Google Login, JWT, owner-only history/review và anonymous receipt token.
 - Internal draft preview theo verified JWT email allowlist.
 
@@ -76,6 +78,9 @@ npx tsc --noEmit
 npm run verify:exam-domain
 npm run verify:exam-content-import
 npm run verify:exam-publish-readiness
+npm run verify:canonical-taxonomy
+npm run audit:practice-corpus
+npm run verify:practice-assets
 ```
 
 Mutating verification phải chạy trên database disposable có tên kết thúc bằng `_verify`:
@@ -106,7 +111,7 @@ npm run import:exam-content -- ./src/data/import/2026-06-11-bo-gddt-viet-nam-tot
 npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 ```
 
-Đọc [Import JSON](docs/IMPORT_JSON.md) và [Content lifecycle](docs/CONTENT_IMPORT.md) trước khi publish.
+Đọc [Import JSON](docs/IMPORT_JSON.md) và [Content lifecycle](docs/CONTENT_IMPORT.md) trước khi publish. Question Bank có contract và lệnh import riêng trong [Question Bank](docs/QUESTION_BANK.md).
 
 ## Documentation
 
@@ -120,4 +125,8 @@ npm run publish:exam-content -- 2026-06-11-bo-gddt-viet-nam-tot-nghiep-001
 - [Deployment](docs/DEPLOYMENT.md)
 - [UI design system](docs/UI_DESIGN_SYSTEM.md)
 - [Taxonomy Toán canonical](docs/TAXONOMY.md)
+- [Question Bank](docs/QUESTION_BANK.md)
+- [Learning, mastery and dashboard](docs/LEARNING.md)
+- [Content lifecycle](docs/CONTENT_IMPORT.md)
+- [Exam content import](docs/IMPORT_JSON.md)
 - [Product tasks](TASKS.md)

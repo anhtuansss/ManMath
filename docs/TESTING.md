@@ -11,6 +11,7 @@ npx tsc --noEmit
 npm run verify:exam-domain
 npm run verify:exam-content-import
 npm run verify:exam-publish-readiness
+npm run verify:canonical-taxonomy
 ```
 
 Chạy từ `frontend`:
@@ -24,6 +25,13 @@ Kiểm tra khoảng trắng trong kho mã nguồn:
 
 ```powershell
 git diff --check
+```
+
+`verify:operational-readiness` là smoke test riêng cho `/api/health`, `/api/ready` và JSON body limit; nó dùng database đang cấu hình, không thay thế isolated suite:
+
+```powershell
+cd backend
+npm run verify:operational-readiness
 ```
 
 ## Xác minh với cơ sở dữ liệu cô lập
@@ -62,10 +70,15 @@ npm run verify:isolated -- security-containment
 npm run verify:isolated -- version-pinning
 npm run verify:isolated -- draft-preview
 npm run verify:isolated -- practice
+npm run verify:isolated -- practice-sessions
+npm run verify:isolated -- practice-config
+npm run verify:isolated -- question-bank
 npm run verify:isolated -- analytics
+npm run verify:isolated -- learning-overview
 npm run verify:isolated -- attempt-persistence
 npm run verify:isolated -- attempt-read
 npm run verify:isolated -- history-immutability
+npm run verify:isolated -- http
 ```
 
 Không chạy trực tiếp file triển khai bộ xác minh có thao tác ghi trên cơ sở dữ liệu dùng chung.
@@ -77,6 +90,8 @@ Kiểm tra tham chiếu chính tắc chỉ đọc dữ liệu:
 ```powershell
 cd backend
 npm run audit:attempt-answer-v2-reference
+npm run audit:practice-corpus
+npm run verify:practice-assets
 ```
 
 Nó xác minh tham chiếu chính tắc đã được điền, không có bản ghi mồ côi, phiên bản/ID bên ngoài khớp và không trùng định danh câu hỏi trong cùng một bài làm.
@@ -100,8 +115,10 @@ Phạm vi bao gồm ngăn lộ đáp án công khai, ba loại câu hỏi, tự 
 - Nộp bài hoạt động cho cả người dùng đăng nhập và ẩn danh.
 - Biên nhận/xem lại của chủ bài làm vẫn đúng sau khi tải lại và dùng phiên bản đã ghim.
 - Khôi phục ẩn danh yêu cầu token biên nhận và không bao giờ lộ đáp án xem lại.
-- Luyện tập chấm được cả ba loại câu mà không tạo bài làm.
-- Lịch sử, phân tích và đề xuất phản ánh bài làm V2 của người dùng đã đăng nhập.
+- Luyện tập nhanh chấm được cả ba loại câu mà không tạo bài làm.
+- Khi test API persistent practice: mở session bằng JWT, kiểm tra autosave/revision `409`, retry idempotent, cancel/submit và một session active theo topic. UI route công khai chưa gắn `PersistentPracticeClient`.
+- Learning Overview phản ánh exam attempt V2 và practice session đã completed; không gán mastery khi dữ liệu chưa đủ confidence.
+- Lịch sử, phân tích và đề xuất phản ánh facts của người dùng đã đăng nhập.
 - Xem trước bản nháp yêu cầu email JWT đã xác minh nằm trong danh sách cho phép và không thể nộp bài.
 
 ## Bối cảnh lịch sử
