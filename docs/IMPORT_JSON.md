@@ -2,7 +2,7 @@
 
 ## Phạm vi
 
-ManMath có một đường ống nội dung đang hoạt động: JSON theo lược đồ V2 → kiểm tra lúc chạy → bản nháp PostgreSQL. PostgreSQL kết hợp kiểm tra lúc chạy là nguồn sự thật của hệ thống.
+Tài liệu này mô tả đường ống nội dung Exam V2: JSON theo lược đồ V2 → kiểm tra lúc chạy → bản nháp PostgreSQL. PostgreSQL kết hợp kiểm tra lúc chạy là nguồn sự thật của hệ thống. Question Bank có contract import riêng trong [QUESTION_BANK.md](QUESTION_BANK.md), không dùng envelope Exam V2 này.
 
 Các file chính tắc:
 

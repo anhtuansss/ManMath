@@ -18,7 +18,8 @@ Luồng làm đề chính:
 ```text
 ExamVersion đã xuất bản
 → khám phá đề
-→ làm bài V2
+→ tạo ExamTimingSession (máy chủ ghi nhận thời điểm bắt đầu/hết hạn)
+→ làm bài V2 + browser autosave
 → chấm điểm tại máy chủ
 → Attempt được ghim vào examVersionId
 → AttemptAnswer
@@ -26,7 +27,7 @@ ExamVersion đã xuất bản
 → biên nhận/xem lại/lịch sử/phân tích
 ```
 
-Luồng luyện tập:
+Luồng luyện tập nhanh (công khai, không lưu phiên):
 
 ```text
 ExamVersionQuestion đã xuất bản
@@ -37,6 +38,19 @@ ExamVersionQuestion đã xuất bản
 → không lưu Attempt
 ```
 
+Luồng persistent practice (chỉ người dùng đã xác thực):
+
+```text
+Published ExamVersionQuestion + published QuestionBankItem
+→ chọn ngẫu nhiên theo taxonomy/cấu hình
+→ PracticeSession ghim câu hỏi nguồn
+→ PracticeSessionAnswer autosave có revision
+→ submit idempotent, server grading
+→ Learning Overview/analytics facts
+```
+
+`PracticeSession` không phải `Attempt`. Nó lưu tiến độ luyện tập và kết quả, còn `Attempt` là bản ghi bài thi V2. Chi tiết nằm trong [Learning](LEARNING.md) và [Question Bank](QUESTION_BANK.md).
+
 ## Ranh giới giao diện
 
 Các nhóm tuyến của Next.js tách biệt ngữ cảnh trình bày:
@@ -44,7 +58,7 @@ Các nhóm tuyến của Next.js tách biệt ngữ cảnh trình bày:
 | Nhóm | Mục đích | Tuyến hiện tại |
 | --- | --- | --- |
 | `(public)` | Trang giới thiệu công khai | `/`, `/about` |
-| `(workspace)` | Không gian có thanh bên và phần đầu trang | `/dashboard`, `/analytics`, `/history`, `/profile`, `/exams` |
+| `(workspace)` | Không gian có thanh bên và phần đầu trang | `/dashboard`, `/learning`, `/analytics`, `/history`, `/profile`, `/exams` |
 | `(focus)` | Làm bài/xem lại/luyện tập không gây xao nhãng | `/exam-v2/[id]`, `/exam-v2/[id]/result`, `/exam-v2-preview/[id]`, `/practice/topic/[topicSlug]` |
 
 `/exams` là tuyến chuyển hướng tương thích có chủ đích sang `/dashboard`; nó không chọn công cụ nội dung cũ.
@@ -58,9 +72,14 @@ Câu trả lời khi làm bài được gắn theo ID câu hỏi ổn định. B
 - Khám phá đề chỉ đọc các đề có `ExamVersion` đã xuất bản.
 - API đọc công khai dựng lại câu hỏi V2 đã lưu, kiểm tra hợp lệ rồi loại `answerKey`.
 - Tạo bài làm kiểm tra đúng phiên bản đã xuất bản được yêu cầu, chấm đúng một lần và lưu trong một giao dịch cơ sở dữ liệu.
+- `ExamTimingSession` là ranh giới thời gian có thẩm quyền. Phiên ẩn danh dùng token riêng, chỉ trả một lần và không đặt trên URL.
 - Lịch sử và phân tích chỉ dùng các dữ kiện bài làm V2 hợp lệ.
 - Đề xuất xếp hạng câu hỏi thuộc phiên bản V2 đã xuất bản dựa trên dữ kiện chủ đề yếu.
-- Luyện tập chỉ khác làm đề ở việc không lưu bài làm.
+- Luyện tập nhanh không lưu phiên; persistent practice lưu `PracticeSession` chủ sở hữu, ghim một trong hai nguồn câu hỏi và dùng optimistic revision khi autosave.
+
+## Trạng thái UI của persistent practice
+
+`PersistentPracticeClient` đã gọi các API persistent practice, nhưng hiện chưa được import bởi một App Router page. Tuyến `/practice/topic/[topicSlug]` hiện dùng luồng practice nhanh công khai. Vì vậy không coi persistent practice là user journey đã phát hành; đó là capability backend/frontend component cần quyết định routing/sản phẩm riêng.
 
 ## Mô hình miền
 

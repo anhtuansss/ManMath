@@ -106,5 +106,7 @@ File JSON chỉ khai báo tập con topic/subtopic mà đề dùng. Mỗi slug, 
 - Chỉ dùng slug trong catalog này ở `topicSlug` và `subtopicSlug`.
 - Subtopic phải thuộc đúng topic cha trong danh sách.
 - Nội dung đã publish không được sửa để đổi taxonomy. Hãy import draft version mới rồi publish.
+- Question Bank batch cũng phải chọn một topic và một subtopic canonical; taxonomy của từng câu phải khớp batch.
 - Attempt và snapshot lịch sử giữ nguyên taxonomy tại lúc nộp. Analytics remap riêng các facts của version lịch sử sang taxonomy canonical, không ghi lại dữ liệu lịch sử.
 - Chạy `npm run sync:canonical-taxonomy` để kiểm tra catalog DB và thêm `-- --write` để đồng bộ có chủ đích.
+- Chạy `npm run verify:canonical-taxonomy` để kiểm tra catalog source/relationship; isolated verification tự đồng bộ catalog sang database `_verify` trước khi test.

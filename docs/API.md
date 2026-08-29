@@ -16,6 +16,21 @@
 | `GET` | `/api/v2/practice/topic/:topicSlug` | Câu hỏi luyện tập V2 đã xuất bản |
 | `POST` | `/api/v2/practice/grade` | Chấm bài luyện tập tại máy chủ mà không tạo `Attempt` |
 
+Hai endpoint timing session dùng JWT nếu người dùng đã đăng nhập. Khi bắt đầu ẩn danh, response chỉ trả `anonymousTimingSessionToken` một lần; các lần đọc/submit sau phải gửi nó trong header `X-Exam-Timing-Session-Token`. Token này không được đặt trong URL hoặc log.
+
+## Persistent practice (JWT)
+
+| Phương thức | Endpoint | Mục đích |
+| --- | --- | --- |
+| `POST` | `/api/v2/practice/sessions` | Mở hoặc khôi phục phiên practice đang làm của chủ sở hữu |
+| `GET` | `/api/v2/practice/sessions/active` | Lấy phiên đang làm, có thể lọc `topicSlug` |
+| `GET` | `/api/v2/practice/sessions/:sessionId` | Khôi phục một phiên của chủ sở hữu |
+| `PUT` | `/api/v2/practice/sessions/:sessionId/questions/:sessionQuestionId/response` | Lưu/clear một response với optimistic revision |
+| `POST` | `/api/v2/practice/sessions/:sessionId/submit` | Chấm và hoàn tất phiên; cần `Idempotency-Key` |
+| `POST` | `/api/v2/practice/sessions/:sessionId/cancel` | Hủy phiên còn `in_progress` |
+
+Body mở phiên gồm `topicSlug`, `subtopicSlug` nullable, `questionCount` (`5` hoặc `10`) và `questionTypes`. Mỗi request lưu response gồm `response` (hoặc `null` để clear) và `expectedRevision`. Response session không chứa answer key; câu hỏi được ghim từ `ExamVersionQuestion` đã publish hoặc `QuestionBankItem` đã publish. Xem [LEARNING.md](LEARNING.md) và [QUESTION_BANK.md](QUESTION_BANK.md) về semantics.
+
 `GET /api/exams` hỗ trợ `search`, `topic`, `subtopic`, `durationMin`, `durationMax`, `difficulty`, `year` và `source`. API này chỉ trả những đề có một `ExamVersion` V2 đã xuất bản.
 
 DTO đề và luyện tập công khai dùng ID chuỗi ổn định cùng cấu trúc câu hỏi phân biệt theo loại. Chúng không chứa `answerKey`, ID lựa chọn đúng, đáp án đúng/sai, đáp án ngắn kỳ vọng hoặc sai số cho phép.
@@ -29,7 +44,7 @@ DTO đề và luyện tập công khai dùng ID chuỗi ổn định cùng cấu
 | `GET` | `/api/v2/attempts/:attemptId/anonymous-receipt` | Token biên nhận trong phần đầu HTTP | Biên nhận an toàn cho người dùng ẩn danh |
 | `GET` | `/api/v2/attempts/:attemptId/review` | JWT của chủ bài làm | Xem lại dựa trên ảnh chụp dữ liệu, có đáp án đúng an toàn |
 
-Dữ liệu tạo bài làm gồm `examVersionId`, `timingSessionId` và `responses` thô. Máy chủ tính `durationSeconds` từ thời điểm bắt đầu của phiên thời gian; trình khách không cung cấp giá trị thời gian có thẩm quyền. Phiên bản phải là bản đang được xuất bản và khả dụng. Bài làm cùng các câu trả lời được lưu trong một giao dịch cơ sở dữ liệu.
+Dữ liệu tạo bài làm gồm `examVersionId`, `timingSessionId` và `responses` thô; header `Idempotency-Key` là bắt buộc. Máy chủ tính `durationSeconds` từ thời điểm bắt đầu của phiên thời gian; trình khách không cung cấp giá trị thời gian có thẩm quyền. Phiên bản phải là bản đang được xuất bản và khả dụng. Bài làm cùng các câu trả lời được lưu trong một giao dịch cơ sở dữ liệu. Route này có rate limit process-local: mỗi phạm vi user/IP trong 60 giây tối đa 60 request và 12 idempotency key mới; multi-instance cần limiter dùng chung khi triển khai.
 
 Khi tạo bài làm ẩn danh, máy chủ chỉ trả token biên nhận thô đúng một lần. Cơ sở dữ liệu chỉ lưu giá trị băm và thời điểm hết hạn sau bảy ngày. Khi khôi phục, trình khách gửi token trong `X-Attempt-Receipt-Token`; tuyệt đối không đặt token vào URL hoặc nhật ký. Bài làm ẩn danh không được truy cập phần xem lại dành cho chủ bài làm.
 
@@ -58,6 +73,7 @@ Việc phân quyền dùng email từ JWT đã xác minh và danh sách `DRAFT_P
 | `GET` | `/api/me/subtopic-stats` | JWT | Phân tích `ScoreUnits` theo chủ đề con |
 | `GET` | `/api/me/recommendations` | JWT | Chủ đề yếu và đề V2 đã xuất bản được đề xuất |
 | `GET` | `/api/me/progress` | JWT | Tổng quan, bài làm gần đây và xu hướng tiến bộ |
+| `GET` | `/api/me/learning-overview` | JWT | Mastery, confidence, corpus coverage, activity, continue item và next action |
 | `GET` | `/api/me/attempts` | JWT | Lịch sử bài làm V2 có phân trang |
 
 Lịch sử nhận `page`, `limit`, `examId` tùy chọn và `sort=latest`; giới hạn tối đa là 50.
@@ -68,7 +84,9 @@ Lịch sử nhận `page`, `limit`, `examId` tùy chọn và `sort=latest`; gi�
 - `401`: thiếu JWT bắt buộc hoặc JWT không hợp lệ.
 - `403`: đã xác thực nhưng không có quyền xem trước nội bộ.
 - `404`: không có nội dung đã xuất bản, chủ đề, bài làm hoặc tài nguyên được phép truy cập.
-- `409`: bài làm đã lưu nhưng thiếu dữ kiện/ảnh chụp dữ liệu V2 tương thích để xem lại.
+- `409`: bài làm đã lưu nhưng thiếu dữ kiện/ảnh chụp dữ liệu V2 tương thích để xem lại; hoặc response revision/trạng thái persistent practice xung đột.
+- `422`: cấu hình practice hợp lệ nhưng không chọn được câu phù hợp.
+- `429`: vượt rate limit nộp bài.
 - `413`: nội dung JSON vượt quá 1 MB.
 - `500`: nội dung V2 hoặc dữ kiện bài làm đã lưu không vượt qua kiểm tra toàn vẹn.
 - `503`: cơ sở dữ liệu chưa sẵn sàng.

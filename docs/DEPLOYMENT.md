@@ -28,7 +28,7 @@ Không bao giờ để lộ bí mật cơ sở dữ liệu/JWT, đáp án hoặc
 4. Chạy `npx prisma migrate status`, kiểm tra sai lệch bất thường, sau đó chạy `npx prisma migrate deploy` từ `backend`.
 5. Tạo bản dựng frontend với URL backend của môi trường triển khai thật.
 6. Khởi động backend và kiểm tra `/api/health` cùng `/api/ready`.
-7. Kiểm tra nhanh khám phá đề đã xuất bản, làm bài V2, biên nhận/xem lại của chủ bài làm đã đăng nhập, biên nhận an toàn ẩn danh, luyện tập, lịch sử, phân tích và đề xuất.
+7. Kiểm tra nhanh khám phá đề đã xuất bản, timing/submit V2, biên nhận/xem lại của chủ bài làm đã đăng nhập, biên nhận an toàn ẩn danh, practice nhanh, Learning Overview, lịch sử, phân tích và đề xuất. Persistent practice UI chưa có route được mount; chỉ kiểm tra API nếu nó nằm trong phạm vi release.
 8. Theo dõi lỗi ứng dụng và dung lượng PostgreSQL mà không ghi nội dung nộp bài hoặc thông tin xác thực vào log.
 
 Không bao giờ sửa migration đã áp dụng hoặc đặt lại cơ sở dữ liệu triển khai thật/phát triển để né vấn đề lịch sử migration.

@@ -6,7 +6,10 @@ Tài liệu này chỉ theo dõi trạng thái sản phẩm và technical debt c
 
 - [x] Runtime và Prisma schema hiện tại là V2-only.
 - [x] Published `ExamVersion` là nguồn nội dung public duy nhất.
-- [x] Taking, grading, attempt, receipt/review, history, analytics, recommendations và practice dùng V2 identities.
+- [x] Taking, server-authoritative timing, grading, attempt, receipt/review, history, analytics, recommendations và practice dùng V2 identities.
+- [x] Persistent `PracticeSession` có pinning, autosave revision, idempotent submit và facts cho Learning Overview.
+- [x] Question Bank có import batch, revision, publish/archival và corpus dùng chung cho practice.
+- [x] `/learning` và `/api/me/learning-overview` có mastery/confidence/coverage, activity, continue item và rule-based next action.
 - [x] `AttemptAnswer.examVersionQuestionId` là canonical required reference, unique trong mỗi attempt.
 - [x] Legacy `Question`, `contentEngine`, numeric answer identity và option-index attempt fields đã được retire.
 - [x] Public/practice DTO không lộ answer key; owner review là explicit authorized boundary.
@@ -16,9 +19,10 @@ Tài liệu này chỉ theo dõi trạng thái sản phẩm và technical debt c
 
 - [ ] Duy trì manual QA desktop/tablet/mobile cho taking, result/review và practice.
 - [ ] Chạy Playwright trên môi trường có Chromium và disposable `_verify` database khi release.
-- [ ] Quyết định abuse/rate-limit policy cho public grading endpoints.
+- [ ] Đánh giá/tuning rate-limit submit hiện có: limiter process-local đã bảo vệ attempt submit, nhưng production multi-instance cần shared limiter nếu cần.
 - [ ] Theo dõi nullable historical columns trên `Attempt`; runtime V2 vẫn phải reject/exclude malformed rows thay vì synthesize facts.
 - [ ] Giữ docs và import example đồng bộ khi thêm exam/version mới.
+- [ ] Quyết định route/UI phát hành cho `PersistentPracticeClient`; hiện component và API đã có nhưng chưa được mount bởi App Router page.
 
 ## Deferred product scope
 
