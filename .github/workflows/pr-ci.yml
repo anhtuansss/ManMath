@@ -1,0 +1,77 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: manmath_verify
+          POSTGRES_USER: test-only
+          POSTGRES_PASSWORD: test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test-only -d manmath_verify"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+        VERIFY_DATABASE_URL: postgresql://test-only:test-only@localhost:5432/manmath_verify?schema=public
+        MANMATH_PRIMARY_DATABASE_URL: postgresql://test-only:test-only@localhost:5432/manmath_primary?schema=public
+        VERIFY_DATABASE_CONFIRM: MANMATH_VERIFY_DB
+        NODE_ENV: test
+        GOOGLE_CLIENT_ID: ci-test-client-id
+        JWT_SECRET: ci-test-only-secret
+        DATABASE_URL: postgresql://test-only:test-only@localhost:5432/manmath_verify?schema=public
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: npm ci --prefix frontend
+
+      - name: Install Backend Dependencies
+        run: npm ci --prefix backend
+
+      - name: Install Playwright Chromium
+        run: npx --prefix frontend playwright install --with-deps chromium
+
+      - name: Backend type check
+        run: npm --prefix backend run type-check
+
+      - name: Backend integration tests
+        run: npm --prefix backend run test
+
+      - name: Backend build
+        run: npm --prefix backend run build
+
+      - name: Frontend type check
+        run: npm --prefix frontend run type-check
+
+      - name: Frontend E2E tests
+        run: npm --prefix frontend run test
+
+      - name: Frontend build
+        run: npm --prefix frontend run build
+
+    permissions:
+        contents: read
