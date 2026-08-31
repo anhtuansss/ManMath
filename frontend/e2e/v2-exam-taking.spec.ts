@@ -2,6 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 
 const examId = 'verify-v2-minimal-exam';
 const apiBaseUrl = 'http://127.0.0.1:5000';
+const testTimingSessionId = 'test-timing-session-id';
+const testAnonymousTimingSessionToken = 'test-anonymous-timing-session-token';
 
 const forbiddenPublicKeys = new Set([
   'answerKey',
@@ -58,6 +60,37 @@ async function mockSessionExam(page: Page, examId: string, examVersionId: string
       }),
     });
   });
+  await mockTimingSessionStart(page, examId, durationMinutes);
+}
+
+async function mockTimingSessionStart(page: Page, examId: string, durationMinutes = 2): Promise<void> {
+  await page.route(`**/api/v2/exams/${examId}/timing-sessions`, async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: testTimingSessionId,
+        expiresAt: new Date(Date.now() + durationMinutes * 60_000).toISOString(),
+        anonymousTimingSessionToken: testAnonymousTimingSessionToken,
+      }),
+    });
+  });
+}
+
+async function mockTimingSessionRead(
+  page: Page,
+  status: 'in_progress' | 'expired',
+  expiresAt: string,
+): Promise<void> {
+  await page.route(`**/api/v2/exam-timing-sessions/${testTimingSessionId}`, async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ id: testTimingSessionId, status, expiresAt }),
+    });
+  });
 }
 
 test('V2 public read never exposes grading secrets', async ({ request }) => {
@@ -76,13 +109,14 @@ test('landing only advertises supported review and exam-discovery flows', async 
 test('deadline draft restores answers, current question, view mode, and does not save on timer ticks', async ({ page }) => {
   const sessionExamId = 'deadline-session-fixture';
   const sessionVersionId = 'deadline-session-version';
-  await page.addInitScript(({ examId: draftExamId, examVersionId }) => {
+  await page.addInitScript(({ examId: draftExamId, examVersionId, timingSessionId, anonymousTimingSessionToken }) => {
     const now = Date.now();
     const draft = {
-      version: 3,
+      version: 4,
       examId: draftExamId,
       examVersionId,
-      startedAt: now - 45_000,
+      timingSessionId,
+      anonymousTimingSessionToken,
       deadlineAt: now + 75_000,
       answers: {
         'session-sc': { type: 'single_choice', choiceId: 'a' },
@@ -94,10 +128,16 @@ test('deadline draft restores answers, current question, view mode, and does not
       submissionKey: 'a0000000-0000-4000-8000-000000000001',
       updatedAt: now,
     };
-    localStorage.setItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
+    localStorage.setItem(`manmath:v2:exam-draft:v4:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
     localStorage.setItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`, JSON.stringify({ examId: draftExamId, examVersionId }));
-  }, { examId: sessionExamId, examVersionId: sessionVersionId });
+  }, {
+    examId: sessionExamId,
+    examVersionId: sessionVersionId,
+    timingSessionId: testTimingSessionId,
+    anonymousTimingSessionToken: testAnonymousTimingSessionToken,
+  });
   await mockSessionExam(page, sessionExamId, sessionVersionId);
+  await mockTimingSessionRead(page, 'in_progress', new Date(Date.now() + 75_000).toISOString());
 
   await page.goto(`/exam-v2/${sessionExamId}`);
   await expect(page.getByRole('button', { name: 'Từng câu', exact: true })).toHaveAttribute('aria-pressed', 'true');
@@ -107,11 +147,11 @@ test('deadline draft restores answers, current question, view mode, and does not
 
   await page.waitForTimeout(300);
   const firstUpdatedAt = await page.evaluate(({ examId: draftExamId, examVersionId }) => JSON.parse(
-    localStorage.getItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`) ?? '{}',
+    localStorage.getItem(`manmath:v2:exam-draft:v4:${draftExamId}:${examVersionId}`) ?? '{}',
   ).updatedAt as number, { examId: sessionExamId, examVersionId: sessionVersionId });
   await page.waitForTimeout(1_100);
   const secondUpdatedAt = await page.evaluate(({ examId: draftExamId, examVersionId }) => JSON.parse(
-    localStorage.getItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`) ?? '{}',
+    localStorage.getItem(`manmath:v2:exam-draft:v4:${draftExamId}:${examVersionId}`) ?? '{}',
   ).updatedAt as number, { examId: sessionExamId, examVersionId: sessionVersionId });
   expect(secondUpdatedAt).toBe(firstUpdatedAt);
 
@@ -153,21 +193,28 @@ test('stale draft waits for learner confirmation before starting the current ver
 test('expired draft freezes answers while still allowing a manual full-duration submission', async ({ page }) => {
   const sessionExamId = 'expired-session-fixture';
   const sessionVersionId = 'expired-session-version';
-  let submittedPayload: { durationSeconds?: number } | null = null;
+  let submittedPayload: { timingSessionId?: string } | null = null;
   let submittedKey: string | null = null;
-  await page.addInitScript(({ examId: draftExamId, examVersionId }) => {
+  await page.addInitScript(({ examId: draftExamId, examVersionId, timingSessionId, anonymousTimingSessionToken }) => {
     const now = Date.now();
     const draft = {
-      version: 3, examId: draftExamId, examVersionId, startedAt: now - 61_000, deadlineAt: now - 1,
+      version: 4, examId: draftExamId, examVersionId, timingSessionId,
+      anonymousTimingSessionToken, deadlineAt: now - 1,
       answers: { 'session-sc': { type: 'single_choice', choiceId: 'a' } },
       currentQuestionId: 'session-sc', viewMode: 'all', submissionKey: 'a0000000-0000-4000-8000-000000000003', updatedAt: now,
     };
-    localStorage.setItem(`manmath:v2:exam-draft:v3:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
+    localStorage.setItem(`manmath:v2:exam-draft:v4:${draftExamId}:${examVersionId}`, JSON.stringify(draft));
     localStorage.setItem(`manmath:v2:exam-draft-reference:v1:${draftExamId}`, JSON.stringify({ examId: draftExamId, examVersionId }));
-  }, { examId: sessionExamId, examVersionId: sessionVersionId });
+  }, {
+    examId: sessionExamId,
+    examVersionId: sessionVersionId,
+    timingSessionId: testTimingSessionId,
+    anonymousTimingSessionToken: testAnonymousTimingSessionToken,
+  });
   await mockSessionExam(page, sessionExamId, sessionVersionId, 1);
+  await mockTimingSessionRead(page, 'expired', new Date(Date.now() - 1_000).toISOString());
   await page.route(`**/api/v2/exams/${sessionExamId}/attempts`, async (route) => {
-    submittedPayload = route.request().postDataJSON() as { durationSeconds?: number };
+    submittedPayload = route.request().postDataJSON() as { timingSessionId?: string };
     submittedKey = route.request().headers()['idempotency-key'] ?? null;
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify({
       attemptId: 'expired-attempt', examId: sessionExamId, examVersionId: sessionVersionId,
@@ -182,7 +229,7 @@ test('expired draft freezes answers while still allowing a manual full-duration 
   await expect(page.getByRole('radio').first()).toBeDisabled();
   await page.getByRole('button', { name: 'Nộp bài đã khóa', exact: true }).click();
   await page.getByRole('button', { name: 'Nộp bài ngay', exact: true }).click();
-  await expect.poll(() => submittedPayload?.durationSeconds).toBe(60);
+  await expect.poll(() => submittedPayload?.timingSessionId).toBe(testTimingSessionId);
   expect(submittedKey).toBe('a0000000-0000-4000-8000-000000000003');
 });
 
@@ -304,6 +351,7 @@ test('switching display modes preserves the active full-exam question', async ({
       }),
     });
   });
+  await mockTimingSessionStart(page, 'mode-switch-fixture', 90);
 
   await page.goto('/exam-v2/mode-switch-fixture');
   const questionEight = page.locator('#v2-question-mode-question-8');
