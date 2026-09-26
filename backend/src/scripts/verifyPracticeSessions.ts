@@ -94,16 +94,63 @@ async function main(): Promise<void> {
     assert.equal(completedRaceQuestion?.response, null, 'submission grades the pre-save response when it wins');
     assert.equal(completedRaceQuestion?.result?.isFullyCorrect, false);
   }
+  const membership =
+    await prisma.practiceSessionQuestion.findUniqueOrThrow({
+      where: { id: first.sessionQuestionId },
+    });
 
-  const membership = await prisma.practiceSessionQuestion.findUniqueOrThrow({ where: { id: first.sessionQuestionId } });
-  assert.ok(membership.examVersionQuestionId, 'fixture session must pin an exam question');
-  const pinnedExamQuestionId = membership.examVersionQuestionId;
-  await assert.rejects(() => prisma.practiceSessionQuestion.update({ where: { id: membership.id }, data: { order: 99 } }));
-  await assert.rejects(() => prisma.examVersionQuestion.delete({ where: { id: pinnedExamQuestionId } }), 'pinned FK is RESTRICT');
+  assert.equal(
+    Number(Boolean(membership.examVersionQuestionId)) +
+      Number(Boolean(membership.questionBankItemId)),
+    1,
+    'fixture session must pin exactly one question source'
+  );
 
-  await prisma.examVersion.update({ where: { id: (await prisma.examVersionQuestion.findUniqueOrThrow({ where: { id: pinnedExamQuestionId } })).examVersionId }, data: { status: 'archived' } });
-  assert.ok(await getPracticeSession(opened.session.id, owner), 'archived source remains readable');
+  await assert.rejects(
+    () =>
+      prisma.practiceSessionQuestion.update({
+        where: { id: membership.id },
+        data: { order: 99 },
+      }),
+    'pinned session question must be immutable'
+  );
 
+  if (membership.examVersionQuestionId) {
+    await assert.rejects(
+      () =>
+        prisma.examVersionQuestion.delete({
+          where: { id: membership.examVersionQuestionId! },
+        }),
+      'pinned exam FK is RESTRICT'
+    );
+
+    const pinnedExamQuestion =
+      await prisma.examVersionQuestion.findUniqueOrThrow({
+        where: { id: membership.examVersionQuestionId },
+      });
+
+    await prisma.examVersion.update({
+      where: { id: pinnedExamQuestion.examVersionId },
+      data: { status: 'archived' },
+    });
+
+    assert.ok(
+      await getPracticeSession(opened.session.id, owner),
+      'archived exam source remains readable'
+    );
+  }
+
+  if (membership.questionBankItemId) {
+    await assert.rejects(
+      () =>
+        prisma.questionBankItem.delete({
+          where: { id: membership.questionBankItemId! },
+        }),
+      'pinned question-bank FK is RESTRICT'
+    );
+  }
+
+  assert.ok(first, 'fixture must contain a single-choice question');
   const key = randomUUID();
   const submits = await Promise.all([submitPracticeSession(opened.session.id, owner, key), submitPracticeSession(opened.session.id, owner, key)]);
   assert.equal(submits.filter((result) => !result.replayed).length, 1, 'one submit commits');

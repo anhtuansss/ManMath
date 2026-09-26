@@ -1,0 +1,115 @@
+{
+    "sample": [
+        {
+            "id": "formula_01",
+            "category": "FORMULA",
+            "image": "formula_01.png",
+            "ground_truth": "$\\dfrac{x-3}{4}=\\dfrac{y+2}{-5}=\\dfrac{z-1}{2}$"
+        },
+        {
+            "id": "formula_02",
+            "category": "FORMULA",
+            "image": "formula_02.png",
+            "ground_truth": "$f(x)=x^2$"
+        },
+        {
+            "id": "formula_03",
+            "category": "FORMULA",
+            "image": "formula_03.png",
+            "ground_truth": "$S=\\left\\{\\dfrac{\\pi}{2}+k\\pi\\mid k\\in\\mathbb{Z}\\right\\}$"
+        },
+        {
+            "id": "formula_04",
+            "category": "FORMULA",
+            "image": "formula_04.png",
+            "ground_truth": "$S=\\left|\\displaystyle\\int_1^2(2x-3)\\,dx\\right|$."
+        },
+        {
+            "id": "text_01",
+            "category": "TEXT",
+            "image": "text_01.png",
+            "ground_truth": "Câu 2: Cho hình hộp $ABCD.A'B'C'D'$ (xem hình dưới). Đường thẳng $AB$ song song với mặt phẳng nào sau đây?"
+        },
+        {
+            "id": "text_02",
+            "category": "TEXT",
+            "image": "text_02.png",
+            "ground_truth": "Cho hình lăng trụ $ABC.A'B'C'$ (xem hình dưới). Phát biểu nào sau đây là đúng?"
+        },
+        {
+            "id": "text_03",
+            "category": "TEXT",
+            "image": "text_03.png",
+            "ground_truth": "Câu 3: Một người chia thời lượng (đơn vị: giây) thực hiện các cuộc gọi điện thoại của mình trong một tuần thành sáu nhóm và lập bảng tần số ghép nhóm như sau."
+        },
+        {
+            "id": "choice_01",
+            "category": "CHOICE",
+            "image": "choice_01.png",
+            "ground_truth": [
+                {
+                    "id": "a",
+                    "content": "$145$."
+                },
+                {
+                    "id": "b",
+                    "content": "$140$."
+                },
+                {
+                    "id": "c",
+                    "content": "$135$."
+                },
+                {
+                    "id": "d",
+                    "content": "$130$."
+                }
+            ]  
+        },
+        {
+            "id": "choice_02",
+            "category": "CHOICE",
+            "image": "choice_02.png",
+            "ground_truth": [
+                {
+                    "id": "a",
+                    "content": "$\\vec{v}_3=(4;5;2)$."
+                },
+                {
+                    "id": "b",
+                    "content": "$\\vec{v}_1=(3;-2;1)$."
+                },
+                {
+                    "id": "c",
+                    "content": "$\\vec{v}_4=(3;2;1)$."
+                },
+                {
+                    "id": "d",
+                    "content": "$\\vec{v}_2=(4;-5;2)$."
+                }
+            ]
+        },
+        {
+            "id": "choice_03",
+            "category": "CHOICE",
+            "image": "choice_03.png",
+            "ground_truth": [
+                {
+                    "id": "a",
+                    "content": "$2\\sin x+C$."
+                },
+                {
+                    "id": "b",
+                    "content": "$2\\cos x+C$."
+                },
+                {
+                    "id": "c",
+                    "content": "$\\cos^2 x + C$."
+                },
+                {
+                    "id": "d",
+                    "content": "$-2\\sin x+C$."
+                }
+            ]
+        }
+    ]
+}
