@@ -1,0 +1,10 @@
+Day 5 — Chấm benchmark
+ID	Content	Choices	Structure
+sc_01	✅ PASS	✅ PASS	✅ PASS
+sc_02	✅ PASS	✅ PASS	✅ PASS
+sc_03	✅ PASS	✅ PASS	✅ PASS
+sc_04	✅ PASS	✅ PASS	✅ PASS
+sc_05	✅ PASS	✅ PASS	✅ PASS
+
+ID	Category	Sample	Problem	Cause	Action	Status
+ERR-01	CONFIDENCE	sc_01–05	Model luôn trả confidence = 1.0 dù output vẫn có khác biệt	Confidence do model tự đánh giá, chưa calibration	Không dùng confidence để tính accuracy; benchmark confidence riêng sau

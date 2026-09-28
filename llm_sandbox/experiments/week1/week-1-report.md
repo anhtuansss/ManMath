@@ -112,6 +112,19 @@ Mean ≈ 29.8s
 
 Latency dao động khá lớn giữa các request.
 
+Cuối cùng đổi model sử dụng:
+
+```python
+chat = client.chats.create(
+            model="gemini-flash-latest"
+        )
+```
+
+Giải quyết được vấn đề 503 khi chạy được 6/7 trong 1 lần và giảm latency khá đáng kể
+
+Latency trung bình $\approx \mathbf{8.06 \text{ giây/ảnh}})$
+
+
 ### Timing breakdown
 
 Benchmark cho thấy:
@@ -151,6 +164,9 @@ JSON parsing
 
 Vì vậy chưa cần tối ưu thêm phần local pipeline ở thời điểm này.
 
+Độ dài Output ảnh hưởng đến Latency: 
+
+Các câu dạng trắc nghiệm ngắn (choice) chạy nhanh nhất ($\sim 4.2 - 4.7 \text{ s}$), trong khi các công thức toán dài hoặc văn bản phức tạp (formula_04, text_03) mất nhiều thời gian sinh token hơn ($\sim 9.4 - 14.8 \text{ s}$).
 ---
 
 ## 5. Accuracy Benchmark
@@ -186,28 +202,26 @@ Tổng cộng:
 | Sample     | Kết quả   | Latency |
 | ---------- | --------- | ------: |
 | formula_01 | ✅ Correct |  19.59s |
-| formula_02 | ❌ API 503 |       — |
+| formula_02 | ✅ Correct |   9.03s |
 | formula_03 | ✅ Correct |  23.20s |
-| formula_04 | ❌ API 503 |       — |
-| text_01    | ❌ API 503 |       — |
+| formula_04 | ✅ Correct |  14.89s |
+| text_01    | ✅ Correct |   7.04s |
 | text_02    | ✅ Correct |  17.43s |
-| text_03    | ❌ API 429 |       — |
-| choice_01  | ❌ API 429 |       — |
-| choice_02  | ❌ API 429 |       — |
-| choice_03  | ❌ API 429 |       — |
+| text_03    | ✅ Correct |   9.43s |
+| choice_01  | ✅ Correct |   4.22s |
+| choice_02  | ✅ Correct |  14.01s |
+| choice_03  | ✅ Correct |   4.72s |
 
 ### Accuracy hiện tại
 
-Trong 3 sample được xử lý thành công:
+Trong 10 sample được xử lý thành công:
 
 ```text
-Correct: 3
+Correct: 10
 Incorrect: 0
 
-Accuracy = 3 / 3 = 100%
+Accuracy = 10 / 10 = 100%
 ```
-
-> Lưu ý: đây chỉ là accuracy trên **3 sample đã xử lý thành công**, chưa phải accuracy của toàn bộ dataset 10 sample.
 
 ---
 
