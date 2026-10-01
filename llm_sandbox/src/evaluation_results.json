@@ -1,0 +1,56 @@
+{
+  "summary": {
+    "total_samples": 5,
+    "structure_accuracy": 1.0,
+    "content_accuracy": 0.8,
+    "choice_accuracy": 1.0,
+    "error_counts": {
+      "STRUCTURE": 0,
+      "CONTENT": 1,
+      "CHOICE": 0
+    },
+    "total_errors": 1
+  },
+  "samples": [
+    {
+      "id": "sc_01",
+      "structure": true,
+      "content": true,
+      "choices": true,
+      "errors": []
+    },
+    {
+      "id": "sc_02",
+      "structure": true,
+      "content": true,
+      "choices": true,
+      "errors": []
+    },
+    {
+      "id": "sc_03",
+      "structure": true,
+      "content": false,
+      "choices": true,
+      "errors": [
+        {
+          "type": "CONTENT",
+          "problem": "content_mismatch"
+        }
+      ]
+    },
+    {
+      "id": "sc_04",
+      "structure": true,
+      "content": true,
+      "choices": true,
+      "errors": []
+    },
+    {
+      "id": "sc_05",
+      "structure": true,
+      "content": true,
+      "choices": true,
+      "errors": []
+    }
+  ]
+}
