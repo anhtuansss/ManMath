@@ -39,11 +39,23 @@ export const isDraftPreviewAuthorizedEmail = (email: string): boolean => {
   return authorizedEmails.has(normalizeEmailForComparison(email));
 };
 
-const rawCorsOrigins = process.env.CORS_ORIGIN?.trim();
+const rawCorsOrigins = (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN)?.trim();
 export const CORS_ORIGINS = rawCorsOrigins
   ? rawCorsOrigins.split(',').map((origin) => origin.trim()).filter(Boolean)
   : [];
 
-if (process.env.NODE_ENV === 'production' && CORS_ORIGINS.length === 0) {
-  throw new Error('Missing required environment variable: CORS_ORIGIN in production');
-}
+const STATIC_ALLOWED_ORIGINS = new Set([
+  'https://man-math-six.vercel.app',
+  ...CORS_ORIGINS,
+]);
+
+const VERCEL_PREVIEW_ORIGIN_REGEX =
+  /^https:\/\/man-math-[a-zA-Z0-9-]+(?:-anhtuansss-projects)?\.vercel\.app$/;
+
+export const isAllowedOrigin = (origin: string): boolean => {
+  if (STATIC_ALLOWED_ORIGINS.has(origin)) {
+    return true;
+  }
+  return VERCEL_PREVIEW_ORIGIN_REGEX.test(origin);
+};
+
