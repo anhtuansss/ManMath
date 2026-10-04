@@ -10,12 +10,13 @@ import {
 // backend-local .env value when a shell has exported DATABASE_URL as empty.
 const backendEnvironment = dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-type VerificationTarget = 'all' | 'security-containment' | 'version-pinning' | 'draft-preview' | 'practice' | 'practice-sessions' | 'practice-config' | 'question-bank' | 'analytics' | 'learning-overview' | 'attempt-persistence' | 'attempt-read' | 'history-immutability' | 'http';
+type VerificationTarget = 'all' | 'security-containment' | 'version-pinning' | 'draft-preview' | 'practice' | 'practice-sessions' | 'practice-config' | 'question-bank' | 'analytics' | 'learning-overview' | 'attempt-persistence' | 'attempt-read' | 'history-immutability' | 'http' | 'ocr-adapter';
 
 const targetScripts: Record<Exclude<VerificationTarget, 'all'>, string> = {
   'security-containment': 'src/scripts/verifySecurityContainment.ts',
   'version-pinning': 'src/scripts/verifyExamVersionPinning.ts',
   'draft-preview': 'src/scripts/verifyExamDraftPreview.ts',
+  'ocr-adapter': 'src/scripts/verifyOcrAdapter.ts',
   practice: 'src/scripts/verifyV2Practice.ts',
   analytics: 'src/scripts/verifyV2Analytics.ts',
   'learning-overview': 'src/scripts/verifyLearningOverview.ts',
@@ -33,11 +34,11 @@ function readTarget(argv: readonly string[]): VerificationTarget {
   if (argv.length === 0) return 'all';
   if (
     argv.length === 1 &&
-    (argv[0] === 'security-containment' || argv[0] === 'version-pinning' || argv[0] === 'draft-preview' || argv[0] === 'practice' || argv[0] === 'practice-sessions' || argv[0] === 'practice-config' || argv[0] === 'question-bank' || argv[0] === 'analytics' || argv[0] === 'learning-overview' || argv[0] === 'attempt-persistence' || argv[0] === 'attempt-read' || argv[0] === 'history-immutability' || argv[0] === 'http')
+    (argv[0] === 'security-containment' || argv[0] === 'version-pinning' || argv[0] === 'ocr-adapter' || argv[0] === 'draft-preview' || argv[0] === 'practice' || argv[0] === 'practice-sessions' || argv[0] === 'practice-config' || argv[0] === 'question-bank' || argv[0] === 'analytics' || argv[0] === 'learning-overview' || argv[0] === 'attempt-persistence' || argv[0] === 'attempt-read' || argv[0] === 'history-immutability' || argv[0] === 'http')
   ) {
     return argv[0];
   }
-  throw new Error('Usage: verify:isolated [security-containment|version-pinning|draft-preview|practice|practice-sessions|practice-config|question-bank|analytics|learning-overview|attempt-persistence|attempt-read|history-immutability|http]');
+  throw new Error('Usage: verify:isolated [security-containment|version-pinning|ocr-adapter|draft-preview|practice|practice-sessions|practice-config|question-bank|analytics|learning-overview|attempt-persistence|attempt-read|history-immutability|http]');
 }
 
 function verificationEnvironment(): NodeJS.ProcessEnv {
