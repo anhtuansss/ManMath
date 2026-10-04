@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express, { type Express, type NextFunction, type Request, type Response } from 'express';
-import { CORS_ORIGINS } from './config/env';
+import { CORS_ORIGINS, isAllowedOrigin } from './config/env';
 import { authRouter } from './routes/authRoutes';
 import { examRouter } from './routes/examRoutes';
 import { meRouter } from './routes/meRoutes';
@@ -9,7 +9,18 @@ import { meRouter } from './routes/meRoutes';
 export function createApp(): Express {
   const app = express();
 
-  app.use(cors({ origin: CORS_ORIGINS.length === 0 ? true : CORS_ORIGINS }));
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || isAllowedOrigin(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(null, false);
+      },
+      credentials: true,
+    })
+  );
   app.use(express.json({ limit: '1mb' }));
   app.use('/api/auth', authRouter);
   app.use('/api/me', meRouter);
