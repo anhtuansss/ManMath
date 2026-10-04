@@ -105,7 +105,11 @@ async function synchronize(): Promise<void> {
     await tx.topic.deleteMany({
       where: { slug: { notIn: canonicalTopicSlugs } },
     });
-  });
+  },
+  {
+    timeout: 30000,
+  },
+);
 }
 
 async function main(): Promise<void> {
