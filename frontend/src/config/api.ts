@@ -15,8 +15,8 @@
  */
 const rawApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
 
-export const API_BASE_URL = 
-    rawApiBaseUrl && rawApiBaseUrl.length > 0
-        ? rawApiBaseUrl.replace(/\/+$/, '') // Bỏ dấu / cuối để tránh tạo URL có //.
-        : 'http://localhost:5000'; // Giá trị mặc định khi chưa cấu hình biến môi trường.
-        
+if (!rawApiBaseUrl) {
+  throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured');
+}
+
+export const API_BASE_URL = rawApiBaseUrl.replace(/\/+$/, '');
