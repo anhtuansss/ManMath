@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-06-04-truong-thcs-thpt-ta-quang-buu-ha-noi-kiem-tra-chat-luong-001",
+    "title": "Đề kiểm tra chất lượng Toán 12 năm 2025–2026 trường Tạ Quang Bửu – Hà Nội",
+    "description": "Đề kiểm tra chất lượng môn Toán khối 12 năm học 2025–2026 của Trường THCS và THPT Tạ Quang Bửu – Hà Nội.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "Trường THCS và THPT Tạ Quang Bửu – Hà Nội",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Chuyên đề học tập và Toán ứng dụng",
+        "slug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Cấp số cộng",
+        "slug": "cap-so-cong",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Phương trình đường thẳng",
+        "slug": "phuong-trinh-duong-thang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Phương trình logarit",
+        "slug": "phuong-trinh-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Hoán vị, chỉnh hợp, tổ hợp",
+        "slug": "hoan-vi-chinh-hop-to-hop",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Thể tích khối chóp",
+        "slug": "the-tich-khoi-chop",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Đường tiệm cận",
+        "slug": "duong-tiem-can",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Tính đơn điệu của hàm số",
+        "slug": "tinh-don-dieu-cua-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Phương trình mặt cầu",
+        "slug": "phuong-trinh-mat-cau",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Các số đặc trưng đo mức độ phân tán",
+        "slug": "cac-so-dac-trung-do-muc-do-phan-tan",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Cực trị của hàm số",
+        "slug": "cuc-tri-cua-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Bài toán thực tế lãi suất, tăng trưởng, phân rã",
+        "slug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Tích phân và tính chất",
+        "slug": "tich-phan-va-tinh-chat",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Bài toán tối ưu tuyến tính và bất phương trình",
+        "slug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+        "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      },
+      {
+        "name": "Thể tích vật thể và khối tròn xoay bằng tích phân",
+        "slug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Khoảng cách trong không gian",
+        "slug": "khoang-cach-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Xác suất cổ điển",
+        "slug": "xac-suat-co-dien",
+        "topicSlug": "xac-suat-va-to-hop"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Cho cấp số cộng $(u_n)$ có $u_4=-12$, $u_{14}=18$. Tìm $u_1,d$ của cấp số cộng.",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-cong",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$u_1=-21,\\ d=-3$."
+        },
+        {
+          "id": "b",
+          "content": "$u_1=-21,\\ d=3$."
+        },
+        {
+          "id": "c",
+          "content": "$u_1=-20,\\ d=-3$."
+        },
+        {
+          "id": "d",
+          "content": "$u_1=-22,\\ d=3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Trong không gian $Oxyz$, cho đường thẳng $d$ đi qua điểm $M(2;2;1)$ và có một vectơ chỉ phương $\\vec u=(5;2;-3)$. Phương trình tham số của $d$ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-duong-thang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\begin{cases}x=5+2t\\\\y=2+2t\\\\z=-3+t\\end{cases}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\begin{cases}x=2+5t\\\\y=2+2t\\\\z=1-3t\\end{cases}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\begin{cases}x=2+5t\\\\y=2+2t\\\\z=-1-3t\\end{cases}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\begin{cases}x=2+5t\\\\y=2+2t\\\\z=1+3t\\end{cases}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Giải phương trình $\\log_4(x-1)=3$.",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "phuong-trinh-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$x=63$."
+        },
+        {
+          "id": "b",
+          "content": "$x=65$."
+        },
+        {
+          "id": "c",
+          "content": "$x=82$."
+        },
+        {
+          "id": "d",
+          "content": "$x=80$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Có bao nhiêu cách xếp 3 học sinh nam và 4 học sinh nữ thành một hàng ngang?",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "hoan-vi-chinh-hop-to-hop",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$144$."
+        },
+        {
+          "id": "b",
+          "content": "$480$."
+        },
+        {
+          "id": "c",
+          "content": "$5040$."
+        },
+        {
+          "id": "d",
+          "content": "$2880$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Cho hình chóp tứ giác $S.ABCD$ có đáy $ABCD$ là hình vuông cạnh $a$, cạnh bên $SA$ vuông góc với mặt phẳng đáy và $SA=a\\sqrt2$. Tính thể tích khối chóp $S.ABC$.",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "the-tich-khoi-chop",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$2a^3$."
+        },
+        {
+          "id": "b",
+          "content": "$\\dfrac{a^3\\sqrt2}{6}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\dfrac{a^3\\sqrt2}{3}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\dfrac{a^3\\sqrt2}{4}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Tiệm cận ngang của đồ thị hàm số $y=\\dfrac{4x+1}{x-1}$ là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "duong-tiem-can",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=1$."
+        },
+        {
+          "id": "b",
+          "content": "$y=\\dfrac14$."
+        },
+        {
+          "id": "c",
+          "content": "$y=-1$."
+        },
+        {
+          "id": "d",
+          "content": "$y=4$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Hàm số nào dưới đây đồng biến trên khoảng $(-\\infty;+\\infty)$?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "tinh-don-dieu-cua-ham-so",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=x^3+x$."
+        },
+        {
+          "id": "b",
+          "content": "$y=\\dfrac{x+1}{x+3}$."
+        },
+        {
+          "id": "c",
+          "content": "$y=\\dfrac{x-1}{x-2}$."
+        },
+        {
+          "id": "d",
+          "content": "$y=-x^3-3x$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Trong không gian $Oxyz$, cho mặt cầu $(S):x^2+y^2+z^2-2y+2z-70=0$. Bán kính của mặt cầu đã cho bằng",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-cau",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$7$."
+        },
+        {
+          "id": "b",
+          "content": "$9$."
+        },
+        {
+          "id": "c",
+          "content": "$15$."
+        },
+        {
+          "id": "d",
+          "content": "$3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Mỗi ngày bác Hương đều đi bộ để rèn luyện sức khỏe. Quãng đường đi bộ mỗi ngày (đơn vị: km) của bác Hương trong 20 ngày được thống kê ở bảng sau. Phương sai của mẫu số liệu ghép nhóm là",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "cac-so-dac-trung-do-muc-do-phan-tan",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thcs-thpt-ta-quang-buu-ha-noi-kiem-tra-chat-luong-001/sc-09-bang-quang-duong-di-bo.png",
+          "alt": "Bảng quãng đường đi bộ mỗi ngày của bác Hương trong 20 ngày"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$11{,}62$."
+        },
+        {
+          "id": "b",
+          "content": "$0{,}1314$."
+        },
+        {
+          "id": "c",
+          "content": "$3{,}39$."
+        },
+        {
+          "id": "d",
+          "content": "$0{,}36$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Giá trị cực tiểu của hàm số $y=-x^3+3x+2$ là",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "cuc-tri-cua-ham-so",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$4$."
+        },
+        {
+          "id": "b",
+          "content": "$-1$."
+        },
+        {
+          "id": "c",
+          "content": "$0$."
+        },
+        {
+          "id": "d",
+          "content": "$1$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Một người gửi 50 triệu đồng vào một ngân hàng với lãi suất $6\\%$/năm. Nếu không rút tiền thì mỗi năm tiền lãi được nhập vào gốc để tính lãi cho năm tiếp theo. Hỏi sau ít nhất bao nhiêu năm người đó sẽ nhận được số tiền nhiều hơn 100 triệu đồng gồm cả gốc và lãi?",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+      "choices": [
+        {
+          "id": "a",
+          "content": "13 năm."
+        },
+        {
+          "id": "b",
+          "content": "14 năm."
+        },
+        {
+          "id": "c",
+          "content": "12 năm."
+        },
+        {
+          "id": "d",
+          "content": "11 năm."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Nếu $\\displaystyle\\int_0^2 f(x)\\,dx=5$ thì $\\displaystyle\\int_0^2[2f(x)-1]\\,dx$ bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "tich-phan-va-tinh-chat",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$10$."
+        },
+        {
+          "id": "b",
+          "content": "$8$."
+        },
+        {
+          "id": "c",
+          "content": "$12$."
+        },
+        {
+          "id": "d",
+          "content": "$9$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Cho hàm số $y=\\dfrac{x^2+3x+3}{x+2}$ có đồ thị là đường cong $(C)$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Biết hàm số có 2 điểm cực trị, khi đó tổng của giá trị cực đại và giá trị cực tiểu bằng $-4$."
+        },
+        {
+          "id": "b",
+          "content": "Đường tiệm cận xiên của đồ thị hàm số đi qua điểm $A(0;1)$."
+        },
+        {
+          "id": "c",
+          "content": "Phương trình tiếp tuyến với $(C)$ vuông góc với đường thẳng $x-y-3=0$ đi qua điểm $B\\left(\\dfrac32;-\\dfrac32\\right)$."
+        },
+        {
+          "id": "d",
+          "content": "Để phương trình $\\dfrac{x^2+3x+3}{x+2}=mx$ có 4 nghiệm phân biệt thì $m>2$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Kết quả khảo sát những bệnh nhân là học sinh bị tai nạn xe máy điện về mối liên hệ giữa việc đội mũ bảo hiểm và khả năng bị chấn thương vùng đầu cho thấy: tỷ lệ bệnh nhân bị chấn thương vùng đầu là $26\\%$; tỷ lệ bệnh nhân đội mũ bảo hiểm đúng cách là $90\\%$; tỷ lệ bệnh nhân đội mũ bảo hiểm đúng cách và bị chấn thương vùng đầu là $18\\%$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Tỷ lệ bệnh nhân chấn thương đầu nhưng không đội mũ bảo hiểm đúng cách bằng $0{,}08$."
+        },
+        {
+          "id": "b",
+          "content": "Trong nhóm đối tượng không đội mũ bảo hiểm, tỷ lệ học sinh bị chấn thương vùng đầu là $80\\%$."
+        },
+        {
+          "id": "c",
+          "content": "Việc không đội mũ bảo hiểm đúng cách sẽ làm tăng khả năng bị chấn thương vùng đầu lên 4 lần."
+        },
+        {
+          "id": "d",
+          "content": "Một học sinh bị chấn thương vùng đầu do tai nạn giao thông được cấp cứu tại bệnh viện. Tỷ lệ nguy kịch nếu không đội mũ bảo hiểm là $0{,}8$, nếu đội đúng cách là $0{,}1$. Bác sĩ không biết học sinh đó có đội đúng cách hay không. Khi đó xác suất bệnh nhân không nguy kịch bằng $0{,}58$ (làm tròn đến hàng phần trăm)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Trong không gian $Oxyz$, đài kiểm soát không lưu đặt tại $O(0;0;0)$, đơn vị độ dài trên mỗi trục ứng với 1 km. Máy bay trong phạm vi cách đài kiểm soát 417 km sẽ hiển thị trên radar. Một máy bay đang ở vị trí $M(-779;-260;8)$ chuyển động thẳng đều với tốc độ không đổi theo hướng của vectơ $\\vec u=(91;75;0)$.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Đường thẳng mô tả đường đi của máy bay đi qua điểm $N(-597;-110;8)$."
+        },
+        {
+          "id": "b",
+          "content": "Vị trí đầu tiên mà máy bay xuất hiện trên màn hình radar là điểm $P(40;415;8)$."
+        },
+        {
+          "id": "c",
+          "content": "Nếu thời gian máy bay xuất hiện trên màn hình radar là 30 phút thì thời gian máy bay di chuyển từ $M$ đến khi xuất hiện lần cuối cùng trên màn hình radar là 54 phút."
+        },
+        {
+          "id": "d",
+          "content": "Khoảng cách giữa máy bay và đài kiểm soát không lưu luôn lớn hơn 294 km."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Một quần thể vi khuẩn $(A)$ có số lượng cá thể là $P(t)$ tại thời điểm $t$ phút và tốc độ thay đổi được cho bởi $P'(t)=ae^{-0{,}1t}+150e^{0{,}03t}$ (vi khuẩn/phút), với $a\\in\\mathbb R$. Biết lúc bắt đầu quan sát, quần thể có 200000 vi khuẩn và tốc độ tăng trưởng là 350 vi khuẩn/phút.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Giá trị của $a=200$."
+        },
+        {
+          "id": "b",
+          "content": "$P(t)=-2000e^{-0{,}1t}+5000e^{0{,}03t}+200000$."
+        },
+        {
+          "id": "c",
+          "content": "Sau 12 phút, số lượng vi khuẩn trong quần thể là 206152 con (làm tròn đến hàng đơn vị)."
+        },
+        {
+          "id": "d",
+          "content": "Sau 12 phút, một quần thể vi khuẩn $(B)$ xuất hiện và có tốc độ tăng trưởng $G'(t)=500e^{0{,}2t}$. Sau 5 phút kể từ lúc $(B)$ xuất hiện, số lượng hai quần thể bằng nhau. Số lượng vi khuẩn của quần thể $(B)$ ở thời điểm ban đầu là 191967 con (làm tròn đến hàng đơn vị)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Trong một cuộc thi về “bữa ăn dinh dưỡng”, để đảm bảo dinh dưỡng thì mỗi gia đình 4 thành viên cần ít nhất 900 đơn vị protein và 400 đơn vị lipit trong thức ăn hằng ngày. Mỗi kg thịt bò chứa 800 đơn vị protein và 200 đơn vị lipit; mỗi kg thịt heo chứa 600 đơn vị protein và 400 đơn vị lipit. Người nội trợ chỉ mua tối đa 1,6 kg thịt bò và 1,1 kg thịt heo. Giá 1 kg thịt bò là 200000 đồng, 1 kg thịt heo là 100000 đồng. Tìm chi phí thấp nhất cho khẩu phần đảm bảo chất dinh dưỡng (đơn vị nghìn đồng).",
+      "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung",
+      "subtopicSlug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "170"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Ông An có một cái bình đựng rượu, thân bình gồm hai phần: phần phía dưới là hình nón cụt, phần trên là hình cầu bị cắt bỏ hai đầu chỏm như hình minh họa. Thiết diện qua trục của bình có $AB=CD=16$ cm, $EF=30$ cm, $h=12$ cm, $h'=30$ cm. Giá mỗi lít rượu là 100000 đồng. Hỏi số tiền ông An cần để đổ đầy bình rượu là bao nhiêu nghìn đồng? (Giả sử độ dày vỏ bình không đáng kể; làm tròn đến hàng đơn vị nghìn đồng).",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thcs-thpt-ta-quang-buu-ha-noi-kiem-tra-chat-luong-001/sa-02-binh-ruou-non-cut-va-cau.png",
+          "alt": "Thiết diện bình rượu gồm phần hình nón cụt và phần hình cầu bị cắt hai chỏm"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1617"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình chữ nhật tâm $I$ với $AB=2\\sqrt3$, $BC=2$. Biết chân đường cao $H$ từ đỉnh $S$ xuống đáy $(ABCD)$ trùng với trung điểm đoạn $ID$, $SB$ hợp với mặt phẳng đáy $(ABCD)$ một góc $60^\\circ$. Tính khoảng cách từ điểm $D$ đến $(SBC)$ (làm tròn đến hàng phần mười).",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "khoang-cach-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3,1"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Hoàng tham gia một trò chơi trên một sân chơi hình bát giác có các đỉnh là vị trí người chơi có thể đi đến. Hoàng tung một đồng xu: nếu mặt sấp thì đi một bước cùng chiều kim đồng hồ, nếu mặt ngửa thì đi một bước ngược chiều kim đồng hồ. Hoàng xuất phát từ đỉnh $A$ và dừng khi đến đỉnh $B$. Biết Hoàng dừng lại sau 7 lần tung đồng xu. Có bao nhiêu trường hợp có thể xảy ra?",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thcs-thpt-ta-quang-buu-ha-noi-kiem-tra-chat-luong-001/sa-04-san-choi-bat-giac.png",
+          "alt": "Sân chơi hình bát giác"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "14"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Bạn Diệu theo dõi biến động của hai loại cổ phiếu $A$ và $B$ trên một thị trường chứng khoán ảo. Giá ban đầu của $A$ và $B$ lần lượt là 100 USD và 50 USD. Giá cổ phiếu $A$ tăng 1 USD mỗi ngày, nhưng cuối mỗi chu kỳ 5 ngày giao dịch sẽ giảm 10% giá trị hiện tại. Giá cổ phiếu $B$ tăng 1% mỗi ngày so với ngày trước, và cuối mỗi chu kỳ 3 ngày giao dịch được cộng thêm 5 USD. Bạn Diệu mua 10 cổ phiếu $A$ và 15 cổ phiếu $B$ từ thời điểm ban đầu. Sau 20 ngày, bạn Diệu nhận về số tiền chênh lệch so với số tiền đầu tư bao nhiêu USD? (Làm tròn đến hàng đơn vị).",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "471"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Trong không gian $Oxyz$ (đơn vị km), một trạm thu phát sóng điện thoại có đầu thu đặt tại $I(1;2;2)$ và bán kính phủ sóng 3 km. Hai người sử dụng điện thoại lần lượt tại $M(4;-4;2)$ và $N(6;0;6)$. Gọi $E(a;b;c)$ là một điểm thuộc ranh giới vùng phủ sóng sao cho tổng khoảng cách từ $E$ đến $M$ và $N$ lớn nhất. Tính $T=a+b+c$.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "4"
+      }
+    }
+  ]
+}

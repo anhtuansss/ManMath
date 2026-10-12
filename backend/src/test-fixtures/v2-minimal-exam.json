@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "exam": {
+    "id": "verify-v2-minimal-exam",
+    "title": "V2 minimal verification fixture",
+    "description": "Dedicated fixture for isolated V2 verification only.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "medium",
+    "source": null,
+    "year": 2025,
+    "statusLabel": "Fixture"
+  },
+  "taxonomy": {
+    "topics": [
+      { "name": "Hàm số và Đồ thị nền tảng", "slug": "ham-so-va-do-thi-nen-tang" }
+    ],
+    "subtopics": [
+      { "name": "Hàm số và tập xác định", "slug": "ham-so-va-tap-xac-dinh", "topicSlug": "ham-so-va-do-thi-nen-tang" }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-1",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Giá trị của f(0) là bao nhiêu?",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
+      "subtopicSlug": "ham-so-va-tap-xac-dinh",
+      "choices": [
+        { "id": "a", "content": "0" },
+        { "id": "b", "content": "1" },
+        { "id": "c", "content": "2" },
+        { "id": "d", "content": "3" }
+      ],
+      "answerKey": { "correctChoiceId": "a" }
+    },
+    {
+      "id": "tf-1",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 2,
+      "content": "Xét các mệnh đề sau.",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
+      "statements": [
+        { "id": "a", "content": "Mệnh đề a" },
+        { "id": "b", "content": "Mệnh đề b" },
+        { "id": "c", "content": "Mệnh đề c" },
+        { "id": "d", "content": "Mệnh đề d" }
+      ],
+      "answerKey": {
+        "values": { "a": true, "b": false, "c": true, "d": false }
+      }
+    },
+    {
+      "id": "sa-1",
+      "type": "short_answer",
+      "section": 3,
+      "order": 3,
+      "content": "Tính giá trị biểu thức.",
+      "topicSlug": "ham-so-va-do-thi-nen-tang",
+      "answerKey": { "mode": "numeric", "answer": "1,5" }
+    }
+  ]
+}

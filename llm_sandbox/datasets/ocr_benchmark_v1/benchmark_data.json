@@ -1,0 +1,129 @@
+{
+    "sample": [
+        {
+            "id": "sc_01",
+            "image": "sc_01.png",
+            "ground_truth": {
+                "content": "Câu 4: Hàm số $y = f(x)$ xác định trên đoạn $[-1;6]$ và có đồ thị như hình vẽ. Hàm số đã cho nghịch biến trên khoảng nào sau đây?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "content": "$(-1; 2)$"
+                    },
+                    {
+                        "id": "b",
+                        "content": "$(0; 2)$"
+                    },
+                    {
+                        "id": "c",
+                        "content": "$(2; 6)$"
+                    },
+                    {
+                        "id": "d",
+                        "content": "$(-2; 0)$"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "sc_02",
+            "image": "sc_02.png",
+            "ground_truth": {
+                "content": "Câu 5: Cho hàm số $y = x^3 + 3x^2 - 3x + 2$. Phương trình đường thẳng đi qua hai điểm cực trị của đồ thị hàm số là:",
+                "choices": [
+                    {
+                        "id": "a",
+                        "content": "$y = -4x + 11$"
+                    },
+                    {
+                        "id": "b",
+                        "content": "$y = 4x + 11$"
+                    },
+                    {
+                        "id": "c",
+                        "content": "$y = -4x + 3$"
+                    },
+                    {
+                        "id": "d",
+                        "content": "$y = -4x + 1$"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "sc_03",
+            "image": "sc_03.png",
+            "ground_truth": {
+                "content": "Câu 6: Một chất điểm chuyển động trên trục tọa độ có phương trình chuyển động là $s(t) = \frac{1}{3}t^3 - 5t^2 + 24t$(trong đó $t$ tính bằng giây, $t \\ge 0$ và $s$ tính bằng mét). Khi đó, $v(t) = s'(t)$ là vận tốc của chất điểm. Trong khoảng thời gian nào (đơn vị giây) tính từ lúc bắt đầu chuyển động, vận tốc của chất điểm giảm?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "content": "$(0; 6)$."
+                    },
+                    {
+                        "id": "b",
+                        "content": "$(5; +\\infty)$."
+                    },
+                    {
+                        "id": "c",
+                        "content": "$(0; 5)$."
+                    },
+                    {
+                        "id": "d",
+                        "content": "$(4; 6)$."
+                    }
+                ]
+            }
+        },
+        {
+            "id": "sc_04",
+            "image": "sc_04.png",
+            "ground_truth": {
+                "content": "Câu 8. Cho hàm số $y = f(x)$ có đạo hàm $f'(x) = (x^2 - 9)(x^2 - 4x + 3)(x + 1)^2, \forall x \\in \\mathbb{R}$. Điểm cực đại của hàm số đã cho là:",
+                "choices": [
+                    {
+                        "id": "a",
+                        "content": "$x = -1$"
+                    },
+                    {
+                        "id": "b",
+                        "content": "$x = 3$"
+                    },
+                    {
+                        "id": "c",
+                        "content": "$x = 1$"
+                    },
+                    {
+                        "id": "d",
+                        "content": "$x = -3$"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "sc_05",
+            "image": "sc_05.png",
+            "ground_truth": {
+                "content": "Câu 4. Cho hàm số $y = f(x)$ có đạo hàm liên tục trên $\\mathbb{R}$. Hình vẽ bên là đồ thị đạo hàm của nó. Hàm số $y = f(x)$ nghịch biến trên khoảng nào dưới đây?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "content": "$\\left(-1; \\dfrac{5}{2}\right).$"
+                    },
+                    {
+                        "id": "b",
+                        "content": "$\\left(\\dfrac{1}{2}; +\\infty\right).$"
+                    },
+                    {
+                        "id": "c",
+                        "content": " $\\left(\\dfrac{5}{2}; +\\infty\right).$"
+                    },
+                    {
+                        "id": "d",
+                        "content": "$(-\\infty; -1).$"
+                    }
+                ]
+            }
+        }
+    ]
+}

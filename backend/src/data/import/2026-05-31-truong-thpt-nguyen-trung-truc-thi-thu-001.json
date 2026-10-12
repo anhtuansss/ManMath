@@ -1,0 +1,762 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001",
+    "title": "Đề thi thử tốt nghiệp THPT 2026 môn Toán trường THPT Nguyễn Trung Trực – TP HCM",
+    "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "THPT Nguyễn Trung Trực - TP HCM",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Lượng giác",
+        "slug": "luong-giac"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Cấp số nhân",
+        "slug": "cap-so-nhan",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Phương pháp tính tích phân",
+        "slug": "phuong-phap-tinh-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Góc trong không gian",
+        "slug": "goc-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Vectơ trong không gian",
+        "slug": "vecto-trong-khong-gian",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Nguyên hàm cơ bản",
+        "slug": "nguyen-ham-co-ban",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Số đặc trưng đo xu thế trung tâm",
+        "slug": "so-dac-trung-do-xu-the-trung-tam",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Phương trình lượng giác cơ bản",
+        "slug": "phuong-trinh-luong-giac-co-ban",
+        "topicSlug": "luong-giac"
+      },
+      {
+        "name": "Phương trình đường thẳng",
+        "slug": "phuong-trinh-duong-thang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Phương trình mặt cầu",
+        "slug": "phuong-trinh-mat-cau",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Bất phương trình mũ và logarit",
+        "slug": "bat-phuong-trinh-mu-va-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Xác suất cổ điển",
+        "slug": "xac-suat-co-dien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Khoảng cách trong không gian",
+        "slug": "khoang-cach-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Bài toán thực tế lãi suất, tăng trưởng, phân rã",
+        "slug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Thể tích vật thể và khối tròn xoay bằng tích phân",
+        "slug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Trong các dãy số $(u_{n})$ cho bởi số hạng tổng quát $u_{n}$ sau, dãy số nào là một cấp số nhân?",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-nhan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$u_{n}=\\frac{1}{3^{n}}-1$."
+        },
+        {
+          "id": "b",
+          "content": "$u_{n}=n^{2}-\\frac{1}{3}$."
+        },
+        {
+          "id": "c",
+          "content": "$u_{n}=n+\\frac{1}{3}$."
+        },
+        {
+          "id": "d",
+          "content": "$u_{n}=\\frac{1}{3^{n-2}}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Cho hàm số $f(x)=x^{2}-\\frac{4}{x}$. Giá trị của $\\int_{1}^{2}f^{\\prime}(x)dx$ bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$5$."
+        },
+        {
+          "id": "b",
+          "content": "$3$."
+        },
+        {
+          "id": "c",
+          "content": "$\\frac{7}{3}-\\ln 2$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{7}{3}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Đồ thị hàm số $y=\\frac{2x+3}{x-1}$ có tâm đối xứng là điểm nào dưới đây?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$Q\\left(1;-\\frac{3}{2}\\right)$."
+        },
+        {
+          "id": "b",
+          "content": "$M(2;-1)$."
+        },
+        {
+          "id": "c",
+          "content": "$P(1;2)$."
+        },
+        {
+          "id": "d",
+          "content": "$N(3;-1)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình vuông, $AB=a\\sqrt{6}$; $SA$ vuông góc với đáy, $SA=a$.\nSố đo góc phẳng nhị diện $[S,BD,C]$ bằng",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "goc-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001/sc-04-hinh-chop.png",
+          "alt": "Hình chóp S.ABCD"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$60^{\\circ}$."
+        },
+        {
+          "id": "b",
+          "content": "$30^{\\circ}$."
+        },
+        {
+          "id": "c",
+          "content": "$150^{\\circ}$."
+        },
+        {
+          "id": "d",
+          "content": "$120^{\\circ}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Cho hình lập phương $ABCD.A^{\\prime}B^{\\prime}C^{\\prime}D^{\\prime}$ có độ dài cạnh bằng $1$. Độ dài của vectơ $\\overrightarrow{AB}+\\overrightarrow{AD}+\\overrightarrow{AA^{\\prime}}$ bằng",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "vecto-trong-khong-gian",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\sqrt{2}$."
+        },
+        {
+          "id": "b",
+          "content": "$2\\sqrt{3}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\sqrt{3}$."
+        },
+        {
+          "id": "d",
+          "content": "$3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "$\\int 2^{2x} \\cdot 3^{x} \\cdot 7^{x} dx$ bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$84^{x}+C$."
+        },
+        {
+          "id": "b",
+          "content": "$\\frac{2^{2x} \\cdot 3^{x} \\cdot 7^{x}}{\\ln 4 \\cdot \\ln 3 \\cdot \\ln 7}+C$."
+        },
+        {
+          "id": "c",
+          "content": "$84^{x}\\ln 84+C$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{84^{x}}{\\ln 84}+C$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Cho mẫu số liệu ghép nhóm:\n\nMốt của mẫu số liệu đã cho bằng",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "so-dac-trung-do-xu-the-trung-tam",
+      "assets": [
+        {
+          "src": "/images/2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001/sc-07-bang-so-lieu.png",
+          "alt": "Bảng mẫu số liệu ghép nhóm"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$151,75$."
+        },
+        {
+          "id": "b",
+          "content": "$20$."
+        },
+        {
+          "id": "c",
+          "content": "$152$."
+        },
+        {
+          "id": "d",
+          "content": "$151,5$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Nghiệm của phương trình $\\cot(3x-1)=-\\sqrt{3}$ là",
+      "topicSlug": "luong-giac",
+      "subtopicSlug": "phuong-trinh-luong-giac-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$x=\\frac{5\\pi}{18}+k\\frac{\\pi}{3} (k\\in \\mathbb{Z})$."
+        },
+        {
+          "id": "b",
+          "content": "$x=\\frac{1}{3}-\\frac{\\pi}{18}+k\\frac{\\pi}{3} (k\\in \\mathbb{Z})$."
+        },
+        {
+          "id": "c",
+          "content": "$x=\\frac{1}{3}-\\frac{\\pi}{6}+k\\pi (k\\in \\mathbb{Z})$."
+        },
+        {
+          "id": "d",
+          "content": "$x=\\frac{1}{3}+\\frac{\\pi}{18}+k\\frac{\\pi}{3} (k\\in \\mathbb{Z})$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Đồ thị sau là của hàm số nào dưới đây?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "assets": [
+        {
+          "src": "/images/2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001/sc-09-do-thi.png",
+          "alt": "Đồ thị của một hàm số phân thức"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=\\frac{x^{2}+4x+5}{x-2}$."
+        },
+        {
+          "id": "b",
+          "content": "$y=\\frac{x^{2}+4x+1}{x+2}$."
+        },
+        {
+          "id": "c",
+          "content": "$y=\\frac{x^{2}+4x+5}{x+2}$."
+        },
+        {
+          "id": "d",
+          "content": "$y=\\frac{x^{2}+4x+5}{-x-2}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Trong không gian $Oxyz$, phương trình đường thẳng đi qua điểm $A(1;2;3)$ và song song với đường thẳng $d:\\begin{cases}x=1-t\\\\ y=t\\\\ z=-1-4t\\end{cases}$ là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-duong-thang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\frac{x+1}{-1}=\\frac{y+2}{1}=\\frac{z+3}{-4}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\frac{x}{1}=\\frac{y-3}{-1}=\\frac{z+1}{4}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\frac{x+1}{-1}=\\frac{y+2}{1}=\\frac{z+3}{-4}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{x-1}{-1}=\\frac{y-2}{1}=\\frac{z-3}{-4}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Bán kính của mặt cầu tâm $I(1;-2;3)$, tiếp xúc với trục tung bằng",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-cau",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$10$."
+        },
+        {
+          "id": "b",
+          "content": "$14$."
+        },
+        {
+          "id": "c",
+          "content": "$\\sqrt{14}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\sqrt{10}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Tập nghiệm của bất phương trình $\\left(\\frac{e}{\\pi}\\right)^{x}>1$ là",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bat-phuong-trinh-mu-va-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\mathbb{R}$."
+        },
+        {
+          "id": "b",
+          "content": "$(-\\infty;0)$."
+        },
+        {
+          "id": "c",
+          "content": "$(0;+\\infty)$."
+        },
+        {
+          "id": "d",
+          "content": "$[0;+\\infty)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Một lon sữa cho trẻ em được lấy ra khỏi tủ lạnh và đặt trên bàn để rã đông. Nhiệt độ của lon sữa tại thời điểm lấy ra khỏi tủ lạnh là $-4^{\\circ}\\mathrm{C}$, và sau $1$ giờ, tốc độ tăng nhiệt độ của lon sữa được cho bởi công thức $T^{\\prime}(t)=7e^{-0,35t} (^{\\circ}\\mathrm{C}/\\text{giờ})$ cho đến khi lon sữa đạt nhiệt độ môi trường là $10^{\\circ}\\mathrm{C}$.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Sau $2$ giờ, tốc độ thay đổi nhiệt độ của lon sữa bằng $3,48^{\\circ}\\mathrm{C}/\\text{giờ}$ (làm tròn kết quả đến hàng phần trăm)."
+        },
+        {
+          "id": "b",
+          "content": "Nhiệt độ của lon sữa tính từ thời điểm lấy ra khỏi tủ lạnh cho đến khi lon sữa đạt nhiệt độ môi trường được tính bởi công thức $T(t)=-20e^{-0,35t}$."
+        },
+        {
+          "id": "c",
+          "content": "Thời gian để lon sữa đạt nhiệt độ môi trường là $3,44$ giờ. (Làm tròn kết quả đến hàng phần trăm)."
+        },
+        {
+          "id": "d",
+          "content": "Ngay sau khi đạt nhiệt độ môi trường, lon sữa được đưa vào máy hâm sữa. Tốc độ tăng nhiệt độ của lon sữa trong máy sau $t$ giờ được xác định bởi: $L^{\\prime}(t)=ke^{-0,22t}$ ($k$ là hằng số). Lon sữa được coi là đạt yêu cầu khi nhiệt độ lon sữa bằng $70^{\\circ}\\mathrm{C}$. Biết rằng thời gian cần thiết để hâm nóng lon sữa là $5$ phút, khi đó hằng số $k\\in(720;730)$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Trong không gian với hệ trục tọa độ $Oxyz$ có đơn vị mỗi trục là $1$ mét, một tàu ngầm đang di chuyển dưới biển sâu theo phương đường thẳng $\\Delta:\\frac{x-50}{3}=\\frac{y+20}{-4}=\\frac{z-10}{1}$. Hải quân trên tàu phát hiện một khu vực nguy hiểm được rải mìn, khu vực này có dạng hình cầu $(S)$ với tâm $C(200;-300;60)$ và bán kính $R=80$ (Đơn vị đo là mét). Xét tính đúng sai của mỗi mệnh đề sau:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Vectơ chỉ phương của đường thẳng $\\Delta$ vuông góc với $\\overrightarrow{OC}$."
+        },
+        {
+          "id": "b",
+          "content": "Đường thẳng $\\Delta$ nằm trong mặt phẳng $(P): 4x+3y=140$."
+        },
+        {
+          "id": "c",
+          "content": "Tàu ngầm sẽ đi vào khu vực nguy hiểm $(S)$."
+        },
+        {
+          "id": "d",
+          "content": "Gọi $M$ là điểm gần khu vực mìn nhất trên đường đi của tàu ngầm. Biết rằng tốc độ tàu ngầm không đổi là $5 (\\text{m/s})$. Thời gian để tàu ngầm di chuyển từ vị trí hiện tại $A(50;-20;10)$ đến điểm $M$ là $63,5$ giây (Kết quả làm tròn đến hàng phần trăm)."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Cho hàm số $y=f(x)=\\frac{x^{2}+2x+4}{x+2}$.",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Hàm số đã cho đồng biến trên khoảng $(0;+\\infty)$."
+        },
+        {
+          "id": "b",
+          "content": "Gọi $A, B$ là các điểm cực đại, cực tiểu của đồ thị hàm số. Diện tích của tam giác $OAB$ bằng $8$ (đơn vị diện tích), trong đó $O$ là gốc tọa độ."
+        },
+        {
+          "id": "c",
+          "content": "Đường thẳng đi qua hai điểm cực trị của đồ thị hàm số có phương trình là $y=2x+2$."
+        },
+        {
+          "id": "d",
+          "content": "Tổng giá trị lớn nhất và giá trị nhỏ nhất của hàm số trên đoạn $[-3;3]$ bằng $-3,2$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Một lớp $12$ có $40$ học sinh, trong đó có $8$ em tham gia Câu lạc bộ Toán học. Điểm thi học kỳ 1 môn Toán của lớp này được thống kê trong bảng sau:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "assets": [
+        {
+          "src": "/images/2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001/tf-04-bang-tan-so.png",
+          "alt": "Bảng tần số điểm thi môn Toán"
+        }
+      ],
+      "statements": [
+        {
+          "id": "a",
+          "content": "Biết $8$ học sinh trong Câu lạc bộ Toán học gồm có $5$ học sinh nam và $3$ học sinh nữ. Trong buổi lễ tuyên dương khen thưởng, $8$ học sinh trong Câu lạc bộ Toán học được sắp xếp ngẫu nhiên thành một hàng ngang để cô Hiệu trưởng trao quà. Xác suất không có hai học sinh nữ nào đứng cạnh nhau lớn hơn $\\frac{1}{3}$."
+        },
+        {
+          "id": "b",
+          "content": "Có ít nhất $13$ học sinh có điểm thi thấp hơn điểm trung bình của cả lớp."
+        },
+        {
+          "id": "c",
+          "content": "Khoảng biến thiên mẫu số liệu là $5$."
+        },
+        {
+          "id": "d",
+          "content": "Biết rằng cả $8$ học sinh trong Câu lạc bộ Toán học đều có điểm thi không dưới $8$. Chọn ngẫu nhiên $6$ học sinh trong lớp có điểm thi lớn hơn hoặc bằng $8$. Xác suất có đúng $2$ em của Câu lạc bộ Toán học được chọn nhỏ hơn $\\frac{1}{3}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Một doanh nghiệp sản xuất độc quyền một loại sản phẩm. Giả sử khi sản xuất và bán hết $x$ sản phẩm $(0<x\\le 2500)$, tổng số tiền doanh nghiệp thu được là $f(x)=2006x-x^{2}$ (đơn vị: nghìn đồng) và tổng chi phí là $g(x)=x^{2}+1438x-1209$ (đơn vị: nghìn đồng). Giả sử mức thuế phụ thu trên một đơn vị sản phẩm bán được là $t$ (nghìn đồng) $(0<t<320)$. Giá trị của $t$ bằng bao nhiêu nghìn đồng để nhà nước nhận được số tiền thuế phụ thu lớn nhất và doanh nghiệp cũng nhận được lợi nhuận lớn nhất theo mức thuế phụ thu đó?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "284"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Vào tháng $7$, ở địa phương của anh An, trời mưa một phần ba số ngày. Nếu trời mưa, sẽ có khả năng xảy ra ùn tắc giao thông với xác suất $\\frac{1}{2}$, nếu trời không mưa, sẽ có khả năng xảy ra ùn tắc giao thông là $\\frac{1}{4}$. Nếu trời mưa và có ùn tắc giao thông, anh An sẽ đến nơi làm việc trễ giờ với xác suất $\\frac{1}{2}$. Nếu trời không mưa và không có ùn tắc giao thông thì xác suất anh An đến nơi làm việc trễ giờ là $\\frac{1}{8}$. Trong các tình huống khác (mưa và không có ùn tắc giao thông, không mưa và có ùn tắc giao thông), xác suất đến muộn của anh An đều là $0,25$. Chọn ngẫu nhiên một ngày mà anh An đi làm trễ, xác suất trời mưa vào ngày hôm đó là bao nhiêu %? (làm tròn kết quả đến hàng phần chục).",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "54,5"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Một trạm kiểm soát không lưu đặt tại một sân bay được xây dựng hệ trục toạ độ $Oxyz$ để theo dõi vị trí của các chuyến bay. Gốc tọa độ $O$ đặt tại trạm kiểm soát không lưu. Lúc 8h, máy bay thứ nhất xuất phát từ sân bay, bay theo tia $OA$ lần lượt hợp với ba tia $Ox, Oy, Oz$ các góc bằng nhau với tốc độ không đổi là $760 \\text{ km/h}$. Sau đó $2$ tiếng, máy bay thứ hai cũng xuất phát từ sân bay, bay theo tia $OB$ lần lượt hợp với ba tia $Ox, Oy, Oz$ các góc bằng nhau với tốc độ không đổi là $880 \\text{ km/h}$. Hỏi khoảng cách giữa hai máy bay lúc 10h30 phút cùng ngày bằng bao nhiêu km? (làm tròn kết quả đến hàng đơn vị).",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1802"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Cho hình chóp $S.ABCD$ có đáy là hình thoi cạnh bằng $2$, góc $ABC=60^{\\circ}$ và cạnh bên $SA$ vuông góc với mặt phẳng đáy. Gọi $M, N$ lần lượt là trung điểm $SB, SD$. Biết số đo góc nhị diện $[M, AC, N]$ bằng $120^{\\circ}$. Khoảng cách từ điểm $C$ đến mặt phẳng $(SBD)$ bằng bao nhiêu? (làm tròn kết quả cuối cùng đến hàng phần chục).",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "khoang-cach-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "0,7"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Lãi suất của tiền gửi tiết kiệm của một số ngân hàng thời gian vừa qua liên tục thay đổi. Bạn Châu gửi số tiền ban đầu là $5$ triệu đồng với lãi suất $0,7\\% /\\text{tháng}$ chưa đầy một năm, thì lãi suất tăng lên $1,15\\% /\\text{tháng}$ trong nửa năm tiếp theo và bạn Châu tiếp tục gửi; sau nửa năm đó lãi suất giảm xuống còn $0,9\\% /\\text{tháng}$, bạn Châu tiếp tục gửi thêm một số tháng tròn nữa, khi rút tiền bạn Châu được cả vốn lẫn lãi là $5\\;747\\;478,359$ đồng (chưa làm tròn). Hỏi bạn Châu đã gửi tiền tiết kiệm trong bao nhiêu tháng?",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "15"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Một kho chứa hàng có mặt đáy là một hình thang $ABCD$ vuông tại $A$ và $B$ với $AD \\parallel BC$. Xét một thiết diện bất kì của kho hàng vuông góc với trục $AB$ tại điểm $K$. Thiết diện thu được là một hình phẳng giới hạn bởi vòm cong $(P)$, đoạn thẳng mặt nền $KE$ và đoạn tường thẳng đứng $KF$. Giả sử $(P)$ là một nhánh của parabol có đỉnh $S$, $H$ là hình chiếu vuông góc của $S$ lên mặt nền, $E$ là chân của vòm parabol ($E$ thuộc $(P)$ và mặt đáy), $SH=3EH$. Biết rằng một mặt bên của nhà kho là một bức tường phẳng vuông góc với đáy và tại mọi vị trí mặt cắt thì chiều cao của tường luôn bằng với bề rộng của nền nhà kho tại vị trí đó, nghĩa là $KF=KE$ và $F\\in(P)$.\n\nCho chiều dài trục $AB=30(\\text{m})$, bề rộng hai đầu hồi lần lượt là $AD=12(\\text{m})$ và $BC=6(\\text{m})$. Hãy tính thể tích không gian bên trong khu nhà kho này theo đơn vị mét khối?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+      "assets": [
+        {
+          "src": "/images/2026-05-31-truong-thpt-nguyen-trung-truc-thi-thu-001/sa-06-hinh-nha-kho.png",
+          "alt": "Hình ảnh mô phỏng nhà kho với thiết diện là hình phẳng giới hạn bởi đường cong"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3360"
+      }
+    }
+  ]
+}

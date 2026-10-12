@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-phuong-phap-tich-phan-001",
+  "title": "Phương pháp tính tích phân",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-phuong-phap-tich-phan-001"
+  },
+  "taxonomy": {
+    "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+    "subtopicSlug": "phuong-phap-tinh-tich-phan"
+  },
+  "questions": [
+    {
+      "id": "qb-phuong-phap-tich-phan-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Cho $\\int_0^2 f(x) dx = 3$ và $\\int_0^2 g(x) dx = -1$. Giá trị của tích phân $I = \\int_0^2 [2f(x) - 3g(x)] dx$ bằng:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$9$"
+        },
+        {
+          "id": "b",
+          "content": "$3$"
+        },
+        {
+          "id": "c",
+          "content": "$-3$"
+        },
+        {
+          "id": "d",
+          "content": "$5$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-tich-phan-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Bằng cách đặt $u = \\sin x$, tích phân $I = \\int_0^{\\frac{\\pi}{2}} e^{\\sin x} \\cos x dx$ được biến đổi thành và có kết quả là:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$e - 1$"
+        },
+        {
+          "id": "b",
+          "content": "$e$"
+        },
+        {
+          "id": "c",
+          "content": "$e + 1$"
+        },
+        {
+          "id": "d",
+          "content": "$1 - e$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-tich-phan-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Biết tích phân $\\int_1^e x \\ln x dx = \\dfrac{e^2 + a}{b}$ với $a, b$ là các số nguyên. Khẳng định nào sau đây là đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$a = 1, b = 4$"
+        },
+        {
+          "id": "b",
+          "content": "$a = -1, b = 4$"
+        },
+        {
+          "id": "c",
+          "content": "$a = 1, b = 2$"
+        },
+        {
+          "id": "d",
+          "content": "$a = -1, b = 2$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-tich-phan-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Giả sử $f(x)$ là một hàm số liên tục trên $\\mathbb{R}$. Xét tính đúng sai của các mệnh đề sau liên quan đến tính chất của tích phân:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Nếu $f(x)$ là hàm số lẻ thì $\\int_{-2}^2 f(x) dx = 0$."
+        },
+        {
+          "id": "b",
+          "content": "Nếu $f(x)$ là hàm số chẵn thì $\\int_{-2}^2 f(x) dx = 2\\int_{0}^2 f(x) dx$."
+        },
+        {
+          "id": "c",
+          "content": "Ta luôn có đẳng thức $\\int_0^1 f(x) dx = \\int_0^1 f(1-x) dx$ với mọi hàm $f(x)$ liên tục."
+        },
+        {
+          "id": "d",
+          "content": "Nếu $f(x)$ thoả mãn $f(x) + f(-x) = x^2$ với mọi $x \\in \\mathbb{R}$, thì $\\int_{-1}^1 f(x) dx = \\dfrac{2}{3}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "qb-phuong-phap-tich-phan-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Cho hàm số $f(x)$ liên tục trên $\\mathbb{R}$ và thỏa mãn $\\int_0^3 f(x) dx = 12$. Tính giá trị của tích phân $I = \\int_0^1 x f(3x^2) dx$.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-tich-phan",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "2"
+      }
+    }
+  ]
+}

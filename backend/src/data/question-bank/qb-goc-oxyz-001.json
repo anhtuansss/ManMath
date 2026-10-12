@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-goc-oxyz-001",
+  "title": "Góc trong không gian Oxyz",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-goc-oxyz-001"
+  },
+  "taxonomy": {
+    "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+    "subtopicSlug": "goc-trong-oxyz"
+  },
+  "questions": [
+    {
+      "id": "qb-goc-oxyz-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Trong không gian $Oxyz$, cho hai vec-tơ $\\vec{u} = (1; 0; 1)$ và $\\vec{v} = (0; 1; 1)$. Số đo góc giữa hai vec-tơ $\\vec{u}$ và $\\vec{v}$ bằng:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "goc-trong-oxyz",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$30^\\circ$"
+        },
+        {
+          "id": "b",
+          "content": "$45^\\circ$"
+        },
+        {
+          "id": "c",
+          "content": "$60^\\circ$"
+        },
+        {
+          "id": "d",
+          "content": "$90^\\circ$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "qb-goc-oxyz-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Trong không gian $Oxyz$, cho đường thẳng $d: \\dfrac{x-2}{1} = \\dfrac{y}{0} = \\dfrac{z+1}{-1}$ và mặt phẳng $(P): x + y - 5 = 0$. Số đo góc giữa đường thẳng $d$ và mặt phẳng $(P)$ bằng:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "goc-trong-oxyz",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$30^\\circ$"
+        },
+        {
+          "id": "b",
+          "content": "$45^\\circ$"
+        },
+        {
+          "id": "c",
+          "content": "$60^\\circ$"
+        },
+        {
+          "id": "d",
+          "content": "$90^\\circ$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-goc-oxyz-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Trong không gian $Oxyz$, cho mặt phẳng $(\\alpha): 2x - y + 2z - 1 = 0$ và mặt phẳng $(\\beta)$ đi qua ba điểm $A(1;0;0), B(0;2;0), C(0;0;-2)$. Cosin của góc giữa hai mặt phẳng $(\\alpha)$ và $(\\beta)$ bằng:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "goc-trong-oxyz",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\dfrac{\\sqrt{6}}{18}$"
+        },
+        {
+          "id": "b",
+          "content": "$\\dfrac{\\sqrt{6}}{6}$"
+        },
+        {
+          "id": "c",
+          "content": "$\\dfrac{1}{3}$"
+        },
+        {
+          "id": "d",
+          "content": "$\\dfrac{\\sqrt{3}}{18}$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-goc-oxyz-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Trong không gian $Oxyz$, cho các đường thẳng $d_1: \\dfrac{x}{1} = \\dfrac{y-1}{2} = \\dfrac{z}{-1}$, $d_2: \\dfrac{x-1}{-1} = \\dfrac{y}{-2} = \\dfrac{z+1}{1}$ và mặt phẳng $(P): 2x + y + 4z - 5 = 0$. Xét tính đúng sai của các mệnh đề sau:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "goc-trong-oxyz",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Góc giữa hai đường thẳng $d_1$ và $d_2$ bằng $0^\\circ$."
+        },
+        {
+          "id": "b",
+          "content": "Đường thẳng $d_1$ vuông góc với mặt phẳng $(P)$ nên góc giữa chúng bằng $90^\\circ$."
+        },
+        {
+          "id": "c",
+          "content": "Góc giữa một đường thẳng bất kì và một mặt phẳng bất kì trong không gian luôn có số đo không vượt quá $90^\\circ$."
+        },
+        {
+          "id": "d",
+          "content": "Tồn tại ít nhất một mặt phẳng $(Q)$ chứa $d_1$ sao cho góc giữa mặt phẳng $(P)$ và mặt phẳng $(Q)$ bằng $0^\\circ$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "qb-goc-oxyz-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Trong không gian $Oxyz$, cho hai mặt phẳng $(P): x + y - 3 = 0$ và $(Q): x + (m-1)y + (2m-1)z + 2026 = 0$. Biết góc giữa hai mặt phẳng này bằng $60^\\circ$, tìm giá trị của tham số $m$.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "goc-trong-oxyz",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1"
+      }
+    }
+  ]
+}

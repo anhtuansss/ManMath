@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001",
+  "title": "Bài toán tham số: Đơn điệu, cực trị, tương giao",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001"
+  },
+  "taxonomy": {
+    "topicSlug": "dao-ham-va-khao-sat-ham-so",
+    "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao"
+  },
+  "questions": [
+    {
+      "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Có bao nhiêu giá trị nguyên của tham số $m$ để hàm số $y = x^3 - 3mx^2 + 3(m+2)x - 1$ đồng biến trên $\\mathbb{R}$?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3$"
+        },
+        {
+          "id": "b",
+          "content": "$4$"
+        },
+        {
+          "id": "c",
+          "content": "$5$"
+        },
+        {
+          "id": "d",
+          "content": "$2$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Tập hợp tất cả các giá trị của tham số $m$ để hàm số $y = x^4 - 2(m-1)x^2 + 3$ có đúng một điểm cực trị là:",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$m < 1$"
+        },
+        {
+          "id": "b",
+          "content": "$m \\le 1$"
+        },
+        {
+          "id": "c",
+          "content": "$m \\ge 1$"
+        },
+        {
+          "id": "d",
+          "content": "$m > 1$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Gọi $S$ là tổng tất cả các giá trị của tham số $m$ để đường thẳng $d: y = -x + m$ cắt đồ thị hàm số $(C): y = \\dfrac{2x+1}{x-1}$ tại hai điểm phân biệt $A, B$ sao cho độ dài đoạn thẳng $AB = 2\\sqrt{2}$. Giá trị của $S$ bằng:",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$6$"
+        },
+        {
+          "id": "b",
+          "content": "$7$"
+        },
+        {
+          "id": "c",
+          "content": "$-6$"
+        },
+        {
+          "id": "d",
+          "content": "$8$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Cho hàm số $f(x) = \\dfrac{x^2 + mx + 1}{x-m}$ (với $m$ là tham số thực). Xét tính đúng sai của các mệnh đề sau:",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Hàm số luôn có hai điểm cực trị với mọi giá trị của tham số $m$."
+        },
+        {
+          "id": "b",
+          "content": "Đồ thị hàm số luôn có tiệm cận ngang là đường thẳng $y=1$ với mọi $m$."
+        },
+        {
+          "id": "c",
+          "content": "Khi $m=0$, đường thẳng $y = -x + 1$ cắt đồ thị hàm số tại hai điểm phân biệt."
+        },
+        {
+          "id": "d",
+          "content": "Hàm số đã cho nghịch biến trên khoảng $(m; m+1)$ với mọi giá trị của $m$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "qb-tham-so-don-dieu-cuc-tri-tuong-giao-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Có bao nhiêu giá trị nguyên của tham số $m$ thuộc đoạn $[-10; 10]$ để hàm số $y = \\left| x^3 - 3x^2 + m \\right|$ có đúng $5$ điểm cực trị?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "bai-toan-tham-so-don-dieu-cuc-tri-tuong-giao",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3"
+      }
+    }
+  ]
+}

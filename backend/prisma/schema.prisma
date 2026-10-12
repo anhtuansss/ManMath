@@ -1,0 +1,357 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  fullName     String?
+  avatarUrl    String?
+  googleId     String?      @unique
+  passwordHash String?
+  authProvider AuthProvider @default(google)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  attempts     Attempt[]
+  examTimingSessions ExamTimingSession[]
+  practiceSessions PracticeSession[]
+}
+
+model Topic {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  subtopics   Subtopic[]
+  practiceSessions PracticeSession[]
+  questionBankItems QuestionBankItem[]
+}
+
+model Subtopic {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  topicId   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  practiceSessions PracticeSession[]
+  questionBankItems QuestionBankItem[]
+
+  @@unique([topicId, name])
+  @@index([topicId])
+}
+
+model Exam {
+  id              String             @id
+  title           String
+  description     String
+  durationMinutes Int
+  subject         String
+  difficulty      ExamDifficulty
+  year            Int?
+  statusLabel     String
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  source          String?
+  attempts        Attempt[]
+  timingSessions  ExamTimingSession[]
+  versions        ExamVersion[]
+}
+
+model Attempt {
+  id                        String                @id @default(cuid())
+  examId                    String
+  userId                    String?
+  score                     Float
+  correctCount              Int
+  totalQuestions            Int
+  unansweredCount           Int
+  startedAt                 DateTime?
+  submittedAt               DateTime              @default(now())
+  durationSeconds           Int?
+  maxScoreUnits             Int?
+  scoreUnits                Int?
+  scoringPolicy             AttemptScoringPolicy?
+  contentSnapshotVersion    Int?
+  examContentSnapshot       Json?
+  examVersionId             String?
+  anonymousReceiptTokenHash String?
+  anonymousReceiptExpiresAt DateTime?
+  idempotencyKey            String?               @unique
+  submissionFingerprint     String?
+  timingSessionId           String?               @unique
+  exam                      Exam                  @relation(fields: [examId], references: [id])
+  examVersion               ExamVersion?          @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
+  user                      User?                 @relation(fields: [userId], references: [id])
+  timingSession             ExamTimingSession?    @relation(fields: [timingSessionId], references: [id], onDelete: Restrict)
+  answers                   AttemptAnswer[]
+
+  @@index([examId])
+  @@index([examVersionId])
+  @@index([userId])
+  @@index([submittedAt])
+  @@index([anonymousReceiptExpiresAt])
+  @@index([submissionFingerprint])
+}
+
+model ExamTimingSession {
+  id                 String                  @id @default(cuid())
+  examId             String
+  examVersionId      String
+  userId             String?
+  anonymousTokenHash String?
+  status             ExamTimingSessionStatus @default(in_progress)
+  startedAt          DateTime                @default(now())
+  expiresAt          DateTime
+  submittedAt        DateTime?
+  exam               Exam                    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examVersion        ExamVersion             @relation(fields: [examVersionId], references: [id], onDelete: Restrict)
+  user               User?                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempt            Attempt?
+
+  @@index([examId, examVersionId])
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model ExamVersion {
+  id              String                @id @default(cuid())
+  examId          String
+  versionNumber   Int
+  status          ExamVersionStatus     @default(draft)
+  publishProfile  ExamPublishProfile    @default(practice)
+  title           String
+  description     String
+  durationMinutes Int
+  subject         String
+  difficulty      ExamDifficulty
+  source          String?
+  year            Int?
+  statusLabel     String
+  scoringPolicy   AttemptScoringPolicy  @default(vietnam_thpt_math_2025)
+  contentChecksum String
+  publishedAt     DateTime?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  attempts        Attempt[]
+  timingSessions  ExamTimingSession[]
+  exam            Exam                  @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questions       ExamVersionQuestion[]
+
+  @@unique([examId, versionNumber])
+  @@index([examId, status])
+}
+
+model ExamVersionQuestion {
+  id            String       @id @default(cuid())
+  examVersionId String
+  externalId    String
+  order         Int
+  type          QuestionType
+  section       Int
+  content       String
+  topicSlug     String
+  topicName     String
+  subtopicSlug  String?
+  subtopicName  String?
+  assets        Json?
+  choices       Json?
+  statements    Json?
+  answerKey     Json
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  examVersion    ExamVersion     @relation(fields: [examVersionId], references: [id], onDelete: Cascade)
+  attemptAnswers AttemptAnswer[]
+  practiceSessionQuestions PracticeSessionQuestion[]
+
+  @@unique([examVersionId, externalId])
+  @@unique([examVersionId, order])
+  @@index([examVersionId, type])
+  @@index([topicSlug])
+  @@index([subtopicSlug])
+}
+
+model AttemptAnswer {
+  id                    String               @id @default(cuid())
+  attemptId             String
+  isCorrect             Boolean
+  awardedScoreUnits     Int?
+  isFullyCorrect        Boolean?
+  maxScoreUnits         Int?
+  questionExternalId    String?
+  examVersionQuestionId String
+  questionType          QuestionType?
+  response              Json?
+  attempt               Attempt              @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  examVersionQuestion   ExamVersionQuestion  @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+
+  @@unique([attemptId, examVersionQuestionId])
+  @@index([attemptId])
+  @@index([examVersionQuestionId])
+}
+
+model PracticeSession {
+  id                    String                @id @default(cuid())
+  userId                String
+  topicId               String
+  subtopicId            String?
+  requestedQuestionCount Int
+  selectedQuestionTypes QuestionType[]
+  selectionSeed         String
+  status                PracticeSessionStatus @default(in_progress)
+  startedAt             DateTime              @default(now())
+  submittedAt           DateTime?
+  scoreUnits            Int?
+  maxScoreUnits         Int?
+  fullyCorrectCount     Int?
+  totalQuestions        Int
+  unansweredCount       Int?
+  submitIdempotencyKey  String?               @unique
+  submissionFingerprint String?
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic                 Topic                 @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  subtopic              Subtopic?             @relation(fields: [subtopicId], references: [id], onDelete: Restrict)
+  questions             PracticeSessionQuestion[]
+
+  @@index([userId, status])
+  @@index([topicId, status])
+  @@index([subtopicId, status])
+}
+
+model PracticeSessionQuestion {
+  id                    String                 @id @default(cuid())
+  practiceSessionId     String
+  examVersionQuestionId String?
+  questionBankItemId    String?
+  order                 Int
+  practiceSession       PracticeSession        @relation(fields: [practiceSessionId], references: [id], onDelete: Cascade)
+  examVersionQuestion   ExamVersionQuestion?   @relation(fields: [examVersionQuestionId], references: [id], onDelete: Restrict)
+  questionBankItem      QuestionBankItem?      @relation(fields: [questionBankItemId], references: [id], onDelete: Restrict)
+  answer                PracticeSessionAnswer?
+
+  @@unique([practiceSessionId, order])
+  @@index([examVersionQuestionId])
+  @@index([questionBankItemId])
+}
+
+model QuestionBankImportBatch {
+  id                String             @id @default(cuid())
+  externalId        String             @unique
+  title             String
+  sourceName        String
+  sourceType        QuestionSourceType
+  sourceYear        Int?
+  sourceDocumentRef String
+  createdAt         DateTime           @default(now())
+  items             QuestionBankItem[]
+}
+
+model QuestionBankItem {
+  id                    String                 @id @default(cuid())
+  logicalKey            String
+  revision              Int
+  status                QuestionBankItemStatus @default(draft)
+  importBatchId         String
+  topicId               String
+  subtopicId            String
+  sourceQuestionRef     String?
+  assetSource           String?
+  provenanceFingerprint String
+  contentFingerprint    String
+  type                  QuestionType
+  section               Int
+  sourceOrder           Int
+  content               String
+  assets                Json?
+  choices               Json?
+  statements            Json?
+  answerKey             Json
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  importBatch           QuestionBankImportBatch @relation(fields: [importBatchId], references: [id], onDelete: Restrict)
+  topic                 Topic                  @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  subtopic              Subtopic               @relation(fields: [subtopicId], references: [id], onDelete: Restrict)
+  practiceSessionQuestions PracticeSessionQuestion[]
+
+  @@unique([logicalKey, revision])
+  @@index([topicId, status, type])
+  @@index([subtopicId, status, type])
+  @@index([provenanceFingerprint])
+  @@index([contentFingerprint])
+}
+
+model PracticeSessionAnswer {
+  id                       String                  @id @default(cuid())
+  practiceSessionQuestionId String                 @unique
+  response                 Json?
+  responseRevision         Int                     @default(0)
+  updatedAt                DateTime                @updatedAt
+  isFullyCorrect           Boolean?
+  awardedScoreUnits        Int?
+  maxScoreUnits            Int?
+  practiceSessionQuestion  PracticeSessionQuestion @relation(fields: [practiceSessionQuestionId], references: [id], onDelete: Cascade)
+}
+
+enum ExamDifficulty {
+  easy
+  medium
+  hard
+}
+
+enum QuestionType {
+  single_choice
+  true_false_group
+  short_answer
+}
+
+enum AttemptScoringPolicy {
+  vietnam_thpt_math_2025
+}
+
+enum PracticeSessionStatus {
+  in_progress
+  completed
+  cancelled
+}
+
+enum ExamTimingSessionStatus {
+  in_progress
+  submitted
+  expired
+}
+
+enum QuestionBankItemStatus {
+  draft
+  published
+  archived
+}
+
+enum QuestionSourceType {
+  official
+  mock
+  curated
+}
+
+enum ExamVersionStatus {
+  draft
+  published
+  archived
+}
+
+enum ExamPublishProfile {
+  official_full_exam
+  practice
+}
+
+enum AuthProvider {
+  google
+  password
+}

@@ -1,0 +1,357 @@
+BẮT ĐẦU BENCHMARK
+
+[sc_01] Đang xử lý: sc_01.png
+  ⚠️ 503 - retry 1/3
+  ⚠️ 503 - retry 2/3
+  API:       19433.03 ms
+  Total:     19460.33 ms
+  Structure: PASS ✓
+  Tokens: 3662
+
+[sc_02] Đang xử lý: sc_02.png
+  API:       7708.48 ms
+  Total:     7711.78 ms
+  Structure: PASS ✓
+  Tokens: 3707
+
+[sc_03] Đang xử lý: sc_03.png
+  ⚠️ 503 - retry 1/3
+  API:       11626.06 ms
+  Total:     11629.72 ms
+  Structure: PASS ✓
+  Tokens: 3736
+
+[sc_04] Đang xử lý: sc_04.png
+  ⚠️ 503 - retry 1/3
+  API:       9938.03 ms
+  Total:     9939.7 ms
+  Structure: PASS ✓
+  Tokens: 3635
+
+[sc_05] Đang xử lý: sc_05.png
+  API:       3847.88 ms
+  Total:     3851.99 ms
+  Structure: PASS ✓
+  Tokens: 3723
+
+🎉 HOÀN TẤT
+
+```json
+[
+    {
+        "id": "sc_01",
+        "ground_truth": {
+            "content": "Câu 4: Hàm số $y = f(x)$ xác định trên đoạn $[-1;6]$ và có đồ thị như hình vẽ. Hàm số đã cho nghịch biến trên khoảng nào sau đây?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$(-1; 2)$"
+                },
+                {
+                    "id": "b",
+                    "content": "$(0; 2)$"
+                },
+                {
+                    "id": "c",
+                    "content": "$(2; 6)$"
+                },
+                {
+                    "id": "d",
+                    "content": "$(-2; 0)$"
+                }
+            ]
+        },
+        "prediction": {
+            "content": "Câu 4. Hàm số $y = f(x)$ xác định trên đoạn $[-1; 6]$ và có đồ thị như hình vẽ. Hàm số đã cho nghịch biến trên khoảng nào sau đây?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$(-1; 2)$."
+                },
+                {
+                    "id": "b",
+                    "content": "$(0; 2)$."
+                },
+                {
+                    "id": "c",
+                    "content": "$(2; 6)$."
+                },
+                {
+                    "id": "d",
+                    "content": "$(-2; 0)$."
+                }
+            ],
+            "confidence_per_field": {
+                "content": 1.0,
+                "choices": 1.0
+            }
+        },
+        "raw_output": "{\n  \"content\": \"Câu 4. Hàm số $y = f(x)$ xác định trên đoạn $[-1; 6]$ và có đồ thị như hình vẽ. Hàm số đã cho nghịch biến trên khoảng nào sau đây?\",\n  \"choices\": [\n    {\n      \"id\": \"a\",\n      \"content\": \"$(-1; 2)$.\"\n    },\n    {\n      \"id\": \"b\",\n      \"content\": \"$(0; 2)$.\"\n    },\n    {\n      \"id\": \"c\",\n      \"content\": \"$(2; 6)$.\"\n    },\n    {\n      \"id\": \"d\",\n      \"content\": \"$(-2; 0)$.\"\n    }\n  ],\n\"confidence_per_field\": {\n    \"content\": 1.0,\n    \"choices\": 1.0\n  }\n}",
+        "structure_ok": true,
+        "latency_ms": 19460.33,
+        "timing": {
+            "load_ms": 14.04,
+            "chat_create_ms": 13.23,
+            "api_ms": 19433.03,
+            "parse_ms": 0.03
+        },
+        "token_usage": {
+            "input_tokens": 3177,
+            "output_tokens": 199,
+            "total_tokens": 3662
+        }
+    },
+    {
+        "id": "sc_02",
+        "ground_truth": {
+            "content": "Câu 5: Cho hàm số $y = x^3 + 3x^2 - 3x + 2$. Phương trình đường thẳng đi qua hai điểm cực trị của đồ thị hàm số là:",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$y = -4x + 11$"
+                },
+                {
+                    "id": "b",
+                    "content": "$y = 4x + 11$"
+                },
+                {
+                    "id": "c",
+                    "content": "$y = -4x + 3$"
+                },
+                {
+                    "id": "d",
+                    "content": "$y = -4x + 1$"
+                }
+            ]
+        },
+        "prediction": {
+            "content": "Câu 5. Cho hàm số $y=x^3+3x^2-3x+2$. Phương trình đường thẳng đi qua hai điểm cực trị của đồ thị hàm số là:",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$y=-4x+11$."
+                },
+                {
+                    "id": "b",
+                    "content": "$y=4x+11$."
+                },
+                {
+                    "id": "c",
+                    "content": "$y=-4x+3$."
+                },
+                {
+                    "id": "d",
+                    "content": "$y=-4x+1$."
+                }
+            ],
+            "confidence_per_field": {
+                "content": 1.0,
+                "choices": 1.0
+            }
+        },
+        "raw_output": "{\n  \"content\": \"Câu 5. Cho hàm số $y=x^3+3x^2-3x+2$. Phương trình đường thẳng đi qua hai điểm cực trị của đồ thị hàm số là:\",\n  \"choices\": [\n    {\n      \"id\": \"a\",\n      \"content\": \"$y=-4x+11$.\"\n    },\n    {\n      \"id\": \"b\",\n      \"content\": \"$y=4x+11$.\"\n    },\n    {\n     \"id\": \"c\",\n      \"content\": \"$y=-4x+3$.\"\n    },\n    {\n      \"id\": \"d\",\n      \"content\": \"$y=-4x+1$.\"\n    }\n  ],\n  \"confidence_per_field\": {\n    \"content\": 1.0,\n    \"choices\": 1.0\n  }\n}",
+        "structure_ok": true,
+        "latency_ms": 7711.78,
+        "timing": {
+            "load_ms": 2.8,
+            "chat_create_ms": 0.48,
+            "api_ms": 7708.48,
+            "parse_ms": 0.02
+        },
+        "token_usage": {
+            "input_tokens": 3154,
+            "output_tokens": 205,
+            "total_tokens": 3707
+        }
+    },
+    {
+        "id": "sc_03",
+        "ground_truth": {
+            "content": "Câu 6: Một chất điểm chuyển động trên trục tọa độ có phương trình chuyển động là $s(t) = \frac{1}{3}t^3 - 5t^2 + 24t$(trong đó $t$ tính bằng giây, $t \\ge 0$ và $s$ tính bằng mét). Khi đó, $v(t) = s'(t)$ là vận tốc của chất điểm. Trong khoảng thời gian nào (đơn vị giây) tính từ lúc bắt đầu chuyển động, vận tốc của chất điểm giảm?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$(0; 6)$."
+                },
+                {
+                    "id": "b",
+                    "content": "$(5; +\\infty)$."
+                },
+                {
+                    "id": "c",
+                    "content": "$(0; 5)$."
+                },
+                {
+                    "id": "d",
+                    "content": "$(4; 6)$."
+                }
+            ]
+        },
+        "prediction": {
+            "content": "Câu 6. Một chất điểm chuyển động trên trục tọa độ có phương trình chuyển động là\n$s(t) = \\dfrac{1}{3}t^3 - 5t^2 + 24t$ (trong đó $t$ tính bằng giây, $t \\ge 0$ và $s$ tính bằng mét). Khi đó, $v(t) = s'(t)$ là vận tốc của chất điểm. Trong khoảng thời gian nào (đơn vị giây) tính từ lúc bắt đầu chuyểnđộng, vận tốc của chất điểm giảm?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$(0; 6)$."
+                },
+                {
+                    "id": "b",
+                    "content": "$(5; +\\infty)$."
+                },
+                {
+                    "id": "c",
+                    "content": "$(0; 5)$."
+                },
+                {
+                    "id": "d",
+                    "content": "$(4; 6)$."
+                }
+            ],
+            "confidence_per_field": {
+                "content": 1.0,
+                "choices": 1.0
+            }
+        },
+        "raw_output": "{\n  \"content\": \"Câu 6. Một chất điểm chuyển động trên trục tọa độ có phương trình chuyển động là\\n$s(t) = \\\\dfrac{1}{3}t^3 - 5t^2 + 24t$ (trong đó $t$ tính bằng giây, $t \\\\ge 0$ và $s$ tính bằng mét). Khi đó, $v(t) = s'(t)$ là vận tốc của chất điểm. Trong khoảng thời gian nào (đơn vị giây) tính từ lúc bắt đầu chuyển động, vận tốc của chất điểm giảm?\",\n  \"choices\": [\n    {\n      \"id\": \"a\",\n      \"content\": \"$(0; 6)$.\"\n    },\n    {\n \"id\": \"b\",\n      \"content\": \"$(5; +\\\\infty)$.\"\n    },\n    {\n      \"id\": \"c\",\n      \"content\": \"$(0; 5)$.\"\n    },\n    {\n      \"id\": \"d\",\n      \"content\": \"$(4; 6)$.\"\n    }\n  ],\n  \"confidence_per_field\": {\n    \"content\": 1.0,\n    \"choices\": 1.0\n  }\n}",
+        "structure_ok": true,
+        "latency_ms": 11629.72,
+        "timing": {
+            "load_ms": 3.27,
+            "chat_create_ms": 0.38,
+            "api_ms": 11626.06,
+            "parse_ms": 0.01
+        },
+        "token_usage": {
+            "input_tokens": 3178,
+            "output_tokens": 275,
+            "total_tokens": 3736
+        }
+    },
+    {
+        "id": "sc_04",
+        "ground_truth": {
+            "content": "Câu 8. Cho hàm số $y = f(x)$ có đạo hàm $f'(x) = (x^2 - 9)(x^2 - 4x + 3)(x + 1)^2, \forall x \\in \\mathbb{R}$. Điểm cực đại của hàm số đãcho là:",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$x = -1$"
+                },
+                {
+                    "id": "b",
+                    "content": "$x = 3$"
+                },
+                {
+                    "id": "c",
+                    "content": "$x = 1$"
+                },
+                {
+                    "id": "d",
+                    "content": "$x = -3$"
+                }
+            ]
+        },
+        "prediction": {
+            "content": "Câu 8. Cho hàm số $y=f(x)$ có đạo hàm $f'(x)=(x^2-9)(x^2-4x+3)(x+1)^2, \\forall x \\in \\mathbb{R}$. Điểm cực đại của hàm số đã cho là:",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$x=-1$."
+                },
+                {
+                    "id": "b",
+                    "content": "$x=3$."
+                },
+                {
+                    "id": "c",
+                    "content": "$x=1$."
+                },
+                {
+                    "id": "d",
+                    "content": "$x=-3$."
+                }
+            ],
+            "confidence_per_field": {
+                "content": 1.0,
+                "choices": 1.0
+            }
+        },
+        "raw_output": "{\n  \"content\": \"Câu 8. Cho hàm số $y=f(x)$ có đạo hàm $f'(x)=(x^2-9)(x^2-4x+3)(x+1)^2, \\\\forall x \\\\in \\\\mathbb{R}$. Điểm cực đạicủa hàm số đã cho là:\",\n  \"choices\": [\n    {\n      \"id\": \"a\",\n      \"content\": \"$x=-1$.\"\n    },\n    {\n      \"id\": \"b\",\n      \"content\": \"$x=3$.\"\n    },\n    {\n      \"id\": \"c\",\n      \"content\": \"$x=1$.\"\n    },\n    {\n      \"id\": \"d\",\n      \"content\": \"$x=-3$.\"\n    }\n  ],\n  \"confidence_per_field\": {\n    \"content\": 1.0,\n    \"choices\": 1.0\n  }\n}",
+        "structure_ok": true,
+        "latency_ms": 9939.7,
+        "timing": {
+            "load_ms": 1.46,
+            "chat_create_ms": 0.18,
+            "api_ms": 9938.03,
+            "parse_ms": 0.03
+        },
+        "token_usage": {
+            "input_tokens": 3154,
+            "output_tokens": 214,
+            "total_tokens": 3635
+        }
+    },
+    {
+        "id": "sc_05",
+        "ground_truth": {
+            "content": "Câu 4. Cho hàm số $y = f(x)$ có đạo hàm liên tục trên $\\mathbb{R}$. Hình vẽ bên là đồ thị đạo hàm của nó. Hàm số $y = f(x)$ nghịch biến trên khoảng nào dưới đây?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$\\left(-1; \\dfrac{5}{2}\right).$"
+                },
+                {
+                    "id": "b",
+                    "content": "$\\left(\\dfrac{1}{2}; +\\infty\right).$"
+                },
+                {
+                    "id": "c",
+                    "content": " $\\left(\\dfrac{5}{2}; +\\infty\right).$"
+                },
+                {
+                    "id": "d",
+                    "content": "$(-\\infty; -1).$"
+                }
+            ]
+        },
+        "prediction": {
+            "content": "Câu 4. Cho hàm số $y=f(x)$ có đạo hàm liên tục trên $\\mathbb{R}$. Hình vẽ bên là đồ thị đạo hàm của nó. Hàm số $y=f(x)$ nghịch biến trên khoảng nào dưới đây?",
+            "choices": [
+                {
+                    "id": "a",
+                    "content": "$\\left(-1;\\dfrac{5}{2}\\right)$."
+                },
+                {
+                    "id": "b",
+                    "content": "$\\left(\\dfrac{1}{2};+\\infty\\right)$."
+                },
+                {
+                    "id": "c",
+                    "content": "$\\left(\\dfrac{5}{2};+\\infty\\right)$."
+                },
+                {
+                    "id": "d",
+                    "content": "$(-\\infty;-1)$."
+                }
+            ],
+            "confidence_per_field": {
+                "content": 1.0,
+                "choices": 1.0
+            }
+        },
+        "raw_output": "{\n  \"content\": \"Câu 4. Cho hàm số $y=f(x)$ có đạo hàm liên tục trên $\\\\mathbb{R}$. Hình vẽ bên là đồ thị đạo hàm của nó. Hàm số $y=f(x)$ nghịch biến trên khoảng nào dưới đây?\",\n  \"choices\": [\n    {\n      \"id\": \"a\",\n      \"content\": \"$\\\\left(-1;\\\\dfrac{5}{2}\\\\right)$.\"\n    },\n    {\n      \"id\": \"b\",\n      \"content\": \"$\\\\left(\\\\dfrac{1}{2};+\\\\infty\\\\right)$.\"\n    },\n    {\n      \"id\": \"c\",\n      \"content\": \"$\\\\left(\\\\dfrac{5}{2};+\\\\infty\\\\right)$.\"\n    },\n    {\n      \"id\": \"d\",\n      \"content\": \"$(-\\\\infty;-1)$.\"\n    }\n  ],\n  \"confidence_per_field\": {\n    \"content\": 1.0,\n    \"choices\": 1.0\n  }\n}",
+        "structure_ok": true,
+        "latency_ms": 3851.99,
+        "timing": {
+            "load_ms": 3.72,
+            "chat_create_ms": 0.38,
+            "api_ms": 3847.88,
+            "parse_ms": 0.01
+        },
+        "token_usage": {
+            "input_tokens": 3202,
+            "output_tokens": 238,
+            "total_tokens": 3723
+        }
+    }
+]
+```

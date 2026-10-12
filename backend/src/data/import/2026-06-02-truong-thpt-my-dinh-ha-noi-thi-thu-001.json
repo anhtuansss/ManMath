@@ -1,0 +1,782 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001",
+    "title": "Đề thi thử tốt nghiệp THPT 2026 môn Toán trường THPT Mỹ Đình – Hà Nội",
+    "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "Trường THPT Mỹ Đình – Hà Nội",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Lượng giác",
+        "slug": "luong-giac"
+      },
+      {
+        "name": "Chuyên đề học tập và Toán ứng dụng",
+        "slug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Quan hệ song song trong không gian",
+        "slug": "quan-he-song-song-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Phương trình đường thẳng",
+        "slug": "phuong-trinh-duong-thang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Tứ phân vị",
+        "slug": "tu-phan-vi",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Nguyên hàm cơ bản",
+        "slug": "nguyen-ham-co-ban",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Xác suất có điều kiện",
+        "slug": "xac-suat-co-dieu-kien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Cực trị của hàm số",
+        "slug": "cuc-tri-cua-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Cấp số nhân",
+        "slug": "cap-so-nhan",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Bất phương trình mũ và logarit",
+        "slug": "bat-phuong-trinh-mu-va-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Phương trình mặt cầu",
+        "slug": "phuong-trinh-mat-cau",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Phương trình lượng giác cơ bản",
+        "slug": "phuong-trinh-luong-giac-co-ban",
+        "topicSlug": "luong-giac"
+      },
+      {
+        "name": "Diện tích hình phẳng",
+        "slug": "dien-tich-hinh-phang",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Lũy thừa và biến đổi biểu thức",
+        "slug": "luy-thua-va-bien-doi-bieu-thuc",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Bài toán Oxyz tổng hợp và thực tế",
+        "slug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Bài toán tối ưu tuyến tính và bất phương trình",
+        "slug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+        "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung"
+      },
+      {
+        "name": "Thể tích vật thể và khối tròn xoay bằng tích phân",
+        "slug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Xác suất cổ điển",
+        "slug": "xac-suat-co-dien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Khoảng cách trong không gian",
+        "slug": "khoang-cach-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Cho lăng trụ tam giác $ABC.A'B'C'$. Gọi $D, E, F, P, Q$ lần lượt là trung điểm của các cạnh $CC', AB, A'A, BB', B'C'$. Khi đó, mặt phẳng $(DEF)$ song song với mặt phẳng nào dưới đây?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "quan-he-song-song-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/sc-01-lang-tru.png",
+          "alt": "Hình lăng trụ tam giác ABC.A'B'C' và mặt phẳng (DEF)"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(A'BQ)$."
+        },
+        {
+          "id": "b",
+          "content": "$(A'PQ)$."
+        },
+        {
+          "id": "c",
+          "content": "$(A'PC')$."
+        },
+        {
+          "id": "d",
+          "content": "$(A'BC')$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Trong không gian $Oxyz$, cho đường thẳng $d:\\frac{x+2}{3}=\\frac{y-1}{-1}=\\frac{z}{-4}$. Vectơ nào dưới đây là một vectơ chỉ phương của đường thẳng $d$?",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-duong-thang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\overrightarrow{u_{3}}=(-6;2;8)$."
+        },
+        {
+          "id": "b",
+          "content": "$\\overrightarrow{u_{2}}=(-2;1;0)$."
+        },
+        {
+          "id": "c",
+          "content": "$\\overrightarrow{u_{1}}=(3;1;4)$."
+        },
+        {
+          "id": "d",
+          "content": "$\\overrightarrow{u_{4}}=(2;1;0)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Khảo sát thời gian xem ti vi trong một ngày của một số học sinh khối 12 thu được mẫu số liệu ghép nhóm sau.Tứ phân vị thứ ba của mẫu số liệu ghép nhóm trên là",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "tu-phan-vi",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/sc-02-bang-so-lieu.png",
+          "alt": "Bảng số liệu"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$81$."
+        },
+        {
+          "id": "b",
+          "content": "$71$."
+        },
+        {
+          "id": "c",
+          "content": "$61$."
+        },
+        {
+          "id": "d",
+          "content": "$91$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Cho hàm số $f(x)=2x^{2}+\\cos x$. Khẳng định nào dưới đây đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "nguyen-ham-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\int f(x)dx=4x-\\sin x+C$."
+        },
+        {
+          "id": "b",
+          "content": "$\\int f(x)dx=\\frac{2}{3}x^{3}+\\sin x+C$."
+        },
+        {
+          "id": "c",
+          "content": "$\\int f(x)dx=\\frac{2}{3}x^{3}-\\sin x+C$."
+        },
+        {
+          "id": "d",
+          "content": "$\\int f(x)dx=4x+\\sin x+C$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Nếu hai biến cố $A, B$ thỏa mãn $P(B)=0,7; P(AB)=0,2$ thì $P(A|B)$ bằng:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dieu-kien",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\frac{5}{7}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\frac{2}{7}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\frac{7}{50}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{1}{2}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Cho hàm số $y=f(x)$ liên tục trên $\\mathbb{R}$ và có bảng biến thiên như sau. Giá trị cực đại của hàm số đã cho bằng",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "cuc-tri-cua-ham-so",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/sc-06-bang-bien-thien.png",
+          "alt": "Bảng biến thiên hàm số"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$-2$."
+        },
+        {
+          "id": "b",
+          "content": "$2$."
+        },
+        {
+          "id": "c",
+          "content": "$-1$."
+        },
+        {
+          "id": "d",
+          "content": "$1$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Cho cấp số nhân $(u_{n})$ có tất cả các số hạng đều dương. Biết rằng $u_{1}=3$ và $u_{3}=75$. Công bội của cấp số nhân đã cho là",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-nhan",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$5$."
+        },
+        {
+          "id": "b",
+          "content": "$\\frac{-1}{5}$."
+        },
+        {
+          "id": "c",
+          "content": "$-5$."
+        },
+        {
+          "id": "d",
+          "content": "$\\frac{1}{5}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Tập nghiệm của bất phương trình $\\log_{2}x>3$ là",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bat-phuong-trinh-mu-va-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$S=[9;+\\infty)$."
+        },
+        {
+          "id": "b",
+          "content": "$S=(8;+\\infty)$."
+        },
+        {
+          "id": "c",
+          "content": "$S=(-\\infty;8)$."
+        },
+        {
+          "id": "d",
+          "content": "$S=(0;8)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Trong không gian $Oxyz$, mặt cầu tâm $I(1;0;-3)$, bán kính $R=\\sqrt{10}$ có phương trình là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-cau",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(x-1)^{2}+y^{2}+(z+3)^{2}=40$."
+        },
+        {
+          "id": "b",
+          "content": "$(x-1)^{2}+y^{2}+(z+3)^{2}=10$."
+        },
+        {
+          "id": "c",
+          "content": "$(x+1)^{2}+y^{2}+(z-3)^{2}=10$."
+        },
+        {
+          "id": "d",
+          "content": "$(x-1)^{2}+y^{2}+(z+3)^{2}=\\sqrt{10}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Tập nghiệm của phương trình $\\tan x=1$ là",
+      "topicSlug": "luong-giac",
+      "subtopicSlug": "phuong-trinh-luong-giac-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$S=\\left\\{\\frac{\\pi}{2}+k2\\pi|k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "b",
+          "content": "$S=\\left\\{\\frac{\\pi}{4}+k\\pi|k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "c",
+          "content": "$S=\\left\\{\\frac{\\pi}{2}+k\\pi|k\\in\\mathbb{Z}\\right\\}$."
+        },
+        {
+          "id": "d",
+          "content": "$S=\\left\\{\\frac{\\pi}{4}+k2\\pi|k\\in\\mathbb{Z}\\right\\}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Diện tích phần gạch chéo trong hình bên bằng",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "dien-tich-hinh-phang",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/sc-11-do-thi-dien-tich.png",
+          "alt": "Hình phẳng giới hạn bởi đường cong y=3^x và các đường thẳng"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\int_{0}^{2}(3^{x}-3)dx \\text{ (đvdt)}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\int_{1}^{2}(3-3^{x})dx \\text{ (đvdt)}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\int_{1}^{2}(3^{x}-3)dx \\text{ (đvdt)}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\int_{1}^{2}3^{x}dx \\text{ (đvdt)}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Cho $a$ là số thực dương khác $1$. Khi đó $\\sqrt[4]{a^{\\frac{2}{3}}}$ bằng",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "luy-thua-va-bien-doi-bieu-thuc",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$a^{\\frac{3}{8}}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\sqrt[3]{a^{2}}$."
+        },
+        {
+          "id": "c",
+          "content": "$a^{\\frac{8}{3}}$."
+        },
+        {
+          "id": "d",
+          "content": "$a^{\\frac{1}{6}}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Cho hàm số $y=\\frac{2x-3}{x+1}$. Xét tính đúng – sai của các khẳng định sau:",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Hàm số có tập xác định $D=\\mathbb{R}\\setminus\\{-1\\}$."
+        },
+        {
+          "id": "b",
+          "content": "Đồ thị hàm số có đường tiệm cận đứng là đường thẳng $x=2$."
+        },
+        {
+          "id": "c",
+          "content": "Hàm số đồng biến trên khoảng $(-\\infty;-1)$."
+        },
+        {
+          "id": "d",
+          "content": "Đồ thị hàm số có tâm đối xứng nằm trên đường thẳng $d: x+2y-3=0$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Tại một hệ thống phân phối điện thoại di động, lợi nhuận biên (tính bằng triệu đồng/sản phẩm) của một dòng điện thoại thông minh được mô hình hóa bởi hàm số $P^{\\prime}(x)=-0,002x+4$. Trong đó, $P(x)$ là hàm tổng lợi nhuận (tính bằng triệu đồng) thu được khi bán ra $x$ sản phẩm $(x\\ge 0)$. Biết rằng lợi nhuận bằng $0$ khi chưa bán được sản phẩm nào. Xét tính đúng – sai của các khẳng định sau:",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Hàm tổng lợi nhuận khi bán được $x$ sản phẩm là $P(x)=-0,001x^{2}+4x$ (triệu đồng)."
+        },
+        {
+          "id": "b",
+          "content": "Tổng lợi nhuận thu được khi bán $500$ sản phẩm đầu tiên là $1750$ (triệu đồng)."
+        },
+        {
+          "id": "c",
+          "content": "Khi doanh số tăng từ $500$ lên $1000$ sản phẩm thì tổng lợi nhuận tăng thêm $1255$ (triệu đồng)."
+        },
+        {
+          "id": "d",
+          "content": "Biết mức tăng của tổng lợi nhuận khi doanh số tăng từ $500$, lên $n$ sản phẩm $(n\\in\\mathbb{N}, n>500)$ lớn hơn $1050$ (triệu đồng). Khi đó, giá trị nhỏ nhất của $n$ là $904$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": false,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Trong một trung tâm tiếng Anh, thống kê cho thấy tỷ lệ học sinh tại trung tâm sử dụng AI để làm bài tập về nhà kỹ năng viết là $10\\%$. Để đảm bảo tính công bằng, trung tâm áp dụng quy trình kiểm tra bài viết ở nhà của học sinh như sau:\nVòng 1. Quét phần mềm tự động – áp dụng cho $100\\%$ các bài nộp. Phần mềm này có độ nhạy (phát hiện đúng bài có dùng AI) là $80\\%$. Tuy nhiên, do đôi khi văn phong của học sinh vô tình giống văn mẫu, phần mềm có tỷ lệ báo nhầm một bài học sinh tự viết hoàn toàn thành \"Có dùng AI\" là $15\\%$.\nVòng 2. Trợ giảng lớp chấm trực tiếp, chỉ thực hiện trên những bài đã bị vòng 1 báo \"Có dùng AI\". Đây là bước kiểm tra sâu, nếu học sinh thực sự dùng AI, trợ giảng có khả năng phát hiện tuyệt đối $100\\%$. Tuy nhiên, do bị \"ám thị\" bởi cảnh báo của phần mềm, trợ giảng vẫn có xác suất $5\\%$ đánh giá nhầm một bài học sinh tự viết hoàn toàn thành \"Có dùng AI\".\nSau khi thực hiện quy trình kiểm tra, các bài viết được gắn nhãn \"Có dùng AI\" hoặc \"Tự viết hoàn toàn\". Chọn ngẫu nhiên một bài viết ở nhà của học sinh đã trải qua quy trình kiểm tra. Xét tính đúng – sai của các khẳng định sau:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Xác suất để bài viết đó bị phần mềm tự động ở vòng 1 báo \"Có dùng AI\" là $0,1$."
+        },
+        {
+          "id": "b",
+          "content": "Biết rằng bài viết đó được phần mềm tự động ở vòng 1 báo \"Tự viết hoàn toàn\", xác suất bài đó thực tế học sinh có sử dụng AI là $\\frac{4}{157}$."
+        },
+        {
+          "id": "c",
+          "content": "Xác suất để bài viết đó bị gắn nhãn \"Có dùng AI\" là $8,675\\%$."
+        },
+        {
+          "id": "d",
+          "content": "Biết rằng bài viết đó bị gắn nhãn \"Có dùng AI\", xác suất để bài đó thực sự do học sinh tự viết là $\\frac{27}{347}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": false,
+          "b": true,
+          "c": true,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Trong một bộ phim viễn tưởng, một bệnh viện sử dụng thiết bị bay không người lái (drone) để vận chuyển các hộp mẫu xét nghiệm. Mô hình bay của drone được thiết lập trong không gian với hệ tọa độ $Oxyz$ (đơn vị đo trên các trục tọa độ là mét), trong đó điểm xuất phát của drone trùng với gốc tọa độ $O$. Bề mặt ngoài của một tòa nhà được xem là một phần của mặt phẳng $(P)$ vuông góc với mặt phẳng $(Oxy)$ và đi qua hai điểm $C(20;40;0)$, $D(50;0;0)$. Drone bắt đầu bay từ $O$, đi theo một đường thẳng đến vị trí $A(10;20;100)$. Từ vị trí $A$, drone thay đổi hướng bay, di chuyển theo đường thẳng vuông góc với mặt phẳng $(P)$ và kết thúc hành trình tại vị trí giao hàng là điểm $B$ nằm trên mặt phẳng $(P)$. Xét tính đúng – sai của các khẳng định sau:",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "bai-toan-oxyz-tong-hop-va-thuc-te",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/tf-04-hinh-drone.png",
+          "alt": "Mô hình không gian đường bay của thiết bị không người lái"
+        }
+      ],
+      "statements": [
+        {
+          "id": "a",
+          "content": "Vectơ pháp tuyến của mặt phẳng $(P)$ có giá vuông góc với đường thẳng $CD$ và trục $Oz$."
+        },
+        {
+          "id": "b",
+          "content": "Đường thẳng $AB$ có một vectơ chỉ phương là $\\overrightarrow{u}=(4;3;0)$."
+        },
+        {
+          "id": "c",
+          "content": "Phương trình của mặt phẳng $(P)$ là $4x+3y+z-200=0$."
+        },
+        {
+          "id": "d",
+          "content": "Tổng quãng đường mà drone di chuyển từ điểm xuất phát đến điểm giao hàng (làm tròn đến hàng đơn vị) là $122$ mét."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Đối với ngành xử lý môi trường, việc kiểm soát nồng độ hóa chất độc hại tồn dư trong nguồn nước thải là một nhiệm vụ quan trọng. Khi nghiên cứu một phương pháp lọc nước mới, người ta nhận thấy nồng độ hóa chất độc hại $y(t)$ (đơn vị: $\\text{mg/lít}$) tồn dư trong bể nước thải của một nhà máy tại thời điểm $t$ ngày $(t\\ge 0)$ thỏa mãn $y(t)>0$ và $y^{\\prime}(t)=-k\\cdot y^{2}(t)$, trong đó $k$ là hằng số dương. Đo nồng độ hóa chất độc hại trong bể tại các thời điểm $t=1$ (ngày) và $t=3$ (ngày) nhận được kết quả lần lượt là $2\\text{ mg/lít}$ và $1\\text{ mg/lít}$. Cho biết $y(t)=\\frac{1}{g(t)}$ với mọi $t\\ge 0$. Theo tiêu chuẩn an toàn sinh thái, nhà máy được phép xả bể nước thải ra môi trường bên ngoài khi nồng độ hóa chất độc hại tồn dư trong bể nước thải giảm xuống mức $0,1\\text{ mg/lít}$ hoặc thấp hơn. Hỏi sau ít nhất bao nhiêu ngày kể từ lúc bắt đầu xử lý, bể nước thải đạt tiêu chuẩn để được phép xả thải ra môi trường bên ngoài?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "39"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Một xưởng may mặc sản xuất hai loại sản phẩm: áo khoác và quần bò. Một chiếc áo khoác cần 2 giờ để cắt vải và 1 giờ để may; một chiếc quần bò cần 1 giờ để cắt vải và 2 giờ để may. Bộ phận cắt vải có 5 nhân công, bộ phận may có 4 nhân công. Tất cả các nhân công đều làm việc không quá 8 giờ mỗi ngày. Thị trường luôn tiêu thụ hết sản phẩm của xưởng và lượng quần bò tiêu thụ không vượt quá 1,5 lần số lượng áo khoác. Biết rằng bán một chiếc áo khoác lãi 500 nghìn đồng, bán một chiếc quần bò lãi 400 nghìn đồng. Hỏi trong một ngày, xưởng may có thể thu được số tiền lãi lớn nhất là bao nhiêu triệu đồng?",
+      "topicSlug": "chuyen-de-hoc-tap-va-toan-ung-dung",
+      "subtopicSlug": "bai-toan-toi-uu-tuyen-tinh-va-bat-phuong-trinh",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "11,2"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Một chiếc đồng hồ cát nghệ thuật bằng thủy tinh có bầu chứa phía trên và bầu chứa phía dưới bằng nhau, bên trong chứa một chất lỏng đặc biệt. Khi bầu phía trên chứa đầy chất lỏng, thể tích chất lỏng bên trong đúng bằng thể tích của một khối tròn xoay sinh ra khi quay quanh trục $Ox$ hình phẳng giới hạn bởi đồ thị hàm số $y=2\\sqrt{x}$, trục hoành và hai đường thẳng $x=0$, $x=9$ (các đơn vị trên hệ trục tọa độ được tính bằng centimét, trục $Ox$ trùng với trục đối xứng dọc của đồng hồ). Phần cổ hẹp làm khuyết để thông nhau giữa bầu chứa phía trên và bầu chứa phía dưới coi như không đáng kể.\nBan đầu, phần bầu chứa phía trên chứa đầy chất lỏng. Khi bắt đầu tính giờ, chất lỏng chảy qua cổ hẹp xuống bầu chứa phía dưới với tốc độ (lưu lượng thể tích) không đổi trong suốt quá trình chảy. Người ta nhận thấy toàn bộ lượng chất lỏng chảy hết xuống bầu chứa phía dưới trong đúng 27 phút. Giả sử trong suốt quá trình chảy, bề mặt trên của chất lỏng luôn tạo thành một mặt phẳng nằm ngang.\nGọi $h \\text{ (cm)}$ là chiều cao của khối chất lỏng còn lại trong bầu chứa phía trên tại thời điểm $t \\text{ (phút)}$ $(0\\le h\\le 9$, tính từ cổ hẹp hướng lên trên dọc theo trục $Ox$). Hỏi sau bao nhiêu phút kể từ lúc bắt đầu chảy, chiều cao khối chất lỏng trong bầu chứa phía trên (tính từ cổ hẹp hướng lên trên dọc theo trục $Ox$) còn đúng 3 cm (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng đơn vị)?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "the-tich-vat-the-va-khoi-tron-xoay-bang-tich-phan",
+      "assets": [
+        {
+          "src": "/images/2026-06-02-truong-thpt-my-dinh-ha-noi-thi-thu-001/sa-03-dong-ho-cat.png",
+          "alt": "Mô hình đồng hồ cát và đồ thị hàm số y=2√x"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "24"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Trên bàn đang có 5 viên sỏi. Trong hộp kín có 10 tấm thẻ bề ngoài giống hệt nhau, gồm 5 tấm thẻ ghi số 1 và 5 tấm thẻ ghi số 2. Hai bạn Hải và Linh chơi một trò chơi với luật như sau:\n• Hai bạn luân phiên nhau bốc ngẫu nhiên 1 tấm thẻ từ hộp (bốc xong không trả lại). Hải là người bốc trước.\n• Số ghi trên tấm thẻ bốc được chính là số sỏi mà bạn đó bắt buộc phải lấy ra khỏi bàn.\nTrò chơi kết thúc khi xảy ra một trong hai tình huống:\n• Nếu một bạn lấy được viên sỏi cuối cùng trên bàn, bạn đó thắng trò chơi và bạn còn lại thua.\n• Nếu một bạn bốc phải tấm thẻ có số lớn hơn số sỏi còn lại trên bàn, bạn đó bị xử thua và bạn còn lại thắng trò chơi.\nXác suất để Hải thắng trò chơi có thể viết dưới dạng phân số tối giản là $\\frac{a}{b}$ với $a, b\\in\\mathbb{N}^{*}$. Tính giá trị của biểu thức $T=a+b$.",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "209"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Cho tập hợp $A=\\{x\\in\\mathbb{N}|1\\le x\\le 9\\}$ và tập hợp $B=\\{x\\in\\mathbb{N}|1\\le x\\le 8\\}$. Bạn Trang chọn ngẫu nhiên 3 số trong tập hợp A rồi ghép lại thành một số có ba chữ số sao cho ba chữ số trong số đó giảm dần từ trái sang phải. Bạn Ly chọn ngẫu nhiên 3 số trong tập hợp B rồi cũng ghép lại thành một số có ba chữ số sao cho ba chữ số trong số đó giảm dần từ trái sang phải. Tính xác suất để số mà Trang ghép được lớn hơn số mà Ly ghép được (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm).",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dien",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "0,66"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình thoi cạnh bằng 2, góc $\\widehat{BAD}=60^{\\circ}$. Gọi $O$ là giao điểm của hai đường chéo $AC$ và $BD$. Biết rằng hình chiếu vuông góc của đỉnh $S$ trên mặt phẳng $(ABCD)$ là trung điểm $H$ của đoạn thẳng $OB$ và $SH=\\sqrt{3}$. Tính khoảng cách giữa hai đường thẳng $SA$ và $BD$ (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm).",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "khoang-cach-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1,22"
+      }
+    }
+  ]
+}

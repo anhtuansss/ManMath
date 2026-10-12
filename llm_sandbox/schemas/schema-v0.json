@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "required": [
+    "content",
+    "choices",
+    "confidence_per_field"
+  ],
+  "properties": {
+    "content": {
+      "type": "string"
+    },
+    "choices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "content"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "confidence_per_field": {
+      "type": "object",
+      "required": [
+        "content",
+        "choices"
+      ],
+      "properties": {
+        "content": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "choices": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}

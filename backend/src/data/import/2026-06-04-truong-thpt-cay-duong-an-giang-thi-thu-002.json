@@ -1,0 +1,772 @@
+{
+  "schemaVersion": 2,
+  "publishProfile": "official_full_exam",
+  "exam": {
+    "id": "2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002",
+    "title": "Đề thi thử TN THPT 2026 môn Toán lần 2 trường THPT Cây Dương – An Giang",
+    "description": "Đề luyện tập do ManMath biên soạn theo cấu trúc THPT môn Toán.",
+    "durationMinutes": 90,
+    "subject": "Toán",
+    "difficulty": "hard",
+    "source": "Trường THPT Cây Dương – An Giang",
+    "year": 2026,
+    "statusLabel": "Draft"
+  },
+  "taxonomy": {
+    "topics": [
+      {
+        "name": "Lượng giác",
+        "slug": "luong-giac"
+      },
+      {
+        "name": "Lũy thừa, Mũ và Logarit",
+        "slug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Dãy số và Cấp số",
+        "slug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Đạo hàm và Khảo sát hàm số",
+        "slug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Nguyên hàm, Tích phân và Ứng dụng",
+        "slug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Vectơ và Phương pháp tọa độ trong không gian Oxyz",
+        "slug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Hình học không gian",
+        "slug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Thống kê",
+        "slug": "thong-ke"
+      },
+      {
+        "name": "Xác suất và Tổ hợp",
+        "slug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Khối tròn xoay",
+        "slug": "khoi-tron-xoay"
+      }
+    ],
+    "subtopics": [
+      {
+        "name": "Phương trình lượng giác cơ bản",
+        "slug": "phuong-trinh-luong-giac-co-ban",
+        "topicSlug": "luong-giac"
+      },
+      {
+        "name": "Bất phương trình mũ và logarit",
+        "slug": "bat-phuong-trinh-mu-va-logarit",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Cấp số cộng",
+        "slug": "cap-so-cong",
+        "topicSlug": "day-so-va-cap-so"
+      },
+      {
+        "name": "Khảo sát và nhận dạng đồ thị hàm số",
+        "slug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Tích phân và tính chất",
+        "slug": "tich-phan-va-tinh-chat",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Phương trình đường thẳng",
+        "slug": "phuong-trinh-duong-thang",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Vectơ trong không gian",
+        "slug": "vecto-trong-khong-gian",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Phương trình mặt cầu",
+        "slug": "phuong-trinh-mat-cau",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Số đặc trưng đo xu thế trung tâm",
+        "slug": "so-dac-trung-do-xu-the-trung-tam",
+        "topicSlug": "thong-ke"
+      },
+      {
+        "name": "Quan hệ vuông góc trong không gian",
+        "slug": "quan-he-vuong-goc-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      },
+      {
+        "name": "Hệ tọa độ Oxyz và tọa độ điểm",
+        "slug": "he-toa-do-oxyz-va-toa-do-diem",
+        "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz"
+      },
+      {
+        "name": "Xác suất có điều kiện",
+        "slug": "xac-suat-co-dieu-kien",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Ứng dụng đạo hàm và bài toán tối ưu",
+        "slug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+        "topicSlug": "dao-ham-va-khao-sat-ham-so"
+      },
+      {
+        "name": "Ứng dụng tích phân trong bài toán thực tế",
+        "slug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+        "topicSlug": "nguyen-ham-tich-phan-va-ung-dung"
+      },
+      {
+        "name": "Xác suất toàn phần và Bayes",
+        "slug": "xac-suat-toan-phan-va-bayes",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Mặt trụ và khối trụ",
+        "slug": "mat-tru-va-khoi-tru",
+        "topicSlug": "khoi-tron-xoay"
+      },
+      {
+        "name": "Bài toán thực tế lãi suất, tăng trưởng, phân rã",
+        "slug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+        "topicSlug": "luy-thua-mu-va-logarit"
+      },
+      {
+        "name": "Hoán vị, chỉnh hợp, tổ hợp",
+        "slug": "hoan-vi-chinh-hop-to-hop",
+        "topicSlug": "xac-suat-va-to-hop"
+      },
+      {
+        "name": "Khoảng cách trong không gian",
+        "slug": "khoang-cach-trong-khong-gian",
+        "topicSlug": "hinh-hoc-khong-gian"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "sc-01",
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Phương trình $\\cos x=\\cos\\frac{\\pi}{3}$ có tập nghiệm trên đoạn $[0;2\\pi]$ là",
+      "topicSlug": "luong-giac",
+      "subtopicSlug": "phuong-trinh-luong-giac-co-ban",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\left\\{\\frac{\\pi}{3};\\frac{2\\pi}{3}\\right\\}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\left\\{\\frac{\\pi}{3};\\frac{5\\pi}{3}\\right\\}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\left\\{\\frac{\\pi}{3};-\\frac{\\pi}{3}\\right\\}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\left\\{\\frac{\\pi}{3};\\frac{4\\pi}{3}\\right\\}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-02",
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Tập nghiệm của bất phương trình $\\log_{\\frac{1}{2}}(x)>-1$ là",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bat-phuong-trinh-mu-va-logarit",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(0;2)$."
+        },
+        {
+          "id": "b",
+          "content": "$(2;+\\infty)$."
+        },
+        {
+          "id": "c",
+          "content": "$(-\\infty;2)$."
+        },
+        {
+          "id": "d",
+          "content": "$(0;+\\infty)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-03",
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Cho cấp số cộng $(u_{n})$ có tổng $n$ số hạng đầu là $S_{n}=n^{2}+2n$. Số hạng $u_{5}$ bằng",
+      "topicSlug": "day-so-va-cap-so",
+      "subtopicSlug": "cap-so-cong",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$9$."
+        },
+        {
+          "id": "b",
+          "content": "$12$."
+        },
+        {
+          "id": "c",
+          "content": "$11$."
+        },
+        {
+          "id": "d",
+          "content": "$13$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-04",
+      "type": "single_choice",
+      "section": 1,
+      "order": 4,
+      "content": "Hàm số nào dưới đây có đồ thị như bên?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "khao-sat-va-nhan-dang-do-thi-ham-so",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sc-04-do-thi.png",
+          "alt": "Đồ thị hàm phân thức bậc nhất trên bậc nhất"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$y=-x^{3}-2x+1$."
+        },
+        {
+          "id": "b",
+          "content": "$y=\\frac{x+1}{x-2}$."
+        },
+        {
+          "id": "c",
+          "content": "$y=\\frac{-2x+4}{x-1}$."
+        },
+        {
+          "id": "d",
+          "content": "$y=x^{4}-x^{2}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-05",
+      "type": "single_choice",
+      "section": 1,
+      "order": 5,
+      "content": "Mệnh đề nào sau đây đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "tich-phan-va-tinh-chat",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\int_{a}^{b}f^{\\prime}(x)dx=f(x)|_{b}^{a}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\int_{a}^{b}f^{\\prime}(x)dx=f(x)|_{a}^{b}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\int_{a}^{b}f(x)dx=f^{\\prime}(x)|_{b}^{a}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\int_{a}^{b}f(x)dx=f^{\\prime}(x)|_{a}^{b}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-06",
+      "type": "single_choice",
+      "section": 1,
+      "order": 6,
+      "content": "Trong không gian $Oxyz$, cho đường thẳng $d: \\begin{cases}x=-4-2t\\\\ y=-1+3t\\\\ z=4-t\\end{cases}$. Điểm nào sau đây KHÔNG thuộc $d$?",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-duong-thang",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$A(2;-10;7)$."
+        },
+        {
+          "id": "b",
+          "content": "$B(-4;-1;5)$."
+        },
+        {
+          "id": "c",
+          "content": "$D(-12;11;0)$."
+        },
+        {
+          "id": "d",
+          "content": "$C(-4;-1;4)$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-07",
+      "type": "single_choice",
+      "section": 1,
+      "order": 7,
+      "content": "Cho hình hộp $ABCD.EFGH$. Mặt phẳng $(DAFG)$ nhận hai vectơ nào dưới đây làm cặp vectơ chỉ phương?",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "vecto-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sc-07-hinh-hop.png",
+          "alt": "Hình hộp ABCD.EFGH"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\overrightarrow{AG}$ và $\\overrightarrow{HE}$."
+        },
+        {
+          "id": "b",
+          "content": "$\\overrightarrow{AG}$ và $\\overrightarrow{GE}$."
+        },
+        {
+          "id": "c",
+          "content": "$\\overrightarrow{AF}$ và $\\overrightarrow{DG}$."
+        },
+        {
+          "id": "d",
+          "content": "$\\overrightarrow{EB}$ và $\\overrightarrow{HE}$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "sc-08",
+      "type": "single_choice",
+      "section": 1,
+      "order": 8,
+      "content": "Trong không gian $Oxyz$, mặt cầu $(S)$ có tâm $I(-4;6;1)$ và bán kính $R=9$ thì có phương trình là",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "phuong-trinh-mat-cau",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(x-4)^{2}+(y+6)^{2}+(z+1)^{2}=9$."
+        },
+        {
+          "id": "b",
+          "content": "$(x+4)^{2}+(y-6)^{2}+(z-1)^{2}=81$."
+        },
+        {
+          "id": "c",
+          "content": "$(x-4)^{2}+(y+6)^{2}+(z+1)^{2}=18$."
+        },
+        {
+          "id": "d",
+          "content": "$(x+4)^{2}+(y-6)^{2}+(z-1)^{2}=3$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-09",
+      "type": "single_choice",
+      "section": 1,
+      "order": 9,
+      "content": "Mẫu số liệu ghép nhóm được cho trong bảng sau. Mốt của mẫu số liệu ghép nhóm trên bằng",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "so-dac-trung-do-xu-the-trung-tam",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sc-9-bang-so-lieu.png",
+          "alt": "Hình lăng trụ đứng ABC.A'B'C'"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$35$."
+        },
+        {
+          "id": "b",
+          "content": "$32,5$."
+        },
+        {
+          "id": "c",
+          "content": "$33,3$."
+        },
+        {
+          "id": "d",
+          "content": "$8$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "sc-10",
+      "type": "single_choice",
+      "section": 1,
+      "order": 10,
+      "content": "Cho lăng trụ đứng $ABC.A^{\\prime}B^{\\prime}C^{\\prime}$ có đáy $ABC$ là tam giác vuông tại $B$. Mặt phẳng $(BCC^{\\prime}B^{\\prime})$ vuông góc với mặt phẳng nào dưới đây?",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "quan-he-vuong-goc-trong-khong-gian",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sc-10-lang-tru.png",
+          "alt": "Hình lăng trụ đứng ABC.A'B'C'"
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(ACC^{\\prime}A^{\\prime})$."
+        },
+        {
+          "id": "b",
+          "content": "$(A^{\\prime}BC)$."
+        },
+        {
+          "id": "c",
+          "content": "$(ABB^{\\prime}A^{\\prime})$."
+        },
+        {
+          "id": "d",
+          "content": "$(AB^{\\prime}C^{\\prime})$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "c"
+      }
+    },
+    {
+      "id": "sc-11",
+      "type": "single_choice",
+      "section": 1,
+      "order": 11,
+      "content": "Trong không gian $Oxyz$, cho hai điểm $A(1;2;-1)$ và $B(3;-1;5)$. Độ dài đoạn thẳng $AB$ bằng",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "he-toa-do-oxyz-va-toa-do-diem",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\sqrt{13}$."
+        },
+        {
+          "id": "b",
+          "content": "$49$."
+        },
+        {
+          "id": "c",
+          "content": "$\\sqrt{29}$."
+        },
+        {
+          "id": "d",
+          "content": "$7$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "sc-12",
+      "type": "single_choice",
+      "section": 1,
+      "order": 12,
+      "content": "Cho hai biến cố $A$ và $B$. Biết $P(A)=0,13$ và $P(B|A)=0,6$. Giá trị của $P(A\\overline{B})$ bằng",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-co-dieu-kien",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$0,78$."
+        },
+        {
+          "id": "b",
+          "content": "$0,078$."
+        },
+        {
+          "id": "c",
+          "content": "$0,278$."
+        },
+        {
+          "id": "d",
+          "content": "$0,46$."
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "tf-01",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 13,
+      "content": "Trong không gian $Oxyz$, cho hai vectơ $\\overrightarrow{a}=(4;-1;2)$ và $\\overrightarrow{b}=2\\overrightarrow{i}+4\\overrightarrow{k}$.",
+      "topicSlug": "vecto-va-phuong-phap-toa-do-trong-khong-gian-oxyz",
+      "subtopicSlug": "vecto-trong-khong-gian",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Tọa độ của vectơ $\\overrightarrow{b}$ là $\\overrightarrow{b}=(2;0;4)$."
+        },
+        {
+          "id": "b",
+          "content": "Tích vô hướng $\\overrightarrow{a}\\cdot\\overrightarrow{b}=4$."
+        },
+        {
+          "id": "c",
+          "content": "Độ dài các vectơ lần lượt là $|\\overrightarrow{a}|=\\sqrt{19}$ và $|\\overrightarrow{b}|=2\\sqrt{5}$."
+        },
+        {
+          "id": "d",
+          "content": "Góc giữa hai vectơ $\\overrightarrow{a}$ và $\\overrightarrow{b}$ bằng $78^{\\circ}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-02",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 14,
+      "content": "Một hộ làm nghề thủ công sản xuất mỗi ngày được $x$ mét vải lụa $(1\\le x\\le 21)$. Tổng chi phí sản xuất $x$ mét vải lụa (tính bằng nghìn đồng), được cho bởi hàm chi phí $C(x)=x^{3}-3x^{2}-25x+548$. Giả sử hộ làm nghề này bán hết sản phẩm mỗi ngày với giá $272$ nghìn đồng/1 mét vải lụa. Gọi $B(x)$ là số tiền bán được và $L(x)$ là lợi nhuận thu được khi bán $x$ mét vải lụa. Các khẳng định sau là đúng hay sai?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Biểu thức tính $B(x)$ theo $x$ là $B(x)=272x$ (nghìn đồng)."
+        },
+        {
+          "id": "b",
+          "content": "Biểu thức tính $L(x)$ theo $x$ là $L(x)=-x^{3}+3x^{2}+297x+548$ (nghìn đồng)."
+        },
+        {
+          "id": "c",
+          "content": "Nếu hộ làm nghề này sản xuất trên $11$ mét vải lụa mỗi ngày thì lợi nhuận thu được sẽ giảm."
+        },
+        {
+          "id": "d",
+          "content": "Lợi nhuận tối đa của hộ làm nghề này có thể đạt được là $1,7$ triệu đồng."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "tf-03",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 15,
+      "content": "Tuyến Metro số 1 đầu tiên của Thành phố Hồ Chí Minh có lộ trình từ Bến Thành đến Suối Tiên. Biết rằng tàu khởi hành không vận tốc đầu từ Bến Thành vào lúc 8 giờ 00 phút sáng và hành trình bao gồm hai giai đoạn:\n• Giai đoạn 1: Tàu chạy từ điểm xuất phát với gia tốc không đổi $a_{1}=0,06\\text{ km/phút}^{2}$.\n• Giai đoạn 2: Tàu giảm tốc (phanh) khi gần đến nơi với gia tốc không đổi $a_{2}=-0,3\\text{ km/phút}^{2}$.\nCho biết tàu đến nơi lúc 8 giờ 24 phút.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "ung-dung-tich-phan-trong-bai-toan-thuc-te",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Tổng thời gian mà con tàu Metro đi từ Bến Thành đến Suối Tiên là $24$ phút."
+        },
+        {
+          "id": "b",
+          "content": "Thời gian tàu tăng tốc (giai đoạn 1) là $18$ phút."
+        },
+        {
+          "id": "c",
+          "content": "Vận tốc lớn nhất mà tàu đạt được là $1,1\\text{ km/phút}$."
+        },
+        {
+          "id": "d",
+          "content": "Tổng quãng đường mà con tàu Metro đi có độ dài nhỏ hơn $15\\text{ km}$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "tf-04",
+      "type": "true_false_group",
+      "section": 2,
+      "order": 16,
+      "content": "Lớp 12A1 có $50$ học sinh. Chuẩn bị cho kỳ thi tốt nghiệp THPT sắp tới, có $30$ bạn trong lớp chăm chỉ ôn tập. Trước kỳ thi, giáo viên chủ nhiệm khảo sát ngẫu nhiên một bạn trong lớp. Qua khảo sát, tỉ lệ tự tin trong số những bạn chăm chỉ ôn tập là $90\\%$ và tỉ lệ tự tin trong số những bạn không chăm chỉ ôn tập là $15\\%$. Xét tính đúng sai của các khẳng định sau:",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Có $40\\%$ học sinh trong lớp đã không chăm chỉ ôn tập."
+        },
+        {
+          "id": "b",
+          "content": "Có $27$ học sinh đã chăm chỉ ôn tập và tự tin trước kỳ thi."
+        },
+        {
+          "id": "c",
+          "content": "Có $5$ học sinh đã không chăm chỉ ôn tập mà vẫn tự tin trước kỳ thi."
+        },
+        {
+          "id": "d",
+          "content": "Trong số những bạn tự tin trước kỳ thi, xác suất chọn được một bạn không chăm chỉ ôn tập là $10\\%$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": true,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "sa-01",
+      "type": "short_answer",
+      "section": 3,
+      "order": 17,
+      "content": "Một bể chứa nhiên liệu hình trụ đặt nằm ngang có chiều dài $L=6\\text{ m}$ và bán kính đáy $R=2\\text{ m}$. Hiện tại, mực nhiên liệu trong bể đo được có chiều cao $h=3\\text{ m}$ (tính từ điểm thấp nhất của đáy bể). Tính thể tích phần nhiên liệu hiện có trong bể (đơn vị: $\\text{m}^{3}$, làm tròn đến hàng phần mười).",
+      "topicSlug": "khoi-tron-xoay",
+      "subtopicSlug": "mat-tru-va-khoi-tru",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sa-01-hinh-tru.png",
+          "alt": "Hình mô tả bể chứa nhiên liệu hình trụ nằm ngang"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "60,7"
+      }
+    },
+    {
+      "id": "sa-02",
+      "type": "short_answer",
+      "section": 3,
+      "order": 18,
+      "content": "Một bệnh viện có $15$ máy xét nghiệm tự động. Mỗi máy xét nghiệm được $20$ mẫu trong 1 giờ. Chi phí bảo dưỡng và khử khuẩn mỗi máy cho một ca trực là $58$ nghìn đồng. Chi phí thuê kỹ thuật viên giám sát là $290$ nghìn đồng/giờ. Trong ngày bệnh viện nhận $400$ mẫu xét nghiệm. Hỏi chi phí là ít nhất là bao nhiêu nghìn đồng?",
+      "topicSlug": "dao-ham-va-khao-sat-ham-so",
+      "subtopicSlug": "ung-dung-dao-ham-va-bai-toan-toi-uu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "1160"
+      }
+    },
+    {
+      "id": "sa-03",
+      "type": "short_answer",
+      "section": 3,
+      "order": 19,
+      "content": "Hai bạn Nam và Việt tham gia một trò chơi với một hộp chứa $6$ thẻ số từ $1$ đến $6$. Trò chơi diễn ra như sau:\n• Bước 1: Nam lấy ngẫu nhiên $1$ tấm thẻ, xem số rồi bỏ lại vào hộp. Nếu Nam lấy được số nguyên tố, Nam cho thêm vào hộp $2$ tấm thẻ số $7$ và $8$. Nếu lấy được số không phải số nguyên tố, Nam cho thêm vào hộp $3$ tấm thẻ số $7, 8$ và $9$.\n• Bước 2: Việt lấy ngẫu nhiên đồng thời $3$ tấm thẻ từ hộp.\nViệt thắng cuộc nếu $3$ tấm thẻ lấy ra lập thành một cấp số cộng. Tính xác suất để Việt thắng cuộc (làm tròn kết quả đến hàng phần mười).",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "xac-suat-toan-phan-va-bayes",
+      "assets": [
+        {
+          "src": "/images/2026-06-04-truong-thpt-cay-duong-an-giang-thi-thu-002/sa-03-hop-the.png",
+          "alt": "Hình hộp thẻ chứa các số từ 1 đến 6 và các thẻ thêm vào"
+        }
+      ],
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "0,2"
+      }
+    },
+    {
+      "id": "sa-04",
+      "type": "short_answer",
+      "section": 3,
+      "order": 20,
+      "content": "Đầu năm cô Mai vay ngân hàng $385,4$ triệu đồng để mua cổ phiếu VCB với giá $82000$ đồng một cổ phiếu. Lãi suất vay là $9,5\\%/\\text{năm}$. Cô mai lên kế hoạch đầu năm sau sẽ bán toàn bộ cổ phiếu và lấy tiền trả nợ ngân hàng. Biết rằng vào đầu năm sau, mỗi cổ phiếu VCB có giá là $94000$ đồng. Số tiền cô Mai còn lại sau khi trả nợ ngân hàng là bao nhiêu triệu đồng? (Làm tròn kết quả đến hàng phần chục).",
+      "topicSlug": "luy-thua-mu-va-logarit",
+      "subtopicSlug": "bai-toan-thuc-te-lai-suat-tang-truong-phan-ra",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "19,8"
+      }
+    },
+    {
+      "id": "sa-05",
+      "type": "short_answer",
+      "section": 3,
+      "order": 21,
+      "content": "Một tổ chức thiện nguyện vận chuyển $22$ tấn gạo cứu trợ đến $4$ xã bị ngập lụt. Để đảm bảo hỗ trợ kịp thời theo mức độ thiệt hại của từng địa phương, xã thứ nhất cần ít nhất $8$ tấn, xã thứ hai cần ít nhất $5$ tấn, xã thứ ba cần ít nhất $3$ tấn và xã thứ tư cần ít nhất $2$ tấn. Biết rằng gạo được phân phối theo đơn vị từng tấn, hỏi có bao nhiêu phương án phân phối số gạo này cho $4$ xã?",
+      "topicSlug": "xac-suat-va-to-hop",
+      "subtopicSlug": "hoan-vi-chinh-hop-to-hop",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "35"
+      }
+    },
+    {
+      "id": "sa-06",
+      "type": "short_answer",
+      "section": 3,
+      "order": 22,
+      "content": "Cho hình chóp $S.ABC$ có đáy $ABC$ là tam giác đều cạnh $\\sqrt{21}$. Tam giác $SAB$ vuông cân tại $S$ và nằm trong mặt phẳng vuông góc với đáy. Tính khoảng cách từ điểm $A$ đến mặt phẳng $(SBC)$.",
+      "topicSlug": "hinh-hoc-khong-gian",
+      "subtopicSlug": "khoang-cach-trong-khong-gian",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "3"
+      }
+    }
+  ]
+}

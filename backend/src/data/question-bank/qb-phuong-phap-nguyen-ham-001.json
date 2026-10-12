@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-phuong-phap-nguyen-ham-001",
+  "title": "Phương pháp tính nguyên hàm",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-phuong-phap-nguyen-ham-001"
+  },
+  "taxonomy": {
+    "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+    "subtopicSlug": "phuong-phap-tinh-nguyen-ham"
+  },
+  "questions": [
+    {
+      "id": "qb-phuong-phap-nguyen-ham-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Họ tất cả các nguyên hàm của hàm số $f(x) = 2x(x^2+1)^4$ là:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-nguyen-ham",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$\\dfrac{1}{5}(x^2+1)^5 + C$"
+        },
+        {
+          "id": "b",
+          "content": "$5(x^2+1)^5 + C$"
+        },
+        {
+          "id": "c",
+          "content": "$\\dfrac{1}{5}(x^2+1)^4 + C$"
+        },
+        {
+          "id": "d",
+          "content": "$\\dfrac{1}{4}(x^2+1)^5 + C$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-nguyen-ham-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Sử dụng phương pháp tích phân từng phần, họ tất cả các nguyên hàm của hàm số $f(x) = (2x+1)e^x$ là:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-nguyen-ham",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$(2x-1)e^x + C$"
+        },
+        {
+          "id": "b",
+          "content": "$(2x+1)e^x + C$"
+        },
+        {
+          "id": "c",
+          "content": "$(2x+3)e^x + C$"
+        },
+        {
+          "id": "d",
+          "content": "$2e^x + C$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-nguyen-ham-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Biết $\\int \\sin^3 x \\cos^2 x dx = a \\cos^5 x + b \\cos^3 x + C$. Mệnh đề nào dưới đây đúng?",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-nguyen-ham",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$a = \\dfrac{1}{5}, b = -\\dfrac{1}{3}$"
+        },
+        {
+          "id": "b",
+          "content": "$a = -\\dfrac{1}{5}, b = \\dfrac{1}{3}$"
+        },
+        {
+          "id": "c",
+          "content": "$a = \\dfrac{1}{5}, b = \\dfrac{1}{3}$"
+        },
+        {
+          "id": "d",
+          "content": "$a = -\\dfrac{1}{5}, b = -\\dfrac{1}{3}$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "a"
+      }
+    },
+    {
+      "id": "qb-phuong-phap-nguyen-ham-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Cho hàm số $f(x) = \\dfrac{x}{x^2+1}$. Xét tính đúng sai của các mệnh đề sau:",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-nguyen-ham",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Phép đổi biến $u = x^2+1$ giúp đưa việc tìm nguyên hàm của $f(x)$ về dạng $\\int \\dfrac{1}{2u} du$."
+        },
+        {
+          "id": "b",
+          "content": "Một nguyên hàm của hàm số $f(x)$ là $F(x) = \\ln(x^2+1) - 5$."
+        },
+        {
+          "id": "c",
+          "content": "Hàm số $f(x)$ có một nguyên hàm là $G(x) = \\dfrac{1}{2}\\ln(x^2+1) + 2026$."
+        },
+        {
+          "id": "d",
+          "content": "Họ nguyên hàm của hàm số $h(x) = f(x) \\cdot e^x$ là $\\dfrac{1}{2} e^x \\ln(x^2+1) + C$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": true,
+          "d": false
+        }
+      }
+    },
+    {
+      "id": "qb-phuong-phap-nguyen-ham-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Biết $\\int \\dfrac{3x-1}{x^2-3x+2} dx = a\\ln|x-1| + b\\ln|x-2| + C$ với $a, b$ là các số nguyên. Tính giá trị biểu thức $S = a^2 + b^2$.",
+      "topicSlug": "nguyen-ham-tich-phan-va-ung-dung",
+      "subtopicSlug": "phuong-phap-tinh-nguyen-ham",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "29"
+      }
+    }
+  ]
+}

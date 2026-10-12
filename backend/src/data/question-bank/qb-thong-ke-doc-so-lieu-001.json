@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "qb-thong-ke-doc-so-lieu-001",
+  "title": "Đọc, phân tích và kết luận từ số liệu",
+  "source": {
+    "name": "ManMath Curated Question Bank",
+    "type": "curated",
+    "year": 2026,
+    "documentRef": "qb-thong-ke-doc-so-lieu-001"
+  },
+  "taxonomy": {
+    "topicSlug": "thong-ke",
+    "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu"
+  },
+  "questions": [
+    {
+      "id": "qb-thong-ke-doc-so-lieu-001-q01",
+      "sourceQuestionRef": "ManMath curated q01",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 1,
+      "content": "Bảng tần số sau đây thống kê điểm kiểm tra môn Toán của 40 học sinh trong một lớp:\n\nĐiểm: 5 | 6 | 7 | 8 | 9 | 10\nTần số: 2 | 5 | 12 | 10 | 8 | 3\n\nCó bao nhiêu học sinh đạt điểm từ 8 trở lên?",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$10$"
+        },
+        {
+          "id": "b",
+          "content": "$21$"
+        },
+        {
+          "id": "c",
+          "content": "$11$"
+        },
+        {
+          "id": "d",
+          "content": "$8$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-thong-ke-doc-so-lieu-001-q02",
+      "sourceQuestionRef": "ManMath curated q02",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 2,
+      "content": "Một cửa hàng thống kê số lượng áo sơ mi nam bán được trong một tuần theo cỡ (size) như sau:\n\nCỡ áo: 38 | 39 | 40 | 41\nSố lượng bán: 10 | 15 | 20 | 5\n\nCỡ áo trung bình của các sản phẩm đã bán ra là bao nhiêu?",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$39,5$"
+        },
+        {
+          "id": "b",
+          "content": "$39$"
+        },
+        {
+          "id": "c",
+          "content": "$40$"
+        },
+        {
+          "id": "d",
+          "content": "$39,4$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "d"
+      }
+    },
+    {
+      "id": "qb-thong-ke-doc-so-lieu-001-q03",
+      "sourceQuestionRef": "ManMath curated q03",
+      "assetSource": null,
+      "type": "single_choice",
+      "section": 1,
+      "order": 3,
+      "content": "Tiền lương (triệu đồng/tháng) của các nhân viên trong một phòng ban được thống kê lại:\n\nMức lương: 5 | 7 | 8 | 10\nSố nhân viên: 4 | $x$ | 5 | 2\n\nBiết rằng mức lương trung bình của phòng ban này là $7,2$ triệu đồng/tháng. Giá trị của $x$ là:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu",
+      "choices": [
+        {
+          "id": "a",
+          "content": "$3$"
+        },
+        {
+          "id": "b",
+          "content": "$4$"
+        },
+        {
+          "id": "c",
+          "content": "$5$"
+        },
+        {
+          "id": "d",
+          "content": "$6$"
+        }
+      ],
+      "answerKey": {
+        "correctChoiceId": "b"
+      }
+    },
+    {
+      "id": "qb-thong-ke-doc-so-lieu-001-q04",
+      "sourceQuestionRef": "ManMath curated q04",
+      "assetSource": null,
+      "type": "true_false_group",
+      "section": 2,
+      "order": 4,
+      "content": "Khảo sát về môn thể thao yêu thích nhất của 50 học sinh lớp 12A cho kết quả như sau: 20 học sinh thích Bóng đá, 12 học sinh thích Cầu lông, 8 học sinh thích Bóng bàn và 10 học sinh thích Bơi lội. Xét tính đúng sai của các mệnh đề sau:",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu",
+      "statements": [
+        {
+          "id": "a",
+          "content": "Tỉ lệ học sinh thích Bóng đá chiếm $40\\%$ tổng số học sinh được khảo sát."
+        },
+        {
+          "id": "b",
+          "content": "Số học sinh thích Cầu lông và Bóng bàn chiếm đúng một nửa tổng số học sinh của lớp."
+        },
+        {
+          "id": "c",
+          "content": "Mốt của dấu hiệu (môn thể thao yêu thích) trong mẫu số liệu này là 20."
+        },
+        {
+          "id": "d",
+          "content": "Nếu chọn ngẫu nhiên một học sinh từ nhóm khảo sát, xác suất để học sinh đó chọn môn Bơi lội là $0,2$."
+        }
+      ],
+      "answerKey": {
+        "values": {
+          "a": true,
+          "b": false,
+          "c": false,
+          "d": true
+        }
+      }
+    },
+    {
+      "id": "qb-thong-ke-doc-so-lieu-001-q05",
+      "sourceQuestionRef": "ManMath curated q05",
+      "assetSource": null,
+      "type": "short_answer",
+      "section": 3,
+      "order": 5,
+      "content": "Cho mẫu số liệu thống kê doanh số bán hàng gồm 10 giá trị quan sát: $5, 7, 8, 5, 6, 8, 9, 7, x, y$ (trong đó $x, y$ là các số nguyên dương). Biết số trung bình của mẫu số liệu bằng $7,1$ và mốt của mẫu số liệu là duy nhất (nghĩa là chỉ có một giá trị xuất hiện với tần số lớn nhất) và bằng $8$. Tính giá trị của biểu thức $P = x^2 + y^2$.",
+      "topicSlug": "thong-ke",
+      "subtopicSlug": "doc-phan-tich-va-ket-luan-tu-so-lieu",
+      "answerKey": {
+        "mode": "numeric",
+        "answer": "128"
+      }
+    }
+  ]
+}
