@@ -12,6 +12,12 @@
       "sourceType": "github",
       "skillPath": "skills/redesign-skill/SKILL.md",
       "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+    },
+    "ui-ux": {
+      "source": "evondev/evondevKit",
+      "sourceType": "github",
+      "skillPath": "skills/ui-ux/SKILL.md",
+      "computedHash": "6768a3fd4131eded2d153c5bb820a095ac7bef6b999302d66272360282101cb5"
     }
   }
 }

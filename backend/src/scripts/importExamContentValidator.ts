@@ -57,68 +57,68 @@ export class ExamContentImportValidationError extends Error {
 
 const TAXONOMY_SLUG_PATTERN = /^[a-z0-9-]+$/;
 
-export function validateExamContentImportPayload(
-  rawValue: unknown,
-): ExamContentImportEnvelope {
-    const issues: string[] = [];
+    export function validateExamContentImportPayload(
+    rawValue: unknown,
+    ): ExamContentImportEnvelope {
+        const issues: string[] = [];
 
-    if(!isRecord(rawValue)) {
-        throw new ExamContentImportValidationError([
-            'root must be an object',
-        ]);
+        if(!isRecord(rawValue)) {
+            throw new ExamContentImportValidationError([
+                'root must be an object',
+            ]);
+        }
+
+        if (rawValue.schemaVersion !== 2) {
+            issues.push('schemaVersion must be 2');
+        }
+
+        const exam = normalizeExamMetadata(
+            rawValue.exam,
+            'exam',
+            issues,
+        );
+
+        const taxonomy = normalizeTaxonomy(
+            rawValue.taxonomy,
+            'taxonomy',
+            issues,
+        );
+
+        const questions = normalizeQuestions(
+            rawValue.questions,
+            'questions',
+            issues,
+        );
+        const publishProfile = normalizePublishProfile(rawValue.publishProfile, issues);
+
+        if (
+            issues.length > 0 ||
+            exam === null || 
+            taxonomy === null || 
+            questions === null 
+        ) {
+            throw new ExamContentImportValidationError(issues);
+        }
+
+        validateTaxonomyReferences(
+            taxonomy,
+            questions,
+            issues,
+        );
+        validateCanonicalTaxonomy(taxonomy, questions, issues);
+
+        if (issues.length > 0) {
+            throw new ExamContentImportValidationError(issues);
+        }
+
+        return {
+            schemaVersion: 2,
+            publishProfile,
+            exam,
+            taxonomy,
+            questions,
+        };
     }
-
-    if (rawValue.schemaVersion !== 2) {
-        issues.push('schemaVersion must be 2');
-    }
-
-    const exam = normalizeExamMetadata(
-        rawValue.exam,
-        'exam',
-        issues,
-    );
-
-    const taxonomy = normalizeTaxonomy(
-        rawValue.taxonomy,
-        'taxonomy',
-        issues,
-    );
-
-    const questions = normalizeQuestions(
-        rawValue.questions,
-        'questions',
-        issues,
-    );
-    const publishProfile = normalizePublishProfile(rawValue.publishProfile, issues);
-
-    if (
-        issues.length > 0 ||
-        exam === null || 
-        taxonomy === null || 
-        questions === null 
-    ) {
-        throw new ExamContentImportValidationError(issues);
-    }
-
-    validateTaxonomyReferences(
-        taxonomy,
-        questions,
-        issues,
-    );
-    validateCanonicalTaxonomy(taxonomy, questions, issues);
-
-    if (issues.length > 0) {
-        throw new ExamContentImportValidationError(issues);
-    }
-
-    return {
-        schemaVersion: 2,
-        publishProfile,
-        exam,
-        taxonomy,
-        questions,
-    };
-}
 
 function readRequiredString(
     value: unknown,
