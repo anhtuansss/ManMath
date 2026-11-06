@@ -11,8 +11,9 @@ from dotenv import load_dotenv
 # Project paths
 # =========================
 
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SRC_DIR)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.dirname(CURRENT_DIR)
+OUTPUT_FILE = os.path.join(CURRENT_DIR, "benchmark_results.json")
 
 DATASET_DIR = os.path.join(
     PROJECT_DIR,
@@ -216,14 +217,27 @@ def run_model(sample, client):
         )
         return None
 
+def save_benchmark_results(results):
+    output_path = os.path.join(
+        CURRENT_DIR,
+        "benchmark_results.json"
+    )
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(
+            results,
+            f,
+            ensure_ascii=False,
+            indent=2
+        )
+
+    print(f"\n✅ Benchmark results saved to: {output_path}")
+
 all_results = []
 
 print("\n🚀 BẮT ĐẦU BENCHMARK\n")\
 
-complete_id = {"sc_02", "sc_03", "sc_04"}
-
 for sample in data["sample"]:
-    if sample["id"] in complete_id: continue
     result = run_model(
         sample,
         client
@@ -234,10 +248,4 @@ for sample in data["sample"]:
 
 print("\n🎉 HOÀN TẤT\n")
 
-print(
-    json.dumps(
-        all_results,
-        indent=4,
-        ensure_ascii=False
-    )
-)
+save_benchmark_results(all_results)
