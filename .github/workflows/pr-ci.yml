@@ -35,6 +35,8 @@ jobs:
         GOOGLE_CLIENT_ID: ci-test-client-id
         JWT_SECRET: ci-test-only-secret
         DATABASE_URL: postgresql://test-only:test-only@localhost:5432/manmath_verify?schema=public
+        NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:5000
+        CORS_ORIGIN: http://127.0.0.1:3000
 
     steps:
       - name: Checkout code
