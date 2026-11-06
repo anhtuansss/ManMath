@@ -39,16 +39,23 @@ export const isDraftPreviewAuthorizedEmail = (email: string): boolean => {
   return authorizedEmails.has(normalizeEmailForComparison(email));
 };
 
+// 1. Đọc origins được cấu hình tường minh qua env (hỗ trợ phân tách bằng dấu phẩy)
 const rawCorsOrigins = (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN)?.trim();
 export const CORS_ORIGINS = rawCorsOrigins
   ? rawCorsOrigins.split(',').map((origin) => origin.trim()).filter(Boolean)
   : [];
 
+// 2. Localhost CHỈ được cho phép khi KHÔNG PHẢI môi trường production
+const DEVELOPMENT_LOCAL_ORIGINS = process.env.NODE_ENV !== 'production'
+  ? ['http://localhost:3000', 'http://127.0.0.1:3000']
+  : [];
+
 const STATIC_ALLOWED_ORIGINS = new Set([
-  'https://man-math-six.vercel.app',
   ...CORS_ORIGINS,
+  ...DEVELOPMENT_LOCAL_ORIGINS,
 ]);
 
+// 3. Regex hỗ trợ preview branches của Vercel (chỉ bật khi dev/preview)
 const VERCEL_PREVIEW_ORIGIN_REGEX =
   /^https:\/\/man-math-[a-zA-Z0-9-]+(?:-anhtuansss-projects)?\.vercel\.app$/;
 
@@ -58,4 +65,3 @@ export const isAllowedOrigin = (origin: string): boolean => {
   }
   return VERCEL_PREVIEW_ORIGIN_REGEX.test(origin);
 };
-
